@@ -10,12 +10,3 @@
 - **Cost-Benefit Analysis:** Analyze the financial implications of different training scenarios.
 - **Saved Scenarios:** Save, load, compare, and export multiple training configurations.
 
-## Deployment
-
-The tool is designed to be deployed on GitHub Pages for easy access and sharing.
-
-### Steps to Deploy:
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/yourusername/STEPS-Decision-Aid-Tool.git
