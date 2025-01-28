@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STEPS: Scalable Training Estimation and Planning System</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Bootstrap for styling and tabs -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> 
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>STEPS: Scalable Training Estimation and Planning System</h1>
+    </header>
+    <div class="container my-4">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="stagesTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="intro-tab" data-toggle="tab" href="#introduction" role="tab" aria-controls="introduction" aria-selected="true">Introduction</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="instructions-tab" data-toggle="tab" href="#instructions" role="tab" aria-controls="instructions" aria-selected="false">Instructions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="attributes-tab" data-toggle="tab" href="#attributes" role="tab" aria-controls="attributes" aria-selected="false">Attributes & Descriptions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="input-tab" data-toggle="tab" href="#input" role="tab" aria-controls="input" aria-selected="false">Input</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="results-tab" data-toggle="tab" href="#results" role="tab" aria-controls="results" aria-selected="false">Results</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="uptake-tab" data-toggle="tab" href="#uptake" role="tab" aria-controls="uptake" aria-selected="false">Predicted Uptake</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="cost-benefit-tab" data-toggle="tab" href="#cost-benefit" role="tab" aria-controls="cost-benefit" aria-selected="false">Cost-Benefit Analysis</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="scenarios-tab" data-toggle="tab" href="#scenarios" role="tab" aria-controls="scenarios" aria-selected="false">Scenarios</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <!-- Introduction Tab -->
+            <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="intro-tab">
+                <h2 class="mt-3">Introduction</h2>
+                <p>Welcome to STEPS, the Scalable Training Estimation and Planning System. This tool is designed to assist stakeholders in making informed decisions about scaling Field Epidemiology Training Programs (FETP) in India by evaluating various training scenarios and analyzing their potential impact and costs.</p>
+            </div>
+
+            <!-- Instructions Tab -->
+            <div class="tab-pane fade" id="instructions" role="tabpanel" aria-labelledby="instructions-tab">
+                <h2 class="mt-3">Instructions</h2>
+                <ol>
+                    <li>Navigate through the tabs to understand the tool's functionality.</li>
+                    <li>In the <strong>Attributes & Descriptions</strong> tab, review the detailed attributes and their levels.</li>
+                    <li>Go to the <strong>Input</strong> tab to configure your desired training scenario by selecting different attribute levels.</li>
+                    <li>After setting your inputs, switch to the <strong>Results</strong> tab to view the predicted outcomes.</li>
+                    <li>Check the <strong>Predicted Uptake</strong> and <strong>Cost-Benefit Analysis</strong> tabs for detailed estimates.</li>
+                    <li>Use the <strong>Scenarios</strong> tab to save, compare, or export your configurations.</li>
+                </ol>
+            </div>
+
+            <!-- Attributes & Descriptions Tab -->
+            <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
+                <h2 class="mt-3">Attributes & Descriptions</h2>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Attribute</th>
+                            <th>Levels</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Training Level</td>
+                            <td>Frontline (Basic), Intermediate, Advanced</td>
+                            <td>The complexity and depth of the training program.</td>
+                        </tr>
+                        <tr>
+                            <td>Delivery Method</td>
+                            <td>In-Person, Online, Hybrid</td>
+                            <td>The mode through which training is delivered to participants.</td>
+                        </tr>
+                        <tr>
+                            <td>Accreditation</td>
+                            <td>National, International, None</td>
+                            <td>The formal recognition of the training program by authoritative bodies.</td>
+                        </tr>
+                        <tr>
+                            <td>Location of Training</td>
+                            <td>District-Level, State-Level, Regional Centers</td>
+                            <td>The geographical setting where training is conducted.</td>
+                        </tr>
+                        <tr>
+                            <td>Cohort Size</td>
+                            <td>Small (10-20), Medium (21-50), Large (51+)</td>
+                            <td>The number of participants in each training batch.</td>
+                        </tr>
+                        <tr>
+                            <td>Training Duration</td>
+                            <td>Short-Term (3-6 months), Medium-Term (7-12 months), Long-Term (13-24 months)</td>
+                            <td>The length of time participants spend in the training program.</td>
+                        </tr>
+                        <tr>
+                            <td>Mentoring Approach</td>
+                            <td>In-Person, Virtual, None</td>
+                            <td>The method of providing guidance and support to trainees.</td>
+                        </tr>
+                        <tr>
+                            <td>Cost per Participant</td>
+                            <td>Low (< ₹200,000), Medium (₹200,000 - ₹500,000), High (> ₹500,000)</td>
+                            <td>The financial investment required per trainee.</td>
+                        </tr>
+                        <tr>
+                            <td>Curriculum Focus</td>
+                            <td>Infectious Diseases, Non-Communicable Diseases, One Health</td>
+                            <td>The primary areas of study within the training program.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Input Tab -->
+            <div class="tab-pane fade" id="input" role="tabpanel" aria-labelledby="input-tab">
+                <h2 class="mt-3">Input</h2>
+                <form id="scenario-form">
+                    <div class="form-group">
+                        <label for="training-level">Training Level:</label>
+                        <select class="form-control" id="training-level" required>
+                            <option value="Frontline">Frontline (Basic)</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery-method">Delivery Method:</label>
+                        <select class="form-control" id="delivery-method" required>
+                            <option value="In-Person">In-Person</option>
+                            <option value="Online">Online</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="accreditation">Accreditation:</label>
+                        <select class="form-control" id="accreditation" required>
+                            <option value="National">National Accreditation</option>
+                            <option value="International">International Accreditation</option>
+                            <option value="None">No Accreditation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location of Training:</label>
+                        <select class="form-control" id="location" required>
+                            <option value="District">District-Level</option>
+                            <option value="State">State-Level</option>
+                            <option value="Regional">Regional Centers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cohort-size">Cohort Size:</label>
+                        <input type="range" class="form-control-range" id="cohort-size" min="10" max="60" step="10" value="30">
+                        <small id="cohort-size-value">30</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="training-duration">Training Duration (months):</label>
+                        <input type="range" class="form-control-range" id="training-duration" min="3" max="24" step="3" value="12">
+                        <small id="training-duration-value">12</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="mentoring">Mentoring Approach:</label>
+                        <select class="form-control" id="mentoring" required>
+                            <option value="In-Person">In-Person Mentoring</option>
+                            <option value="Virtual">Virtual Mentoring</option>
+                            <option value="None">No Structured Mentoring</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cost">Cost per Participant (₹):</label>
+                        <input type="range" class="form-control-range" id="cost" min="200000" max="600000" step="100000" value="300000">
+                        <small id="cost-value">₹300,000</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="curriculum">Curriculum Focus:</label>
+                        <select class="form-control" id="curriculum" required>
+                            <option value="Infectious Diseases">Infectious Diseases</option>
+                            <option value="Non-Communicable Diseases">Non-Communicable Diseases</option>
+                            <option value="One Health">One Health</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="save-scenario">Save Scenario</button>
+                    <button type="button" class="btn btn-success" id="run-analysis">Run Analysis</button>
+                </form>
+            </div>
+
+            <!-- Results Tab -->
+            <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
+                <h2 class="mt-3">Results</h2>
+                <div id="results-content">
+                    <p>Please configure a scenario in the <strong>Input</strong> tab and run the analysis to view results here.</p>
+                </div>
+            </div>
+
+            <!-- Predicted Uptake Tab -->
+            <div class="tab-pane fade" id="uptake" role="tabpanel" aria-labelledby="uptake-tab">
+                <h2 class="mt-3">Predicted Uptake</h2>
+                <div id="uptake-content">
+                    <p>Based on the configured scenario, the predicted uptake of the training program is shown below.</p>
+                    <canvas id="uptakeChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Cost-Benefit Analysis Tab -->
+            <div class="tab-pane fade" id="cost-benefit" role="tabpanel" aria-labelledby="cost-benefit-tab">
+                <h2 class="mt-3">Cost-Benefit Analysis</h2>
+                <div id="cost-benefit-content">
+                    <p>Analysis of costs versus benefits for the selected training scenario.</p>
+                    <canvas id="costBenefitChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Scenarios Tab -->
+            <div class="tab-pane fade" id="scenarios" role="tabpanel" aria-labelledby="scenarios-tab">
+                <h2 class="mt-3">Saved Scenarios</h2>
+                <div id="scenarios-content">
+                    <p>Save and compare your training scenarios here.</p>
+                    <div class="form-group">
+                        <label for="scenario-name">Scenario Name:</label>
+                        <input type="text" class="form-control" id="scenario-name" placeholder="Enter a name for your scenario">
+                    </div>
+                    <button type="button" class="btn btn-info" id="compare-scenarios">Compare Scenarios</button>
+                    <button type="button" class="btn btn-secondary" id="export-pdf">Export to PDF</button>
+                    <hr>
+                    <h4>Saved Scenarios:</h4>
+                    <ul class="list-group" id="saved-scenarios-list">
+                        <!-- Saved scenarios will appear here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        © 2025 University of Newcastle. All rights reserved.
+    </footer>
+
+    <!-- Include jQuery and Bootstrap JS for tabs functionality -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
