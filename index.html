@@ -30,7 +30,7 @@
   <div id="introTab" class="tabcontent" style="display: block;">
     <div class="intro-box">
       <p>
-        Scaling Field Epidemiology Training Programs (FETP) in India is crucial for enhancing public health surveillance, outbreak response, and data-driven decision-making. This tool utilizes hypothetical estimates to predict program uptake probabilities and conduct cost-benefit analyses, enabling informed decisions on program scaling based on key attributes.
+        Scaling Field Epidemiology Training Programs (FETP) in India is crucial for enhancing public health surveillance, outbreak response, and data-driven decision-making. This tool utilizes hypothetical estimates based on an error component logit model to predict program uptake probabilities and conduct cost-benefit analyses, enabling informed decisions on program scaling based on key attributes.
       </p>
       <p>Use the tabs above to navigate:</p>
       <ul>
@@ -94,9 +94,9 @@
           <td>The number of participants in each training batch.</td>
         </tr>
         <tr>
-          <td>Training Duration</td>
-          <td>Short-Term (3-6 months), Medium-Term (7-12 months), Long-Term (13-24 months)</td>
-          <td>The length of time participants spend in the training program.</td>
+          <td>Cost per Participant</td>
+          <td>Continuous (₹100,000 - ₹600,000)</td>
+          <td>The financial investment required per trainee.</td>
         </tr>
       </tbody>
     </table>
@@ -106,7 +106,7 @@
   <div id="inputsTab" class="tabcontent">
     <h2>Configure Training Scenario</h2>
     <p>
-      Adjust the parameters below to configure your desired training scenario. Once configured, click “Run Analysis” to view the predicted uptake and cost-benefit analysis.
+      Adjust the parameters below to configure your desired training scenario. Once configured, click “View Results” to see the predicted uptake and cost-benefit analysis.
     </p>
     <form id="scenario-form">
       <div class="form-group">
@@ -147,11 +147,11 @@
         <small id="cohort-size-value">30</small>
       </div>
       <div class="form-group">
-        <label for="training-duration">Training Duration (months):</label>
-        <input type="range" class="form-control-range" id="training-duration" min="3" max="24" step="3" value="12">
-        <small id="training-duration-value">12</small>
+        <label for="cost-per-participant">Cost per Participant (₹):</label>
+        <input type="range" class="form-control-range" id="cost-per-participant" min="100000" max="600000" step="50000" value="300000">
+        <small id="cost-per-participant-value">₹300,000</small>
       </div>
-      <button type="button" class="btn btn-primary" id="run-analysis">Run Analysis</button>
+      <button type="button" class="btn btn-primary" id="view-results">View Results</button>
     </form>
   </div>
 
@@ -168,7 +168,19 @@
   <div id="cbaTab" class="tabcontent">
     <h2>Cost-Benefit Analysis</h2>
     <div id="cba-content">
-      <p>Analyze the financial implications of your training scenario below.</p>
+      <h3>Cost Components</h3>
+      <ul>
+        <li><strong>Advertisement:</strong> ₹34,990.60 (Includes advertisements in local media and online platforms)</li>
+        <li><strong>Training Materials:</strong> ₹50,000 (Includes manuals, digital resources, and equipment)</li>
+        <li><strong>Trainer Salaries:</strong> ₹150,000 (Compensation for trainers conducting sessions)</li>
+        <li><strong>Venue Hire:</strong> ₹40,000 (Cost of renting training facilities)</li>
+        <li><strong>Participant Support:</strong> ₹30,000 (Includes transportation and accommodation for participants)</li>
+        <li><strong>Administrative Costs:</strong> ₹25,000 (Includes project management and administrative support)</li>
+      </ul>
+      <h3>Benefits Measurement</h3>
+      <p>
+        Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs). Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response.
+      </p>
       <canvas id="cbaChart" width="400" height="200"></canvas>
     </div>
   </div>
