@@ -78,6 +78,20 @@ header h1 {
   display: block;
   color: #2c3e50;
 }
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.radio-group label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #2c3e50;
+}
+.radio-group input {
+  margin-right: 8px;
+}
 .form-control, .form-control-range {
   width: 100%;
   padding: 8px 12px;
@@ -96,16 +110,16 @@ header h1 {
 .form-control-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   background: #007bff;
   cursor: pointer;
   border-radius: 50%;
   border: none;
 }
 .form-control-range::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   background: #007bff;
   cursor: pointer;
   border: none;
