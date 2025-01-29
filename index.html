@@ -22,6 +22,7 @@
     <button class="tablink" onclick="openTab('attributesTab', this)">Attributes</button>
     <button class="tablink" onclick="openTab('inputsTab', this)">Inputs</button>
     <button class="tablink" onclick="openTab('uptakeTab', this)">Predicted Uptake</button>
+    <button class="tablink" onclick="openTab('wtpTab', this)">Willingness to Pay (WTP)</button>
     <button class="tablink" onclick="openTab('cbaTab', this)">Costs & Benefits</button>
     <button class="tablink" onclick="openTab('scenariosTab', this)">Scenarios</button>
   </div>
@@ -38,6 +39,7 @@
         <li><strong>Attributes</strong> – Detailed descriptions of the tool attributes.</li>
         <li><strong>Inputs</strong> – Configure your training scenario’s parameters.</li>
         <li><strong>Predicted Uptake</strong> – View charts predicting training uptake.</li>
+        <li><strong>Willingness to Pay (WTP)</strong> – Analyze the monetary value stakeholders assign to each attribute.</li>
         <li><strong>Costs & Benefits</strong> – Analyze the financial implications of scenarios.</li>
         <li><strong>Scenarios</strong> – Save, compare, or export multiple training configurations.</li>
       </ul>
@@ -51,7 +53,8 @@
       <li>Review the <strong>Attributes</strong> to understand the key factors influencing training program scaling.</li>
       <li>Navigate to the <strong>Inputs</strong> tab to configure your desired training scenario by selecting different attribute levels.</li>
       <li>After setting your inputs, switch to the <strong>Predicted Uptake</strong> tab to view the predicted training uptake based on your configuration.</li>
-      <li>Check the <strong>Costs & Benefits</strong> tab to analyze the financial implications of your scenario.</li>
+      <li>Check the <strong>Willingness to Pay (WTP)</strong> tab to understand the monetary value stakeholders assign to each attribute.</li>
+      <li>Visit the <strong>Costs & Benefits</strong> tab to analyze the financial implications of your scenario.</li>
       <li>Use the <strong>Scenarios</strong> tab to save your configurations, compare multiple scenarios, or export your results to PDF for reporting.</li>
     </ol>
   </div>
@@ -90,7 +93,7 @@
         </tr>
         <tr>
           <td>Cohort Size</td>
-          <td>Small (10-20), Medium (21-50), Large (51+)</td>
+          <td>Small (10-20), Medium (21-50), Large (51-100)</td>
           <td>The number of participants in each training batch.</td>
         </tr>
         <tr>
@@ -106,7 +109,7 @@
   <div id="inputsTab" class="tabcontent">
     <h2>Configure Training Scenario</h2>
     <p>
-      Adjust the parameters below to configure your desired training scenario. Once configured, click “View Results” to see the predicted uptake and cost-benefit analysis.
+      Adjust the parameters below to configure your desired training scenario. Once configured, click “View Results” to see the predicted uptake, willingness to pay, and cost-benefit analysis.
     </p>
     <form id="scenario-form">
       <div class="form-group">
@@ -143,7 +146,7 @@
       </div>
       <div class="form-group">
         <label for="cohort-size">Cohort Size:</label>
-        <input type="range" class="form-control-range" id="cohort-size" min="10" max="60" step="10" value="30">
+        <input type="range" class="form-control-range" id="cohort-size" min="10" max="100" step="10" value="30">
         <small id="cohort-size-value">30</small>
       </div>
       <div class="form-group">
@@ -164,9 +167,27 @@
     </div>
   </div>
 
+  <!-- Willingness to Pay (WTP) Tab -->
+  <div id="wtpTab" class="tabcontent">
+    <h2>Willingness to Pay (WTP) Results</h2>
+    <p>
+      The willingness-to-pay (WTP) for each attribute is calculated based on the ratio of the attribute’s coefficient to the negative of the cost coefficient. This metric quantifies the monetary value stakeholders place on each program attribute, holding other factors constant.
+    </p>
+    <p>
+      <strong>Example:</strong> Community Engagement has a WTP of ₹1,500 (SE=300), indicating stakeholders are willing to pay an additional ₹1,500 for community engagement features compared to the benchmark scenario.
+    </p>
+    <button type="button" class="btn btn-success" onclick="renderWTPChart()">Show WTP Plots</button>
+    <div class="chart-grid">
+      <div class="chart-box">
+        <h3>WTP (₹) with Error Bars</h3>
+        <canvas id="wtpChartMain"></canvas>
+      </div>
+    </div>
+  </div>
+
   <!-- Costs & Benefits Tab -->
   <div id="cbaTab" class="tabcontent">
-    <h2>Cost-Benefit Analysis</h2>
+    <h2>Costs & Benefits</h2>
     <div id="cba-content">
       <h3>Cost Components</h3>
       <ul>
@@ -176,10 +197,24 @@
         <li><strong>Venue Hire:</strong> ₹40,000 (Cost of renting training facilities)</li>
         <li><strong>Participant Support:</strong> ₹30,000 (Includes transportation and accommodation for participants)</li>
         <li><strong>Administrative Costs:</strong> ₹25,000 (Includes project management and administrative support)</li>
+        <li><strong>Staffing and Operational Costs:</strong> ₹60,000 (Hiring program directors, project management staff, administrative staff, and support personnel)</li>
+        <li><strong>Material and Logistical Support:</strong> ₹45,000 (Purchase of technology, equipment, training materials, manuals, data collection tools, learning management systems, and software licenses)</li>
+        <li><strong>Training of Trainers:</strong> ₹35,000 (Continual investment in upskilling trainers and mentors via specialized training of trainer programs)</li>
+        <li><strong>Opportunity Costs for Participants and Stakeholders:</strong> ₹50,000 (Lost work hours/back fill and cost of adjusting current systems and protocols)</li>
+        <li><strong>Program Monitoring and Evaluation:</strong> ₹40,000 (Routine M&E and impact evaluation costs)</li>
       </ul>
       <h3>Benefits Measurement</h3>
       <p>
-        Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs). Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response.
+        Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs), and economic returns from health investments. The detailed benefits include:
+      </p>
+      <ul>
+        <li><strong>Improved Public Health Outcomes:</strong> Enhanced disease surveillance and response, reduced economic impact of epidemics, and data-driven decision-making in public health policy.</li>
+        <li><strong>Long-Term Workforce Development:</strong> Building a skilled epidemiology workforce, strengthening institutional capacity, and promoting career growth and retention for health professionals.</li>
+        <li><strong>Economic Returns from Health Investment:</strong> Cost savings in healthcare, increased productivity, and attracting funding and support.</li>
+        <li><strong>Strengthened Community Resilience and Trust in Health Systems:</strong> Community-level benefits and improved risk communication.</li>
+      </ul>
+      <p>
+        Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response capabilities. Benefits are monetized based on the value per QALY.
       </p>
       <canvas id="cbaChart" width="400" height="200"></canvas>
     </div>
@@ -189,7 +224,7 @@
   <div id="scenariosTab" class="tabcontent">
     <h2>Saved Scenarios</h2>
     <p>
-      Save your scenario from <strong>Inputs</strong> and compare or export multiple configurations, including cost-benefit charts, to PDF.
+      Save your scenario from <strong>Inputs</strong> and compare or export multiple configurations, including cost-benefit charts, willingness-to-pay analyses, and more, to PDF.
     </p>
     <form id="save-scenario-form">
       <div class="form-group">
@@ -200,9 +235,23 @@
     </form>
     <hr>
     <h4>Saved Scenarios:</h4>
-    <ul class="list-group" id="saved-scenarios-list">
-      <!-- Saved scenarios will appear here -->
-    </ul>
+    <table id="scenarioTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Training Level</th>
+          <th>Delivery Method</th>
+          <th>Accreditation</th>
+          <th>Location</th>
+          <th>Cohort Size</th>
+          <th>Cost per Participant</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Saved scenarios will appear here -->
+      </tbody>
+    </table>
     <hr>
     <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
   </div>
