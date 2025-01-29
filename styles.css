@@ -161,3 +161,19 @@ footer {
   font-size: 0.9em;
   color: #7f8c8d;
 }
+
+/* QALY Selector */
+.qaly-selector {
+  margin-bottom: 20px;
+}
+.qaly-selector label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
