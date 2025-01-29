@@ -113,48 +113,96 @@
         Adjust the parameters below to configure your desired training scenario. Once configured, click “Calculate & View Results” to see the predicted uptake and cost-benefit analysis.
       </p>
       <form id="scenario-form">
+        <!-- Training Level -->
         <div class="form-group">
-          <label for="training-level">Training Level:</label>
-          <select class="form-control" id="training-level" required>
-            <option value="Frontline">Frontline</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-          </select>
+          <label>Training Level:</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="training-level" value="Frontline" checked>
+              Frontline
+            </label>
+            <label>
+              <input type="radio" name="training-level" value="Intermediate">
+              Intermediate
+            </label>
+            <label>
+              <input type="radio" name="training-level" value="Advanced">
+              Advanced
+            </label>
+          </div>
         </div>
+
+        <!-- Delivery Method -->
         <div class="form-group">
-          <label for="delivery-method">Delivery Method:</label>
-          <select class="form-control" id="delivery-method" required>
-            <option value="In-Person">In-Person</option>
-            <option value="Online">Online</option>
-            <option value="Hybrid">Hybrid</option>
-          </select>
+          <label>Delivery Method:</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="delivery-method" value="In-Person" checked>
+              In-Person
+            </label>
+            <label>
+              <input type="radio" name="delivery-method" value="Online">
+              Online
+            </label>
+            <label>
+              <input type="radio" name="delivery-method" value="Hybrid">
+              Hybrid
+            </label>
+          </div>
         </div>
+
+        <!-- Accreditation -->
         <div class="form-group">
-          <label for="accreditation">Accreditation:</label>
-          <select class="form-control" id="accreditation" required>
-            <option value="National">National</option>
-            <option value="International">International</option>
-            <option value="None">None</option>
-          </select>
+          <label>Accreditation:</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="accreditation" value="National" checked>
+              National
+            </label>
+            <label>
+              <input type="radio" name="accreditation" value="International">
+              International
+            </label>
+            <label>
+              <input type="radio" name="accreditation" value="None">
+              None
+            </label>
+          </div>
         </div>
+
+        <!-- Location of Training -->
         <div class="form-group">
-          <label for="location">Location of Training:</label>
-          <select class="form-control" id="location" required>
-            <option value="District">District-Level</option>
-            <option value="State">State-Level</option>
-            <option value="Regional">Regional Centers</option>
-          </select>
+          <label>Location of Training:</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="location" value="District-Level" checked>
+              District-Level
+            </label>
+            <label>
+              <input type="radio" name="location" value="State-Level">
+              State-Level
+            </label>
+            <label>
+              <input type="radio" name="location" value="Regional Centers">
+              Regional Centers
+            </label>
+          </div>
         </div>
+
+        <!-- Cohort Size -->
         <div class="form-group">
           <label for="cohort-size">Cohort Size:</label>
           <input type="range" class="form-control-range" id="cohort-size" min="500" max="2000" step="500" value="1000">
           <small id="cohort-size-value">1000</small>
         </div>
+
+        <!-- Cost per Participant -->
         <div class="form-group">
           <label for="cost-per-participant">Cost per Participant (₹):</label>
           <input type="range" class="form-control-range" id="cost-per-participant" min="100000" max="600000" step="50000" value="300000">
           <small id="cost-per-participant-value">₹300,000</small>
         </div>
+
         <button type="button" class="btn btn-primary" id="view-results">Calculate & View Results</button>
       </form>
     </div>
