@@ -52,9 +52,10 @@
       <ol>
         <li>Review the <strong>Attributes</strong> to understand the key factors influencing training program scaling.</li>
         <li>Navigate to the <strong>Inputs</strong> tab to configure your desired training scenario by selecting different attribute levels.</li>
-        <li>After setting your inputs, switch to the <strong>Predicted Uptake</strong> tab to view the predicted training uptake based on your configuration.</li>
-        <li>Check the <strong>Willingness to Pay</strong> tab to analyze the monetary value of each attribute.</li>
-        <li>Proceed to the <strong>Costs & Benefits</strong> tab to analyze the financial implications of your scenario.</li>
+        <li>After setting your inputs, click the “Calculate & View Results” button to generate predicted uptake and cost-benefit analysis based on your configuration.</li>
+        <li>Navigate to the <strong>Predicted Uptake</strong> tab to view the uptake chart.</li>
+        <li>Navigate to the <strong>Willingness to Pay</strong> tab to view WTP plots.</li>
+        <li>Navigate to the <strong>Costs & Benefits</strong> tab to view the financial analysis.</li>
         <li>Use the <strong>Scenarios</strong> tab to save your configurations, compare multiple scenarios, or export your results to PDF for reporting.</li>
       </ol>
     </div>
@@ -93,8 +94,8 @@
           </tr>
           <tr>
             <td>Cohort Size</td>
-            <td>Small (20), Medium (50), Large (100)</td>
-            <td>The number of participants in each training batch, based on WHO recommendations.</td>
+            <td>Small (500), Medium (1000), Large (2000)</td>
+            <td>The number of participants in each training batch, based on India's public health workforce needs.</td>
           </tr>
           <tr>
             <td>Cost per Participant</td>
@@ -109,7 +110,7 @@
     <div id="inputsTab" class="tabcontent">
       <h2>Configure Training Scenario</h2>
       <p>
-        Adjust the parameters below to configure your desired training scenario. Once configured, click “View Results” to see the predicted uptake and cost-benefit analysis.
+        Adjust the parameters below to configure your desired training scenario. Once configured, click “Calculate & View Results” to see the predicted uptake and cost-benefit analysis.
       </p>
       <form id="scenario-form">
         <div class="form-group">
@@ -146,15 +147,15 @@
         </div>
         <div class="form-group">
           <label for="cohort-size">Cohort Size:</label>
-          <input type="range" class="form-control-range" id="cohort-size" min="20" max="100" step="30" value="50">
-          <small id="cohort-size-value">50</small>
+          <input type="range" class="form-control-range" id="cohort-size" min="500" max="2000" step="500" value="1000">
+          <small id="cohort-size-value">1000</small>
         </div>
         <div class="form-group">
           <label for="cost-per-participant">Cost per Participant (₹):</label>
           <input type="range" class="form-control-range" id="cost-per-participant" min="100000" max="600000" step="50000" value="300000">
           <small id="cost-per-participant-value">₹300,000</small>
         </div>
-        <button type="button" class="btn btn-primary" id="view-results">View Results</button>
+        <button type="button" class="btn btn-primary" id="view-results">Calculate & View Results</button>
       </form>
     </div>
 
