@@ -55,14 +55,7 @@ costPerParticipant.addEventListener('input', () => {
   costPerParticipantValue.textContent = `₹${parseInt(costPerParticipant.value).toLocaleString()}`;
 });
 
-/** Hypothetical DCE Estimates (Educated Guesses based on literature) */
-const dceEstimates = {
-  "Frontline": { uptake: 70 },
-  "Intermediate": { uptake: 50 },
-  "Advanced": { uptake: 30 }
-};
-
-/** Hypothetical Coefficients for Error Component Logit Model */
+/** Hypothetical DCE Coefficients based on literature review */
 const coefficients = {
   ASC: 0.5, // Alternative Specific Constant
   TrainingLevel: {
@@ -87,7 +80,7 @@ const coefficients = {
   },
   CohortSize: -0.01, // Negative coefficient indicating larger cohorts may reduce uptake
   CostPerParticipant: -0.0005, // Continuous attribute
-  ASC_optout: 0.2
+  ASC_optout: 0.2 // Alternative Specific Constant for opt-out
 };
 
 /** Cost-Benefit Estimates (Educated Guesses based on literature) */
@@ -178,8 +171,8 @@ document.getElementById('view-results').addEventListener('click', () => {
   // Update Cost-Benefit Chart
   updateCBAChart(totalCost, totalBenefit, netBenefit);
 
-  // Update WTP Calculations
-  calculateWTP({
+  // Calculate WTP and Render WTP Chart
+  calculateWTPAndRender({
     trainingLevel,
     deliveryMethod,
     accreditation,
@@ -286,159 +279,15 @@ function updateCBAChart(cost, benefit, net) {
   });
 }
 
-/** Saving Scenarios */
-let savedScenarios = [];
-
-document.getElementById('save-scenario').addEventListener('click', () => {
-  const scenarioName = document.getElementById('scenario-name').value.trim();
-  if (scenarioName === "") {
-    alert("Please enter a name for the scenario.");
-    return;
-  }
-
-  // Gather current inputs
-  const scenario = {
-    name: scenarioName,
-    trainingLevel: document.getElementById('training-level').value,
-    deliveryMethod: document.getElementById('delivery-method').value,
-    accreditation: document.getElementById('accreditation').value,
-    location: document.getElementById('location').value,
-    cohortSize: parseInt(document.getElementById('cohort-size').value),
-    costPerParticipant: parseInt(document.getElementById('cost-per-participant').value)
-  };
-
-  savedScenarios.push(scenario);
-  displaySavedScenarios();
-  document.getElementById('scenario-name').value = '';
-});
-
-/** Display Saved Scenarios */
-function displaySavedScenarios() {
-  const list = document.getElementById('saved-scenarios-list');
-  list.innerHTML = '';
-  savedScenarios.forEach((scenario, index) => {
-    const listItem = document.createElement('li');
-    listItem.className = 'list-group-item';
-    listItem.innerHTML = `<strong>${scenario.name}</strong> 
-        <button class="btn btn-sm btn-primary" onclick="loadScenario(${index})">Load</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteScenario(${index})">Delete</button>`;
-    list.appendChild(listItem);
-  });
+/** Function to handle WTP calculations and rendering */
+function calculateWTPAndRender(scenario) {
+  calculateWTP(scenario);
+  renderWTPChart();
 }
-
-/** Load Scenario */
-function loadScenario(index) {
-  const scenario = savedScenarios[index];
-  document.getElementById('training-level').value = scenario.trainingLevel;
-  document.getElementById('delivery-method').value = scenario.deliveryMethod;
-  document.getElementById('accreditation').value = scenario.accreditation;
-  document.getElementById('location').value = scenario.location;
-  document.getElementById('cohort-size').value = scenario.cohortSize;
-  document.getElementById('cohort-size-value').textContent = scenario.cohortSize;
-  document.getElementById('cost-per-participant').value = scenario.costPerParticipant;
-  document.getElementById('cost-per-participant-value').textContent = `₹${scenario.costPerParticipant.toLocaleString()}`;
-}
-
-/** Delete Scenario */
-function deleteScenario(index) {
-  if (confirm("Are you sure you want to delete this scenario?")) {
-    savedScenarios.splice(index, 1);
-    displaySavedScenarios();
-  }
-}
-
-/** Export Scenarios to PDF */
-document.getElementById('export-pdf').addEventListener('click', () => {
-  if (savedScenarios.length < 1) {
-    alert("No scenarios saved to export.");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 15;
-  let currentY = margin;
-
-  doc.setFontSize(16);
-  doc.text("STEPS - Scenarios Comparison", pageWidth / 2, currentY, { align: 'center' });
-  currentY += 10;
-
-  savedScenarios.forEach((scenario, index) => {
-    // Check if adding this scenario exceeds the page height
-    if (currentY + 80 > pageHeight - margin) {
-      doc.addPage();
-      currentY = margin;
-    }
-
-    doc.setFontSize(14);
-    doc.text(`Scenario ${index + 1}: ${scenario.name}`, margin, currentY);
-    currentY += 7;
-
-    doc.setFontSize(12);
-    doc.text(`Training Level: ${scenario.trainingLevel}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Delivery Method: ${scenario.deliveryMethod}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Accreditation: ${scenario.accreditation}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Location of Training: ${scenario.location}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Cohort Size: ${scenario.cohortSize}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Cost per Participant: ₹${scenario.costPerParticipant.toLocaleString()}`, margin, currentY);
-    currentY += 10;
-  });
-
-  doc.save("STEPS_Scenarios_Comparison.pdf");
-});
 
 /** WTP Calculations */
-const wtpData = [];
+let wtpData = [];
 
-function calculateWTP(scenario) {
-  // WTP = coefficient / (-cost coefficient)
-  const wtpAttributes = {
-    TrainingLevel: scenario.trainingLevel,
-    DeliveryMethod: scenario.deliveryMethod,
-    Accreditation: scenario.accreditation,
-    Location: scenario.location,
-    CohortSize: scenario.cohortSize
-  };
-
-  // Extract coefficients
-  const attrCoefficients = {
-    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
-    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
-    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
-    Location: coefficients.Location[wtpAttributes.Location],
-    CohortSize: coefficients.CohortSize
-  };
-
-  // Calculate WTP for each attribute
-  const wtpResults = {};
-  for (let attr in attrCoefficients) {
-    const coef = attrCoefficients[attr];
-    const wtp = coef / (-coefficients.CostPerParticipant); // Since cost coefficient is negative
-    wtpResults[attr] = wtp * 100000; // Scale to ₹100,000 for better visualization
-  }
-
-  // Store WTP data with hypothetical SE (Standard Error)
-  wtpData.length = 0; // Clear previous data
-  for (let attr in wtpResults) {
-    // Hypothetical SE based on literature
-    const se = wtpResults[attr] * 0.1; // 10% SE
-    wtpData.push({
-      attribute: attr,
-      wtp: wtpResults[attr],
-      se: se
-    });
-  }
-}
-
-/** Function to calculate WTP and prepare data */
 function calculateWTP(scenario) {
   // WTP = coefficient / (-cost coefficient)
   const wtpAttributes = {
@@ -471,360 +320,7 @@ function calculateWTP(scenario) {
   }
 
   // Store WTP data
-  wtpData.length = 0; // Clear previous data
-  wtpResults.forEach(item => {
-    wtpData.push(item);
-  });
-}
-
-/** WTP Chart with Error Bars */
-let wtpChartInstance = null;
-function renderWTPChart() {
-  const ctx = document.getElementById("wtpChartMain").getContext("2d");
-
-  if (wtpChartInstance) {
-    wtpChartInstance.destroy();
-  }
-
-  const labels = wtpData.map(item => item.attribute);
-  const values = wtpData.map(item => item.wtp);
-  const errors = wtpData.map(item => item.se); // standard errors
-
-  const dataConfig = {
-    labels: labels,
-    datasets: [{
-      label: "WTP (₹)",
-      data: values,
-      backgroundColor: values.map(v => v >= 0 ? 'rgba(39,174,96,0.6)' : 'rgba(231,76,60,0.6)'),
-      borderColor: values.map(v => v >= 0 ? 'rgba(39,174,96,1)' : 'rgba(231,76,60,1)'),
-      borderWidth: 1,
-      // Custom property to hold error values
-      error: errors
-    }]
-  };
-
-  wtpChartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: dataConfig,
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      },
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: "Willingness to Pay (₹) for Programme Attributes",
-          font: { size: 16 }
-        },
-        tooltip: {
-          callbacks: {
-            afterBody: function(context) {
-              const index = context[0].dataIndex;
-              const se = dataConfig.datasets[0].error[index];
-              return `SE: ₹${se.toFixed(2)}`;
-            }
-          }
-        }
-      }
-    },
-    plugins: [{
-      // Draw vertical error bars
-      id: 'errorbars',
-      afterDraw: chart => {
-        const {
-          ctx,
-          scales: { x, y }
-        } = chart;
-
-        chart.getDatasetMeta(0).data.forEach((bar, i) => {
-          const centerX = bar.x;
-          const value = values[i];
-          const se = errors[i];
-          if (se && typeof se === 'number') {
-            const topY = y.getPixelForValue(value + se);
-            const bottomY = y.getPixelForValue(value - se);
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 1;
-            // main line
-            ctx.moveTo(centerX, topY);
-            ctx.lineTo(centerX, bottomY);
-            // top cap
-            ctx.moveTo(centerX - 5, topY);
-            ctx.lineTo(centerX + 5, topY);
-            // bottom cap
-            ctx.moveTo(centerX - 5, bottomY);
-            ctx.lineTo(centerX + 5, bottomY);
-            ctx.stroke();
-            ctx.restore();
-          }
-        });
-      }
-    }]
-  });
-}
-
-/** Cost-Benefit Analysis Functionality */
-const detailedCostComponents = [
-  {
-    item: "Advertisement",
-    description: "Includes advertisements in local media and online platforms",
-    value: 34990.60
-  },
-  {
-    item: "Training Materials",
-    description: "Includes manuals, digital resources, and equipment",
-    value: 50000
-  },
-  {
-    item: "Trainer Salaries",
-    description: "Compensation for trainers conducting sessions",
-    value: 150000
-  },
-  {
-    item: "Venue Hire",
-    description: "Cost of renting training facilities",
-    value: 40000
-  },
-  {
-    item: "Participant Support",
-    description: "Includes transportation and accommodation for participants",
-    value: 30000
-  },
-  {
-    item: "Administrative Costs",
-    description: "Includes project management and administrative support",
-    value: 25000
-  },
-  {
-    item: "Material and Logistical Support",
-    description: "Purchase of technology, equipment, training materials, and software licenses",
-    value: 50000
-  },
-  {
-    item: "Training of Trainers",
-    description: "Costs for upskilling trainers and mentors",
-    value: 60000
-  },
-  {
-    item: "Opportunity Costs",
-    description: "Lost work hours and backfill costs for participants",
-    value: 80000
-  },
-  {
-    item: "System Adjustments",
-    description: "Costs for adjusting current systems and protocols",
-    value: 40000
-  },
-  {
-    item: "Program Monitoring & Evaluation",
-    description: "Routine M&E and impact evaluation costs",
-    value: 70000
-  }
-];
-
-/** Function to update CBA with detailed components */
-function updateCBAChart(totalCost, totalBenefit, netBenefit) {
-  const ctx = document.getElementById('cbaChart').getContext('2d');
-  if (cbaChart) {
-    cbaChart.destroy();
-  }
-  cbaChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Total Cost', 'Total Benefit', 'Net Benefit'],
-      datasets: [{
-        label: 'Amount (₹)',
-        data: [totalCost, totalBenefit, netBenefit],
-        backgroundColor: [
-          '#ffc107',
-          '#17a2b8',
-          '#28a745'
-        ],
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: { beginAtZero:true }
-      },
-      plugins: {
-        title: {
-          display: true,
-          text: 'Cost-Benefit Analysis',
-          font: { size: 16 }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              let label = context.dataset.label || '';
-              if (label) {
-                label += ': ';
-              }
-              label += `₹${context.parsed.toLocaleString()}`;
-              return label;
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-/** Function to generate random error between min and max */
-function getRandomError(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-/** Saving Scenarios */
-document.getElementById('save-scenario').addEventListener('click', () => {
-  const scenarioName = document.getElementById('scenario-name').value.trim();
-  if (scenarioName === "") {
-    alert("Please enter a name for the scenario.");
-    return;
-  }
-
-  // Gather current inputs
-  const scenario = {
-    name: scenarioName,
-    trainingLevel: document.getElementById('training-level').value,
-    deliveryMethod: document.getElementById('delivery-method').value,
-    accreditation: document.getElementById('accreditation').value,
-    location: document.getElementById('location').value,
-    cohortSize: parseInt(document.getElementById('cohort-size').value),
-    costPerParticipant: parseInt(document.getElementById('cost-per-participant').value)
-  };
-
-  savedScenarios.push(scenario);
-  displaySavedScenarios();
-  document.getElementById('scenario-name').value = '';
-});
-
-/** Display Saved Scenarios */
-function displaySavedScenarios() {
-  const list = document.getElementById('saved-scenarios-list');
-  list.innerHTML = '';
-  savedScenarios.forEach((scenario, index) => {
-    const listItem = document.createElement('li');
-    listItem.className = 'list-group-item';
-    listItem.innerHTML = `<strong>${scenario.name}</strong> 
-        <button class="btn btn-sm btn-primary" onclick="loadScenario(${index})">Load</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteScenario(${index})">Delete</button>`;
-    list.appendChild(listItem);
-  });
-}
-
-/** Load Scenario */
-function loadScenario(index) {
-  const scenario = savedScenarios[index];
-  document.getElementById('training-level').value = scenario.trainingLevel;
-  document.getElementById('delivery-method').value = scenario.deliveryMethod;
-  document.getElementById('accreditation').value = scenario.accreditation;
-  document.getElementById('location').value = scenario.location;
-  document.getElementById('cohort-size').value = scenario.cohortSize;
-  document.getElementById('cohort-size-value').textContent = scenario.cohortSize;
-  document.getElementById('cost-per-participant').value = scenario.costPerParticipant;
-  document.getElementById('cost-per-participant-value').textContent = `₹${scenario.costPerParticipant.toLocaleString()}`;
-}
-
-/** Delete Scenario */
-function deleteScenario(index) {
-  if (confirm("Are you sure you want to delete this scenario?")) {
-    savedScenarios.splice(index, 1);
-    displaySavedScenarios();
-  }
-}
-
-/** Export Scenarios to PDF */
-document.getElementById('export-pdf').addEventListener('click', () => {
-  if (savedScenarios.length < 1) {
-    alert("No scenarios saved to export.");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 15;
-  let currentY = margin;
-
-  doc.setFontSize(16);
-  doc.text("STEPS - Scenarios Comparison", pageWidth / 2, currentY, { align: 'center' });
-  currentY += 10;
-
-  savedScenarios.forEach((scenario, index) => {
-    // Check if adding this scenario exceeds the page height
-    if (currentY + 80 > pageHeight - margin) {
-      doc.addPage();
-      currentY = margin;
-    }
-
-    doc.setFontSize(14);
-    doc.text(`Scenario ${index + 1}: ${scenario.name}`, margin, currentY);
-    currentY += 7;
-
-    doc.setFontSize(12);
-    doc.text(`Training Level: ${scenario.trainingLevel}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Delivery Method: ${scenario.deliveryMethod}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Accreditation: ${scenario.accreditation}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Location of Training: ${scenario.location}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Cohort Size: ${scenario.cohortSize}`, margin, currentY);
-    currentY += 5;
-    doc.text(`Cost per Participant: ₹${scenario.costPerParticipant.toLocaleString()}`, margin, currentY);
-    currentY += 10;
-  });
-
-  doc.save("STEPS_Scenarios_Comparison.pdf");
-});
-
-/** WTP Calculations */
-function calculateWTP(scenario) {
-  // WTP = coefficient / (-cost coefficient)
-  const wtpAttributes = {
-    TrainingLevel: scenario.trainingLevel,
-    DeliveryMethod: scenario.deliveryMethod,
-    Accreditation: scenario.accreditation,
-    Location: scenario.location,
-    CohortSize: scenario.cohortSize
-  };
-
-  // Extract coefficients
-  const attrCoefficients = {
-    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
-    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
-    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
-    Location: coefficients.Location[wtpAttributes.Location],
-    CohortSize: coefficients.CohortSize
-  };
-
-  // Calculate WTP for each attribute
-  const wtpResults = [];
-  for (let attr in attrCoefficients) {
-    const coef = attrCoefficients[attr];
-    const wtp = coef / (-coefficients.CostPerParticipant);
-    wtpResults.push({
-      attribute: attr,
-      wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
-      se: wtp * 100000 * 0.1 // 10% SE
-    });
-  }
-
-  // Store WTP data
-  wtpData.length = 0; // Clear previous data
-  wtpResults.forEach(item => {
-    wtpData.push(item);
-  });
+  wtpData = wtpResults;
 }
 
 /** WTP Chart with Error Bars */
@@ -924,106 +420,118 @@ function renderWTPChart() {
   });
 }
 
-/** Function to calculate WTP and prepare data */
-function calculateWTP(scenario) {
-  // WTP = coefficient / (-cost coefficient)
-  const wtpAttributes = {
-    TrainingLevel: scenario.trainingLevel,
-    DeliveryMethod: scenario.deliveryMethod,
-    Accreditation: scenario.accreditation,
-    Location: scenario.location,
-    CohortSize: scenario.cohortSize
-  };
-
-  // Extract coefficients
-  const attrCoefficients = {
-    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
-    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
-    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
-    Location: coefficients.Location[wtpAttributes.Location],
-    CohortSize: coefficients.CohortSize
-  };
-
-  // Calculate WTP for each attribute
-  const wtpResults = [];
-  for (let attr in attrCoefficients) {
-    const coef = attrCoefficients[attr];
-    const wtp = coef / (-coefficients.CostPerParticipant);
-    wtpResults.push({
-      attribute: attr,
-      wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
-      se: wtp * 100000 * 0.1 // 10% SE
-    });
+/** Saving Scenarios */
+document.getElementById('save-scenario').addEventListener('click', () => {
+  const scenarioName = document.getElementById('scenario-name').value.trim();
+  if (scenarioName === "") {
+    alert("Please enter a name for the scenario.");
+    return;
   }
 
-  // Store WTP data
-  wtpData.length = 0; // Clear previous data
-  wtpResults.forEach(item => {
-    wtpData.push(item);
-  });
-}
-
-/** Cost-Benefit Analysis Functionality */
-function renderCBAChart() {
-  // The CBA chart is already updated during the analysis
-}
-
-/** WTP Calculations upon viewing results */
-function calculateWTP(scenario) {
-  // WTP = coefficient / (-cost coefficient)
-  const wtpAttributes = {
-    TrainingLevel: scenario.trainingLevel,
-    DeliveryMethod: scenario.deliveryMethod,
-    Accreditation: scenario.accreditation,
-    Location: scenario.location,
-    CohortSize: scenario.cohortSize
+  // Gather current inputs
+  const scenario = {
+    name: scenarioName,
+    trainingLevel: document.getElementById('training-level').value,
+    deliveryMethod: document.getElementById('delivery-method').value,
+    accreditation: document.getElementById('accreditation').value,
+    location: document.getElementById('location').value,
+    cohortSize: parseInt(document.getElementById('cohort-size').value),
+    costPerParticipant: parseInt(document.getElementById('cost-per-participant').value)
   };
 
-  // Extract coefficients
-  const attrCoefficients = {
-    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
-    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
-    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
-    Location: coefficients.Location[wtpAttributes.Location],
-    CohortSize: coefficients.CohortSize
-  };
-
-  // Calculate WTP for each attribute
-  const wtpResults = [];
-  for (let attr in attrCoefficients) {
-    const coef = attrCoefficients[attr];
-    const wtp = coef / (-coefficients.CostPerParticipant);
-    wtpResults.push({
-      attribute: attr,
-      wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
-      se: wtp * 100000 * 0.1 // 10% SE
-    });
+  // Check for duplicate scenario names
+  const existingNames = savedScenarios.map(s => s.name.toLowerCase());
+  if (existingNames.includes(scenarioName.toLowerCase())) {
+    alert("A scenario with this name already exists. Please choose a different name.");
+    return;
   }
 
-  // Store WTP data
-  wtpData.length = 0; // Clear previous data
-  wtpResults.forEach(item => {
-    wtpData.push(item);
+  savedScenarios.push(scenario);
+  displaySavedScenarios();
+  document.getElementById('scenario-name').value = '';
+});
+
+/** Display Saved Scenarios */
+let savedScenarios = [];
+
+function displaySavedScenarios() {
+  const list = document.getElementById('saved-scenarios-list');
+  list.innerHTML = '';
+  savedScenarios.forEach((scenario, index) => {
+    const listItem = document.createElement('li');
+    listItem.className = 'list-group-item';
+    listItem.innerHTML = `<strong>${scenario.name}</strong> 
+        <button class="btn btn-sm btn-primary" onclick="loadScenario(${index})">Load</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteScenario(${index})">Delete</button>`;
+    list.appendChild(listItem);
   });
 }
 
-/** Function to handle WTP calculations and rendering */
-function calculateWTPAndRender(scenario) {
-  calculateWTP(scenario);
-  renderWTPChart();
+/** Load Scenario */
+function loadScenario(index) {
+  const scenario = savedScenarios[index];
+  document.getElementById('training-level').value = scenario.trainingLevel;
+  document.getElementById('delivery-method').value = scenario.deliveryMethod;
+  document.getElementById('accreditation').value = scenario.accreditation;
+  document.getElementById('location').value = scenario.location;
+  document.getElementById('cohort-size').value = scenario.cohortSize;
+  document.getElementById('cohort-size-value').textContent = scenario.cohortSize;
+  document.getElementById('cost-per-participant').value = scenario.costPerParticipant;
+  document.getElementById('cost-per-participant-value').textContent = `₹${scenario.costPerParticipant.toLocaleString()}`;
 }
 
-/** Willingness to Pay Tab Button */
-document.getElementById('view-results').addEventListener('click', () => {
-  // Previous analysis code...
+/** Delete Scenario */
+function deleteScenario(index) {
+  if (confirm("Are you sure you want to delete this scenario?")) {
+    savedScenarios.splice(index, 1);
+    displaySavedScenarios();
+  }
+}
 
-  // After updating CBA, calculate WTP
-  calculateWTPAndRender({
-    trainingLevel,
-    deliveryMethod,
-    accreditation,
-    location,
-    cohortSize: cohortSizeVal,
-    costPerParticipant: costPerParticipantVal
+/** Export Scenarios to PDF */
+document.getElementById('export-pdf').addEventListener('click', () => {
+  if (savedScenarios.length < 1) {
+    alert("No scenarios saved to export.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 15;
+  let currentY = margin;
+
+  doc.setFontSize(16);
+  doc.text("STEPS - Scenarios Comparison", pageWidth / 2, currentY, { align: 'center' });
+  currentY += 10;
+
+  savedScenarios.forEach((scenario, index) => {
+    // Check if adding this scenario exceeds the page height
+    if (currentY + 80 > pageHeight - margin) {
+      doc.addPage();
+      currentY = margin;
+    }
+
+    doc.setFontSize(14);
+    doc.text(`Scenario ${index + 1}: ${scenario.name}`, margin, currentY);
+    currentY += 7;
+
+    doc.setFontSize(12);
+    doc.text(`Training Level: ${scenario.trainingLevel}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Delivery Method: ${scenario.deliveryMethod}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Accreditation: ${scenario.accreditation}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Location of Training: ${scenario.location}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Cohort Size: ${scenario.cohortSize}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Cost per Participant: ₹${scenario.costPerParticipant.toLocaleString()}`, margin, currentY);
+    currentY += 10;
   });
+
+  doc.save("STEPS_Scenarios_Comparison.pdf");
 });
