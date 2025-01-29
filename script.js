@@ -18,11 +18,11 @@ window.onload = function() {
 /** Tab switching function */
 function openTab(tabId, btn) {
   const allTabs = document.getElementsByClassName("tabcontent");
-  for (let i=0; i<allTabs.length; i++){
+  for (let i = 0; i < allTabs.length; i++) {
     allTabs[i].style.display = "none";
   }
   const allBtns = document.getElementsByClassName("tablink");
-  for (let j=0; j<allBtns.length; j++){
+  for (let j = 0; j < allBtns.length; j++) {
     allBtns[j].classList.remove("active");
   }
   document.getElementById(tabId).style.display = "block";
@@ -89,98 +89,6 @@ const costBenefitEstimates = {
   "Intermediate": { cost: 400000, benefit: 1000000 },
   "Advanced": { cost: 600000, benefit: 1500000 }
 };
-
-/** Function to run analysis */
-document.getElementById('view-results').addEventListener('click', () => {
-  // Gather input values
-  const trainingLevel = document.getElementById('training-level').value;
-  const deliveryMethod = document.getElementById('delivery-method').value;
-  const accreditation = document.getElementById('accreditation').value;
-  const location = document.getElementById('location').value;
-  const cohortSizeVal = parseInt(document.getElementById('cohort-size').value);
-  const costPerParticipantVal = parseInt(document.getElementById('cost-per-participant').value);
-
-  // Compute utility
-  let utility = coefficients.ASC;
-  utility += coefficients.TrainingLevel[trainingLevel];
-  utility += coefficients.DeliveryMethod[deliveryMethod];
-  utility += coefficients.Accreditation[accreditation];
-  utility += coefficients.Location[location];
-  utility += coefficients.CohortSize * cohortSizeVal;
-  utility += coefficients.CostPerParticipant * costPerParticipantVal;
-
-  // Calculate uptake probability using Error Component Logit Model
-  const expUtility = Math.exp(utility);
-  const expOptout = Math.exp(coefficients.ASC_optout);
-  let uptakeProbability = (expUtility) / (expUtility + expOptout) * 100; // in percentage
-
-  // Adjust uptake based on error component (random noise)
-  const error = getRandomError(-5, 5); // ±5% error
-  let finalUptake = uptakeProbability + error;
-  finalUptake = Math.min(Math.max(finalUptake, 0), 100); // Ensure between 0 and 100
-
-  // Calculate Total Cost, Total Benefit, and Net Benefit
-  const totalCost = cohortSizeVal * costBenefitEstimates[trainingLevel].cost;
-  const totalBenefit = cohortSizeVal * costBenefitEstimates[trainingLevel].benefit;
-  const netBenefit = totalBenefit - totalCost;
-
-  // Calculate QALYs
-  const qalyPerParticipant = 0.05;
-  const totalQALYs = cohortSizeVal * qalyPerParticipant;
-
-  // Display Results in Predicted Uptake Tab
-  const uptakeContent = document.getElementById('uptake-content');
-  uptakeContent.innerHTML = `
-    <p><strong>Training Level:</strong> ${trainingLevel}</p>
-    <p><strong>Delivery Method:</strong> ${deliveryMethod}</p>
-    <p><strong>Accreditation:</strong> ${accreditation}</p>
-    <p><strong>Location of Training:</strong> ${location}</p>
-    <p><strong>Cohort Size:</strong> ${cohortSizeVal}</p>
-    <p><strong>Cost per Participant:</strong> ₹${costPerParticipantVal.toLocaleString()}</p>
-    <p><strong>Predicted Uptake:</strong> ${finalUptake.toFixed(2)}%</p>
-    <canvas id="uptakeChart" width="400" height="200"></canvas>
-  `;
-
-  // Update Predicted Uptake Chart
-  updateUptakeChart(finalUptake);
-
-  // Display Results in Cost-Benefit Analysis Tab
-  const cbaContent = document.getElementById('cba-content');
-  cbaContent.innerHTML = `
-    <h3>Cost Components</h3>
-    <ul>
-      <li><strong>Advertisement:</strong> ₹34,990.60 (Includes advertisements in local media and online platforms)</li>
-      <li><strong>Training Materials:</strong> ₹50,000 (Includes manuals, digital resources, and equipment)</li>
-      <li><strong>Trainer Salaries:</strong> ₹150,000 (Compensation for trainers conducting sessions)</li>
-      <li><strong>Venue Hire:</strong> ₹40,000 (Cost of renting training facilities)</li>
-      <li><strong>Participant Support:</strong> ₹30,000 (Includes transportation and accommodation for participants, if necessary)</li>
-      <li><strong>Administrative Costs:</strong> ₹25,000 (Includes project management and administrative support)</li>
-      <li><strong>Material and Logistical Support:</strong> ₹50,000 (Purchase of technology, equipment, training materials, and software licenses)</li>
-      <li><strong>Training of Trainers:</strong> ₹60,000 (Costs for upskilling trainers and mentors)</li>
-      <li><strong>Opportunity Costs:</strong> ₹80,000 (Lost work hours and backfill costs for participants)</li>
-      <li><strong>System Adjustments:</strong> ₹40,000 (Costs for adjusting current systems and protocols)</li>
-      <li><strong>Program Monitoring & Evaluation:</strong> ₹70,000 (Routine M&E and impact evaluation costs)</li>
-    </ul>
-    <h3>Benefits Measurement</h3>
-    <p>
-      Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs). Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response capabilities.
-    </p>
-    <canvas id="cbaChart" width="400" height="200"></canvas>
-  `;
-
-  // Update Cost-Benefit Chart
-  updateCBAChart(totalCost, totalBenefit, netBenefit);
-
-  // Calculate WTP and Render WTP Chart
-  calculateWTPAndRender({
-    trainingLevel,
-    deliveryMethod,
-    accreditation,
-    location,
-    cohortSize: cohortSizeVal,
-    costPerParticipant: costPerParticipantVal
-  });
-});
 
 /** Function to generate random error between min and max */
 function getRandomError(min, max) {
@@ -279,32 +187,29 @@ function updateCBAChart(cost, benefit, net) {
   });
 }
 
-/** Function to handle WTP calculations and rendering */
-function calculateWTPAndRender(scenario) {
-  calculateWTP(scenario);
-  renderWTPChart();
-}
-
-/** WTP Calculations */
+/** Function to calculate WTP and prepare data */
 let wtpData = [];
 
 function calculateWTP(scenario) {
-  // WTP = coefficient / (-cost coefficient)
-  const wtpAttributes = {
-    TrainingLevel: scenario.trainingLevel,
-    DeliveryMethod: scenario.deliveryMethod,
-    Accreditation: scenario.accreditation,
-    Location: scenario.location,
-    CohortSize: scenario.cohortSize
+  // Dummy coding: Set the first level of each attribute as the benchmark (0)
+  // Other levels will have coefficients relative to the benchmark
+
+  // Define benchmarks
+  const benchmarks = {
+    TrainingLevel: "Frontline",
+    DeliveryMethod: "In-Person",
+    Accreditation: "National",
+    Location: "District-Level",
+    CohortSize: 500 // Assuming 'Small' as benchmark
   };
 
   // Extract coefficients
   const attrCoefficients = {
-    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
-    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
-    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
-    Location: coefficients.Location[wtpAttributes.Location],
-    CohortSize: coefficients.CohortSize
+    TrainingLevel: coefficients.TrainingLevel[scenario.trainingLevel] - coefficients.TrainingLevel[benchmarks.TrainingLevel],
+    DeliveryMethod: coefficients.DeliveryMethod[scenario.deliveryMethod] - coefficients.DeliveryMethod[benchmarks.DeliveryMethod],
+    Accreditation: coefficients.Accreditation[scenario.accreditation] - coefficients.Accreditation[benchmarks.Accreditation],
+    Location: coefficients.Location[scenario.location] - coefficients.Location[benchmarks.Location],
+    CohortSize: coefficients.CohortSize * (scenario.cohortSize - benchmarks.CohortSize)
   };
 
   // Calculate WTP for each attribute
@@ -315,7 +220,7 @@ function calculateWTP(scenario) {
     wtpResults.push({
       attribute: attr,
       wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
-      se: wtp * 100000 * 0.1 // 10% SE
+      se: (Math.abs(wtp) * 100000) * 0.1 // 10% SE
     });
   }
 
@@ -420,11 +325,24 @@ function renderWTPChart() {
   });
 }
 
+/** Cost-Benefit Analysis Functionality */
+/** Function to update Cost-Benefit Chart */
+function renderCBAChart() {
+  // The CBA chart is already updated during the analysis
+}
+
 /** Saving Scenarios */
 document.getElementById('save-scenario').addEventListener('click', () => {
   const scenarioName = document.getElementById('scenario-name').value.trim();
   if (scenarioName === "") {
     alert("Please enter a name for the scenario.");
+    return;
+  }
+
+  // Check for duplicate scenario names
+  const existingNames = savedScenarios.map(s => s.name.toLowerCase());
+  if (existingNames.includes(scenarioName.toLowerCase())) {
+    alert("A scenario with this name already exists. Please choose a different name.");
     return;
   }
 
@@ -438,13 +356,6 @@ document.getElementById('save-scenario').addEventListener('click', () => {
     cohortSize: parseInt(document.getElementById('cohort-size').value),
     costPerParticipant: parseInt(document.getElementById('cost-per-participant').value)
   };
-
-  // Check for duplicate scenario names
-  const existingNames = savedScenarios.map(s => s.name.toLowerCase());
-  if (existingNames.includes(scenarioName.toLowerCase())) {
-    alert("A scenario with this name already exists. Please choose a different name.");
-    return;
-  }
 
   savedScenarios.push(scenario);
   displaySavedScenarios();
@@ -535,3 +446,11 @@ document.getElementById('export-pdf').addEventListener('click', () => {
 
   doc.save("STEPS_Scenarios_Comparison.pdf");
 });
+
+/** Willingness to Pay Calculations and Rendering */
+
+/** Function to handle WTP calculations and rendering */
+function calculateWTPAndRender(scenario) {
+  calculateWTP(scenario);
+  renderWTPChart();
+}
