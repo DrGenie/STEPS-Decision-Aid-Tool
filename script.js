@@ -55,10 +55,16 @@ costPerParticipant.addEventListener('input', () => {
   costPerParticipantValue.textContent = `₹${parseInt(costPerParticipant.value).toLocaleString()}`;
 });
 
-/** Hypothetical DCE Coefficients (Educated Guesses based on literature review) */
-const dceCoefficients = {
-  ASC: 0.5, // Alternative Specific Constant for the alternative chosen
-  ASC_optout: 0.2, // ASC for opting out
+/** Hypothetical DCE Estimates (Educated Guesses based on literature) */
+const dceEstimates = {
+  "Frontline": { uptake: 70 },
+  "Intermediate": { uptake: 50 },
+  "Advanced": { uptake: 30 }
+};
+
+/** Hypothetical Coefficients for Error Component Logit Model */
+const coefficients = {
+  ASC: 0.5, // Alternative Specific Constant
   TrainingLevel: {
     Frontline: 0.7,
     Intermediate: 0.5,
@@ -80,7 +86,8 @@ const dceCoefficients = {
     "Regional Centers": 0.5
   },
   CohortSize: -0.01, // Negative coefficient indicating larger cohorts may reduce uptake
-  CostPerParticipant: -0.0005 // Continuous attribute
+  CostPerParticipant: -0.0005, // Continuous attribute
+  ASC_optout: 0.2
 };
 
 /** Cost-Benefit Estimates (Educated Guesses based on literature) */
@@ -88,35 +95,6 @@ const costBenefitEstimates = {
   "Frontline": { cost: 200000, benefit: 500000 },
   "Intermediate": { cost: 400000, benefit: 1000000 },
   "Advanced": { cost: 600000, benefit: 1500000 }
-};
-
-/** WTP Estimates (Educated Guesses based on literature) */
-const wtpEstimates = {
-  TrainingLevel: {
-    Frontline: { wtp: 100000, se: 15000 },
-    Intermediate: { wtp: 150000, se: 20000 },
-    Advanced: { wtp: 200000, se: 25000 }
-  },
-  DeliveryMethod: {
-    "In-Person": { wtp: 80000, se: 12000 },
-    "Online": { wtp: 60000, se: 10000 },
-    "Hybrid": { wtp: 70000, se: 11000 }
-  },
-  Accreditation: {
-    National: { wtp: 50000, se: 8000 },
-    International: { wtp: 100000, se: 15000 },
-    None: { wtp: 0, se: 0 }
-  },
-  Location: {
-    "District-Level": { wtp: 40000, se: 6000 },
-    "State-Level": { wtp: 60000, se: 9000 },
-    "Regional Centers": { wtp: 50000, se: 7500 }
-  },
-  CohortSize: {
-    "Small": { wtp: 50000, se: 7000 },
-    "Medium": { wtp: 30000, se: 5000 },
-    "Large": { wtp: 10000, se: 2000 }
-  }
 };
 
 /** Function to run analysis */
@@ -129,29 +107,33 @@ document.getElementById('view-results').addEventListener('click', () => {
   const cohortSizeVal = parseInt(document.getElementById('cohort-size').value);
   const costPerParticipantVal = parseInt(document.getElementById('cost-per-participant').value);
 
-  // Calculate Predicted Uptake based on Training Level using Error Component Logit Model
   // Compute utility
-  let utility = dceCoefficients.ASC;
-  utility += dceCoefficients.TrainingLevel[trainingLevel];
-  utility += dceCoefficients.DeliveryMethod[deliveryMethod];
-  utility += dceCoefficients.Accreditation[accreditation];
-  utility += dceCoefficients.Location[location];
-  utility += dceCoefficients.CohortSize * cohortSizeVal;
-  utility += dceCoefficients.CostPerParticipant * costPerParticipantVal;
+  let utility = coefficients.ASC;
+  utility += coefficients.TrainingLevel[trainingLevel];
+  utility += coefficients.DeliveryMethod[deliveryMethod];
+  utility += coefficients.Accreditation[accreditation];
+  utility += coefficients.Location[location];
+  utility += coefficients.CohortSize * cohortSizeVal;
+  utility += coefficients.CostPerParticipant * costPerParticipantVal;
 
-  // Calculate uptake probability
+  // Calculate uptake probability using Error Component Logit Model
   const expUtility = Math.exp(utility);
-  const expOptout = Math.exp(dceCoefficients.ASC_optout);
-  const uptakeProbability = (expUtility) / (expUtility + expOptout) * 100; // in percentage
+  const expOptout = Math.exp(coefficients.ASC_optout);
+  let uptakeProbability = (expUtility) / (expUtility + expOptout) * 100; // in percentage
 
   // Adjust uptake based on error component (random noise)
   const error = getRandomError(-5, 5); // ±5% error
-  const finalUptake = Math.min(Math.max(uptakeProbability + error, 0), 100); // Ensure between 0 and 100
+  let finalUptake = uptakeProbability + error;
+  finalUptake = Math.min(Math.max(finalUptake, 0), 100); // Ensure between 0 and 100
 
   // Calculate Total Cost, Total Benefit, and Net Benefit
   const totalCost = cohortSizeVal * costBenefitEstimates[trainingLevel].cost;
   const totalBenefit = cohortSizeVal * costBenefitEstimates[trainingLevel].benefit;
   const netBenefit = totalBenefit - totalCost;
+
+  // Calculate QALYs
+  const qalyPerParticipant = 0.05;
+  const totalQALYs = cohortSizeVal * qalyPerParticipant;
 
   // Display Results in Predicted Uptake Tab
   const uptakeContent = document.getElementById('uptake-content');
@@ -162,6 +144,7 @@ document.getElementById('view-results').addEventListener('click', () => {
     <p><strong>Location of Training:</strong> ${location}</p>
     <p><strong>Cohort Size:</strong> ${cohortSizeVal}</p>
     <p><strong>Cost per Participant:</strong> ₹${costPerParticipantVal.toLocaleString()}</p>
+    <p><strong>Predicted Uptake:</strong> ${finalUptake.toFixed(2)}%</p>
     <canvas id="uptakeChart" width="400" height="200"></canvas>
   `;
 
@@ -177,26 +160,17 @@ document.getElementById('view-results').addEventListener('click', () => {
       <li><strong>Training Materials:</strong> ₹50,000 (Includes manuals, digital resources, and equipment)</li>
       <li><strong>Trainer Salaries:</strong> ₹150,000 (Compensation for trainers conducting sessions)</li>
       <li><strong>Venue Hire:</strong> ₹40,000 (Cost of renting training facilities)</li>
-      <li><strong>Participant Support:</strong> ₹30,000 (Includes transportation and accommodation for participants)</li>
+      <li><strong>Participant Support:</strong> ₹30,000 (Includes transportation and accommodation for participants, if necessary)</li>
       <li><strong>Administrative Costs:</strong> ₹25,000 (Includes project management and administrative support)</li>
-      <li><strong>Staffing and Operational Costs:</strong> ₹60,000 (Hiring program directors, project management staff, administrative staff, and support personnel)</li>
-      <li><strong>Material and Logistical Support:</strong> ₹45,000 (Purchase of technology, equipment, training materials, manuals, data collection tools, learning management systems, and software licenses)</li>
-      <li><strong>Training of Trainers:</strong> ₹35,000 (Continual investment in upskilling trainers and mentors via specialized training of trainer programs)</li>
-      <li><strong>Opportunity Costs for Participants and Stakeholders:</strong> ₹50,000 (Lost work hours/back fill and cost of adjusting current systems and protocols)</li>
-      <li><strong>Program Monitoring and Evaluation:</strong> ₹40,000 (Routine M&E and impact evaluation costs)</li>
+      <li><strong>Material and Logistical Support:</strong> ₹50,000 (Purchase of technology, equipment, training materials, and software licenses)</li>
+      <li><strong>Training of Trainers:</strong> ₹60,000 (Costs for upskilling trainers and mentors)</li>
+      <li><strong>Opportunity Costs:</strong> ₹80,000 (Lost work hours and backfill costs for participants)</li>
+      <li><strong>System Adjustments:</strong> ₹40,000 (Costs for adjusting current systems and protocols)</li>
+      <li><strong>Program Monitoring & Evaluation:</strong> ₹70,000 (Routine M&E and impact evaluation costs)</li>
     </ul>
     <h3>Benefits Measurement</h3>
     <p>
-      Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs), and economic returns from health investments. The detailed benefits include:
-    </p>
-    <ul>
-      <li><strong>Improved Public Health Outcomes:</strong> Enhanced disease surveillance and response, reduced economic impact of epidemics, and data-driven decision-making in public health policy.</li>
-      <li><strong>Long-Term Workforce Development:</strong> Building a skilled epidemiology workforce, strengthening institutional capacity, and promoting career growth and retention for health professionals.</li>
-      <li><strong>Economic Returns from Health Investment:</strong> Cost savings in healthcare, increased productivity, and attracting funding and support.</li>
-      <li><strong>Strengthened Community Resilience and Trust in Health Systems:</strong> Community-level benefits and improved risk communication.</li>
-    </ul>
-    <p>
-      Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response capabilities. Benefits are monetized based on the value per QALY.
+      Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs). Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response capabilities.
     </p>
     <canvas id="cbaChart" width="400" height="200"></canvas>
   `;
@@ -204,8 +178,15 @@ document.getElementById('view-results').addEventListener('click', () => {
   // Update Cost-Benefit Chart
   updateCBAChart(totalCost, totalBenefit, netBenefit);
 
-  // Calculate and Update WTP
-  calculateWTP();
+  // Update WTP Calculations
+  calculateWTP({
+    trainingLevel,
+    deliveryMethod,
+    accreditation,
+    location,
+    cohortSize: cohortSizeVal,
+    costPerParticipant: costPerParticipantVal
+  });
 });
 
 /** Function to generate random error between min and max */
@@ -226,8 +207,7 @@ function updateUptakeChart(uptake) {
       labels: ['Predicted Uptake', 'Remaining'],
       datasets: [{
         data: [uptake, 100 - uptake],
-        backgroundColor: ['#27ae60', '#e74c3c'],
-        hoverBackgroundColor: ['#2ecc71', '#c0392b']
+        backgroundColor: ['#28a745', '#dc3545'],
       }]
     },
     options: {
@@ -242,7 +222,12 @@ function updateUptakeChart(uptake) {
         tooltip: {
           callbacks: {
             label: function(context) {
-              return `${context.label}: ${context.parsed}%`;
+              let label = context.label || '';
+              if (label) {
+                label += ': ';
+              }
+              label += `${context.parsed.toFixed(2)}%`;
+              return label;
             }
           }
         }
@@ -266,20 +251,18 @@ function updateCBAChart(cost, benefit, net) {
         label: 'Amount (₹)',
         data: [cost, benefit, net],
         backgroundColor: [
-          '#e67e22',
-          '#3498db',
-          '#2ecc71'
+          '#ffc107',
+          '#17a2b8',
+          '#28a745'
         ],
-        hoverBackgroundColor: [
-          '#d35400',
-          '#2980b9',
-          '#27ae60'
-        ]
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero:true }
+      },
       plugins: {
         title: {
           display: true,
@@ -289,13 +272,15 @@ function updateCBAChart(cost, benefit, net) {
         tooltip: {
           callbacks: {
             label: function(context) {
-              return `${context.dataset.label}: ₹${context.parsed.y.toLocaleString()}`;
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              label += `₹${context.parsed.toLocaleString()}`;
+              return label;
             }
           }
         }
-      },
-      scales: {
-        y: { beginAtZero:true }
       }
     }
   });
@@ -329,24 +314,15 @@ document.getElementById('save-scenario').addEventListener('click', () => {
 
 /** Display Saved Scenarios */
 function displaySavedScenarios() {
-  const tableBody = document.querySelector("#scenarioTable tbody");
-  tableBody.innerHTML = '';
+  const list = document.getElementById('saved-scenarios-list');
+  list.innerHTML = '';
   savedScenarios.forEach((scenario, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${scenario.name}</td>
-      <td>${scenario.trainingLevel}</td>
-      <td>${scenario.deliveryMethod}</td>
-      <td>${scenario.accreditation}</td>
-      <td>${scenario.location}</td>
-      <td>${scenario.cohortSize}</td>
-      <td>₹${scenario.costPerParticipant.toLocaleString()}</td>
-      <td>
-        <button class="btn btn-primary btn-sm" onclick="loadScenario(${index})">Load</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteScenario(${index})">Delete</button>
-      </td>
-    `;
-    tableBody.appendChild(row);
+    const listItem = document.createElement('li');
+    listItem.className = 'list-group-item';
+    listItem.innerHTML = `<strong>${scenario.name}</strong> 
+        <button class="btn btn-sm btn-primary" onclick="loadScenario(${index})">Load</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteScenario(${index})">Delete</button>`;
+    list.appendChild(listItem);
   });
 }
 
@@ -392,7 +368,7 @@ document.getElementById('export-pdf').addEventListener('click', () => {
 
   savedScenarios.forEach((scenario, index) => {
     // Check if adding this scenario exceeds the page height
-    if (currentY + 60 > pageHeight - margin) {
+    if (currentY + 80 > pageHeight - margin) {
       doc.addPage();
       currentY = margin;
     }
@@ -419,185 +395,90 @@ document.getElementById('export-pdf').addEventListener('click', () => {
   doc.save("STEPS_Scenarios_Comparison.pdf");
 });
 
-/** WTP Calculations and Rendering */
-function calculateWTP() {
-  // Placeholder: Implement based on actual utility coefficients and cost coefficients
-  // This function should calculate WTP for each attribute level based on coefficients
+/** WTP Calculations */
+const wtpData = [];
 
-  // Example: WTP = Coefficient / -CostCoefficient
-  // For simplicity, assuming CostCoefficient is the same for all attributes
-  // Replace with actual calculations as per literature
-}
-
-let wtpChartInstance = null;
-
-/** Function to render WTP Chart */
-function renderWTPChart() {
-  const ctx = document.getElementById("wtpChartMain").getContext("2d");
-
-  if (wtpChartInstance) {
-    wtpChartInstance.destroy();
-  }
-
-  // Prepare WTP Data
-  const attributes = ["Training Level", "Delivery Method", "Accreditation", "Location of Training", "Cohort Size"];
-  const levels = {
-    "Training Level": ["Frontline", "Intermediate", "Advanced"],
-    "Delivery Method": ["In-Person", "Online", "Hybrid"],
-    "Accreditation": ["National", "International", "None"],
-    "Location of Training": ["District-Level", "State-Level", "Regional Centers"],
-    "Cohort Size": ["Small", "Medium", "Large"]
+function calculateWTP(scenario) {
+  // WTP = coefficient / (-cost coefficient)
+  const wtpAttributes = {
+    TrainingLevel: scenario.trainingLevel,
+    DeliveryMethod: scenario.deliveryMethod,
+    Accreditation: scenario.accreditation,
+    Location: scenario.location,
+    CohortSize: scenario.cohortSize
   };
 
-  let wtpData = [];
-  let errors = [];
+  // Extract coefficients
+  const attrCoefficients = {
+    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
+    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
+    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
+    Location: coefficients.Location[wtpAttributes.Location],
+    CohortSize: coefficients.CohortSize
+  };
 
-  attributes.forEach(attr => {
-    levels[attr].forEach(level => {
-      const wtp = wtpEstimates[attr][level].wtp;
-      const se = wtpEstimates[attr][level].se;
-      if (wtp > 0) { // Exclude 'None' or baseline levels
-        wtpData.push({ attribute: `${attr} - ${level}`, wtp: wtp, se: se });
-      }
+  // Calculate WTP for each attribute
+  const wtpResults = {};
+  for (let attr in attrCoefficients) {
+    const coef = attrCoefficients[attr];
+    const wtp = coef / (-coefficients.CostPerParticipant); // Since cost coefficient is negative
+    wtpResults[attr] = wtp * 100000; // Scale to ₹100,000 for better visualization
+  }
+
+  // Store WTP data with hypothetical SE (Standard Error)
+  wtpData.length = 0; // Clear previous data
+  for (let attr in wtpResults) {
+    // Hypothetical SE based on literature
+    const se = wtpResults[attr] * 0.1; // 10% SE
+    wtpData.push({
+      attribute: attr,
+      wtp: wtpResults[attr],
+      se: se
     });
-  });
+  }
+}
 
-  const labels = wtpData.map(item => item.attribute);
-  const values = wtpData.map(item => item.wtp);
-  const errorsData = wtpData.map(item => item.se);
-
-  const dataConfig = {
-    labels: labels,
-    datasets: [{
-      label: "WTP (₹)",
-      data: values,
-      backgroundColor: 'rgba(46, 204, 113, 0.6)',
-      borderColor: 'rgba(39, 174, 96, 1)',
-      borderWidth: 1,
-      error: errorsData
-    }]
+/** Function to calculate WTP and prepare data */
+function calculateWTP(scenario) {
+  // WTP = coefficient / (-cost coefficient)
+  const wtpAttributes = {
+    TrainingLevel: scenario.trainingLevel,
+    DeliveryMethod: scenario.deliveryMethod,
+    Accreditation: scenario.accreditation,
+    Location: scenario.location,
+    CohortSize: scenario.cohortSize
   };
 
-  wtpChartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: dataConfig,
-    options: {
-      responsive: true,
-      scales: {
-        y: { 
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Willingness to Pay (₹)'
-          }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: "Willingness to Pay (₹) for Programme Attributes",
-          font: { size: 18 }
-        },
-        tooltip: {
-          callbacks: {
-            afterBody: function(context) {
-              const index = context[0].dataIndex;
-              const se = dataConfig.datasets[0].error[index];
-              return `SE: ₹${se}`;
-            }
-          }
-        }
-      }
-    },
-    plugins: [{
-      // Draw error bars
-      id: 'errorbars',
-      afterDraw: chart => {
-        const { ctx, scales: { x, y } } = chart;
+  // Extract coefficients
+  const attrCoefficients = {
+    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
+    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
+    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
+    Location: coefficients.Location[wtpAttributes.Location],
+    CohortSize: coefficients.CohortSize
+  };
 
-        chart.getDatasetMeta(0).data.forEach((bar, i) => {
-          const centerX = bar.x;
-          const value = values[i];
-          const se = errorsData[i];
-          if (se && typeof se === 'number') {
-            const topY = y.getPixelForValue(value + se);
-            const bottomY = y.getPixelForValue(value - se);
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.strokeStyle = '#34495e';
-            ctx.lineWidth = 1.5;
-            // Main error line
-            ctx.moveTo(centerX, topY);
-            ctx.lineTo(centerX, bottomY);
-            // Top cap
-            ctx.moveTo(centerX - 5, topY);
-            ctx.lineTo(centerX + 5, topY);
-            // Bottom cap
-            ctx.moveTo(centerX - 5, bottomY);
-            ctx.lineTo(centerX + 5, bottomY);
-            ctx.stroke();
-            ctx.restore();
-          }
-        });
-      }
-    }]
-  });
-}
-
-/** Cost-Benefit Analysis Calculations and Rendering */
-let cbaChartInstance = null;
-
-function renderCBAChart() {
-  const cbaContent = document.getElementById('cba-content');
-  if (!cbaContent.innerHTML.includes('cbaChart')) {
-    return; // Ensure the chart canvas is present
+  // Calculate WTP for each attribute
+  const wtpResults = [];
+  for (let attr in attrCoefficients) {
+    const coef = attrCoefficients[attr];
+    const wtp = coef / (-coefficients.CostPerParticipant);
+    wtpResults.push({
+      attribute: attr,
+      wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
+      se: wtp * 100000 * 0.1 // 10% SE
+    });
   }
 
-  // Placeholder: Implement actual CBA calculations based on inputs
-  // This function should update the CBA chart based on saved scenarios or current inputs
-
-  // Example: Assuming values are already calculated and displayed
-  // No additional action needed here unless dynamic updates are required
-}
-
-/** WTP Calculation (Example Implementation) */
-function calculateWTP() {
-  // Implement actual WTP calculations based on DCE coefficients and cost coefficients
-  // For this example, using predefined WTP estimates
-  // Replace with actual calculations when data is available
-}
-
-/** Cost-Benefit Analysis Logic */
-const QALY_VALUE = 50000; // ₹50,000 per QALY
-
-/** Function to calculate and render WTP */
-function calculateWTPValues(scenario) {
-  const attributes = ["TrainingLevel", "DeliveryMethod", "Accreditation", "Location", "CohortSize"];
-  let wtpResults = [];
-
-  attributes.forEach(attr => {
-    const level = scenario[attr];
-    if (wtpEstimates[attr][level].wtp > 0) { // Exclude baseline levels
-      wtpResults.push({
-        attribute: `${attr} - ${level}`,
-        wtp: wtpEstimates[attr][level].wtp,
-        se: wtpEstimates[attr][level].se
-      });
-    }
+  // Store WTP data
+  wtpData.length = 0; // Clear previous data
+  wtpResults.forEach(item => {
+    wtpData.push(item);
   });
-
-  return wtpResults;
 }
 
-/** WTP Data Injection for Current Scenario */
-function injectWTPData(scenario) {
-  const wtpData = calculateWTPValues(scenario);
-  return wtpData;
-}
-
-/** Function to render WTP Chart with Current Scenario */
+/** WTP Chart with Error Bars */
+let wtpChartInstance = null;
 function renderWTPChart() {
   const ctx = document.getElementById("wtpChartMain").getContext("2d");
 
@@ -605,28 +486,20 @@ function renderWTPChart() {
     wtpChartInstance.destroy();
   }
 
-  // Assuming only the last saved scenario is used for WTP
-  if (savedScenarios.length === 0) {
-    alert("Please save a scenario to view WTP.");
-    return;
-  }
-
-  const latestScenario = savedScenarios[savedScenarios.length - 1];
-  const wtpData = injectWTPData(latestScenario);
-
   const labels = wtpData.map(item => item.attribute);
   const values = wtpData.map(item => item.wtp);
-  const errorsData = wtpData.map(item => item.se);
+  const errors = wtpData.map(item => item.se); // standard errors
 
   const dataConfig = {
     labels: labels,
     datasets: [{
       label: "WTP (₹)",
       data: values,
-      backgroundColor: 'rgba(52, 152, 219, 0.6)',
-      borderColor: 'rgba(41, 128, 185, 1)',
+      backgroundColor: values.map(v => v >= 0 ? 'rgba(39,174,96,0.6)' : 'rgba(231,76,60,0.6)'),
+      borderColor: values.map(v => v >= 0 ? 'rgba(39,174,96,1)' : 'rgba(231,76,60,1)'),
       borderWidth: 1,
-      error: errorsData
+      // Custom property to hold error values
+      error: errors
     }]
   };
 
@@ -636,57 +509,54 @@ function renderWTPChart() {
     options: {
       responsive: true,
       scales: {
-        y: { 
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Willingness to Pay (₹)'
-          }
-        }
+        y: { beginAtZero: true }
       },
       plugins: {
         legend: { display: false },
         title: {
           display: true,
           text: "Willingness to Pay (₹) for Programme Attributes",
-          font: { size: 18 }
+          font: { size: 16 }
         },
         tooltip: {
           callbacks: {
             afterBody: function(context) {
               const index = context[0].dataIndex;
               const se = dataConfig.datasets[0].error[index];
-              return `SE: ₹${se}`;
+              return `SE: ₹${se.toFixed(2)}`;
             }
           }
         }
       }
     },
     plugins: [{
-      // Draw error bars
+      // Draw vertical error bars
       id: 'errorbars',
       afterDraw: chart => {
-        const { ctx, scales: { x, y } } = chart;
+        const {
+          ctx,
+          scales: { x, y }
+        } = chart;
 
         chart.getDatasetMeta(0).data.forEach((bar, i) => {
           const centerX = bar.x;
           const value = values[i];
-          const se = errorsData[i];
+          const se = errors[i];
           if (se && typeof se === 'number') {
             const topY = y.getPixelForValue(value + se);
             const bottomY = y.getPixelForValue(value - se);
 
             ctx.save();
             ctx.beginPath();
-            ctx.strokeStyle = '#2c3e50';
-            ctx.lineWidth = 1.5;
-            // Main error line
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            // main line
             ctx.moveTo(centerX, topY);
             ctx.lineTo(centerX, bottomY);
-            // Top cap
+            // top cap
             ctx.moveTo(centerX - 5, topY);
             ctx.lineTo(centerX + 5, topY);
-            // Bottom cap
+            // bottom cap
             ctx.moveTo(centerX - 5, bottomY);
             ctx.lineTo(centerX + 5, bottomY);
             ctx.stroke();
@@ -698,85 +568,107 @@ function renderWTPChart() {
   });
 }
 
-/** WTP Chart Rendering End */
-
-/** Cost-Benefit Analysis Calculations and Rendering */
-let cbaChartInstance = null;
-
-function renderCBAChart() {
-  const cbaContent = document.getElementById('cba-content');
-  if (!cbaContent.innerHTML.includes('cbaChart')) {
-    return; // Ensure the chart canvas is present
+/** Cost-Benefit Analysis Functionality */
+const detailedCostComponents = [
+  {
+    item: "Advertisement",
+    description: "Includes advertisements in local media and online platforms",
+    value: 34990.60
+  },
+  {
+    item: "Training Materials",
+    description: "Includes manuals, digital resources, and equipment",
+    value: 50000
+  },
+  {
+    item: "Trainer Salaries",
+    description: "Compensation for trainers conducting sessions",
+    value: 150000
+  },
+  {
+    item: "Venue Hire",
+    description: "Cost of renting training facilities",
+    value: 40000
+  },
+  {
+    item: "Participant Support",
+    description: "Includes transportation and accommodation for participants",
+    value: 30000
+  },
+  {
+    item: "Administrative Costs",
+    description: "Includes project management and administrative support",
+    value: 25000
+  },
+  {
+    item: "Material and Logistical Support",
+    description: "Purchase of technology, equipment, training materials, and software licenses",
+    value: 50000
+  },
+  {
+    item: "Training of Trainers",
+    description: "Costs for upskilling trainers and mentors",
+    value: 60000
+  },
+  {
+    item: "Opportunity Costs",
+    description: "Lost work hours and backfill costs for participants",
+    value: 80000
+  },
+  {
+    item: "System Adjustments",
+    description: "Costs for adjusting current systems and protocols",
+    value: 40000
+  },
+  {
+    item: "Program Monitoring & Evaluation",
+    description: "Routine M&E and impact evaluation costs",
+    value: 70000
   }
+];
 
-  // Extract the latest scenario for CBA
-  if (savedScenarios.length === 0) {
-    alert("Please save a scenario to view Cost-Benefit Analysis.");
-    return;
-  }
-
-  const latestScenario = savedScenarios[savedScenarios.length - 1];
-  const trainingLevel = latestScenario.trainingLevel;
-  const cohortSizeVal = latestScenario.cohortSize;
-
-  // Calculate Total Cost
-  let totalCost = 34990.60 + 50000 + 150000 + 40000 + 30000 + 25000 + 60000 + 45000 + 35000 + 50000 + 40000;
-  totalCost = totalCost * cohortSizeVal; // Assuming costs scale linearly with cohort size
-
-  // Calculate Total Benefit
-  const totalQALY = cohortSizeVal * 0.05; // Each participant gains 0.05 QALYs
-  const monetizedBenefits = totalQALY * QALY_VALUE;
-
-  // Net Benefit
-  const netBenefit = monetizedBenefits - totalCost;
-
-  // Update CBA Chart
+/** Function to update CBA with detailed components */
+function updateCBAChart(totalCost, totalBenefit, netBenefit) {
   const ctx = document.getElementById('cbaChart').getContext('2d');
-  if (cbaChartInstance) {
-    cbaChartInstance.destroy();
+  if (cbaChart) {
+    cbaChart.destroy();
   }
-  cbaChartInstance = new Chart(ctx, {
+  cbaChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: ['Total Cost', 'Total Benefit', 'Net Benefit'],
       datasets: [{
         label: 'Amount (₹)',
-        data: [totalCost, monetizedBenefits, netBenefit],
+        data: [totalCost, totalBenefit, netBenefit],
         backgroundColor: [
-          '#e67e22',
-          '#3498db',
-          '#2ecc71'
+          '#ffc107',
+          '#17a2b8',
+          '#28a745'
         ],
-        hoverBackgroundColor: [
-          '#d35400',
-          '#2980b9',
-          '#27ae60'
-        ]
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      scales: {
+        y: { beginAtZero:true }
+      },
       plugins: {
         title: {
           display: true,
           text: 'Cost-Benefit Analysis',
-          font: { size: 18 }
+          font: { size: 16 }
         },
         tooltip: {
           callbacks: {
             label: function(context) {
-              return `${context.dataset.label}: ₹${context.parsed.y.toLocaleString()}`;
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              label += `₹${context.parsed.toLocaleString()}`;
+              return label;
             }
-          }
-        }
-      },
-      scales: {
-        y: { 
-          beginAtZero:true,
-          title: {
-            display: true,
-            text: 'Amount (₹)'
           }
         }
       }
@@ -784,19 +676,354 @@ function renderCBAChart() {
   });
 }
 
-/** WTP Calculation and Rendering End */
-
-/** WTP Calculations based on Coefficients */
-function calculateWTP() {
-  // Example implementation, replace with actual model-based calculations
-  // For this example, using predefined WTP estimates
+/** Function to generate random error between min and max */
+function getRandomError(min, max) {
+  return Math.random() * (max - min) + min;
 }
 
-/** Scenario Saving and Management End */
+/** Saving Scenarios */
+document.getElementById('save-scenario').addEventListener('click', () => {
+  const scenarioName = document.getElementById('scenario-name').value.trim();
+  if (scenarioName === "") {
+    alert("Please enter a name for the scenario.");
+    return;
+  }
 
-/** Final Notes:
-   - Ensure all scenarios are saved before exporting.
-   - Replace hypothetical estimates with actual data when available.
-*/
+  // Gather current inputs
+  const scenario = {
+    name: scenarioName,
+    trainingLevel: document.getElementById('training-level').value,
+    deliveryMethod: document.getElementById('delivery-method').value,
+    accreditation: document.getElementById('accreditation').value,
+    location: document.getElementById('location').value,
+    cohortSize: parseInt(document.getElementById('cohort-size').value),
+    costPerParticipant: parseInt(document.getElementById('cost-per-participant').value)
+  };
 
-/** Ensure that WTP calculations are linked to actual data when integrated */
+  savedScenarios.push(scenario);
+  displaySavedScenarios();
+  document.getElementById('scenario-name').value = '';
+});
+
+/** Display Saved Scenarios */
+function displaySavedScenarios() {
+  const list = document.getElementById('saved-scenarios-list');
+  list.innerHTML = '';
+  savedScenarios.forEach((scenario, index) => {
+    const listItem = document.createElement('li');
+    listItem.className = 'list-group-item';
+    listItem.innerHTML = `<strong>${scenario.name}</strong> 
+        <button class="btn btn-sm btn-primary" onclick="loadScenario(${index})">Load</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteScenario(${index})">Delete</button>`;
+    list.appendChild(listItem);
+  });
+}
+
+/** Load Scenario */
+function loadScenario(index) {
+  const scenario = savedScenarios[index];
+  document.getElementById('training-level').value = scenario.trainingLevel;
+  document.getElementById('delivery-method').value = scenario.deliveryMethod;
+  document.getElementById('accreditation').value = scenario.accreditation;
+  document.getElementById('location').value = scenario.location;
+  document.getElementById('cohort-size').value = scenario.cohortSize;
+  document.getElementById('cohort-size-value').textContent = scenario.cohortSize;
+  document.getElementById('cost-per-participant').value = scenario.costPerParticipant;
+  document.getElementById('cost-per-participant-value').textContent = `₹${scenario.costPerParticipant.toLocaleString()}`;
+}
+
+/** Delete Scenario */
+function deleteScenario(index) {
+  if (confirm("Are you sure you want to delete this scenario?")) {
+    savedScenarios.splice(index, 1);
+    displaySavedScenarios();
+  }
+}
+
+/** Export Scenarios to PDF */
+document.getElementById('export-pdf').addEventListener('click', () => {
+  if (savedScenarios.length < 1) {
+    alert("No scenarios saved to export.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 15;
+  let currentY = margin;
+
+  doc.setFontSize(16);
+  doc.text("STEPS - Scenarios Comparison", pageWidth / 2, currentY, { align: 'center' });
+  currentY += 10;
+
+  savedScenarios.forEach((scenario, index) => {
+    // Check if adding this scenario exceeds the page height
+    if (currentY + 80 > pageHeight - margin) {
+      doc.addPage();
+      currentY = margin;
+    }
+
+    doc.setFontSize(14);
+    doc.text(`Scenario ${index + 1}: ${scenario.name}`, margin, currentY);
+    currentY += 7;
+
+    doc.setFontSize(12);
+    doc.text(`Training Level: ${scenario.trainingLevel}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Delivery Method: ${scenario.deliveryMethod}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Accreditation: ${scenario.accreditation}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Location of Training: ${scenario.location}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Cohort Size: ${scenario.cohortSize}`, margin, currentY);
+    currentY += 5;
+    doc.text(`Cost per Participant: ₹${scenario.costPerParticipant.toLocaleString()}`, margin, currentY);
+    currentY += 10;
+  });
+
+  doc.save("STEPS_Scenarios_Comparison.pdf");
+});
+
+/** WTP Calculations */
+function calculateWTP(scenario) {
+  // WTP = coefficient / (-cost coefficient)
+  const wtpAttributes = {
+    TrainingLevel: scenario.trainingLevel,
+    DeliveryMethod: scenario.deliveryMethod,
+    Accreditation: scenario.accreditation,
+    Location: scenario.location,
+    CohortSize: scenario.cohortSize
+  };
+
+  // Extract coefficients
+  const attrCoefficients = {
+    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
+    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
+    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
+    Location: coefficients.Location[wtpAttributes.Location],
+    CohortSize: coefficients.CohortSize
+  };
+
+  // Calculate WTP for each attribute
+  const wtpResults = [];
+  for (let attr in attrCoefficients) {
+    const coef = attrCoefficients[attr];
+    const wtp = coef / (-coefficients.CostPerParticipant);
+    wtpResults.push({
+      attribute: attr,
+      wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
+      se: wtp * 100000 * 0.1 // 10% SE
+    });
+  }
+
+  // Store WTP data
+  wtpData.length = 0; // Clear previous data
+  wtpResults.forEach(item => {
+    wtpData.push(item);
+  });
+}
+
+/** WTP Chart with Error Bars */
+let wtpChartInstance = null;
+function renderWTPChart() {
+  const ctx = document.getElementById("wtpChartMain").getContext("2d");
+
+  if (wtpChartInstance) {
+    wtpChartInstance.destroy();
+  }
+
+  const labels = wtpData.map(item => item.attribute);
+  const values = wtpData.map(item => item.wtp);
+  const errors = wtpData.map(item => item.se); // standard errors
+
+  const dataConfig = {
+    labels: labels,
+    datasets: [{
+      label: "WTP (₹)",
+      data: values,
+      backgroundColor: values.map(v => v >= 0 ? 'rgba(39,174,96,0.6)' : 'rgba(231,76,60,0.6)'),
+      borderColor: values.map(v => v >= 0 ? 'rgba(39,174,96,1)' : 'rgba(231,76,60,1)'),
+      borderWidth: 1,
+      // Custom property to hold error values
+      error: errors
+    }]
+  };
+
+  wtpChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: dataConfig,
+    options: {
+      responsive: true,
+      scales: {
+        y: { 
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Willingness to Pay (₹)'
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: "Willingness to Pay (₹) for Programme Attributes",
+          font: { size: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            afterBody: function(context) {
+              const index = context[0].dataIndex;
+              const se = dataConfig.datasets[0].error[index];
+              return `SE: ₹${se.toFixed(2)}`;
+            }
+          }
+        }
+      }
+    },
+    plugins: [{
+      // Draw vertical error bars
+      id: 'errorbars',
+      afterDraw: chart => {
+        const {
+          ctx,
+          scales: { x, y }
+        } = chart;
+
+        chart.getDatasetMeta(0).data.forEach((bar, i) => {
+          const centerX = bar.x;
+          const value = values[i];
+          const se = errors[i];
+          if (se && typeof se === 'number') {
+            const topY = y.getPixelForValue(value + se);
+            const bottomY = y.getPixelForValue(value - se);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            // main line
+            ctx.moveTo(centerX, topY);
+            ctx.lineTo(centerX, bottomY);
+            // top cap
+            ctx.moveTo(centerX - 5, topY);
+            ctx.lineTo(centerX + 5, topY);
+            // bottom cap
+            ctx.moveTo(centerX - 5, bottomY);
+            ctx.lineTo(centerX + 5, bottomY);
+            ctx.stroke();
+            ctx.restore();
+          }
+        });
+      }
+    }]
+  });
+}
+
+/** Function to calculate WTP and prepare data */
+function calculateWTP(scenario) {
+  // WTP = coefficient / (-cost coefficient)
+  const wtpAttributes = {
+    TrainingLevel: scenario.trainingLevel,
+    DeliveryMethod: scenario.deliveryMethod,
+    Accreditation: scenario.accreditation,
+    Location: scenario.location,
+    CohortSize: scenario.cohortSize
+  };
+
+  // Extract coefficients
+  const attrCoefficients = {
+    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
+    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
+    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
+    Location: coefficients.Location[wtpAttributes.Location],
+    CohortSize: coefficients.CohortSize
+  };
+
+  // Calculate WTP for each attribute
+  const wtpResults = [];
+  for (let attr in attrCoefficients) {
+    const coef = attrCoefficients[attr];
+    const wtp = coef / (-coefficients.CostPerParticipant);
+    wtpResults.push({
+      attribute: attr,
+      wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
+      se: wtp * 100000 * 0.1 // 10% SE
+    });
+  }
+
+  // Store WTP data
+  wtpData.length = 0; // Clear previous data
+  wtpResults.forEach(item => {
+    wtpData.push(item);
+  });
+}
+
+/** Cost-Benefit Analysis Functionality */
+function renderCBAChart() {
+  // The CBA chart is already updated during the analysis
+}
+
+/** WTP Calculations upon viewing results */
+function calculateWTP(scenario) {
+  // WTP = coefficient / (-cost coefficient)
+  const wtpAttributes = {
+    TrainingLevel: scenario.trainingLevel,
+    DeliveryMethod: scenario.deliveryMethod,
+    Accreditation: scenario.accreditation,
+    Location: scenario.location,
+    CohortSize: scenario.cohortSize
+  };
+
+  // Extract coefficients
+  const attrCoefficients = {
+    TrainingLevel: coefficients.TrainingLevel[wtpAttributes.TrainingLevel],
+    DeliveryMethod: coefficients.DeliveryMethod[wtpAttributes.DeliveryMethod],
+    Accreditation: coefficients.Accreditation[wtpAttributes.Accreditation],
+    Location: coefficients.Location[wtpAttributes.Location],
+    CohortSize: coefficients.CohortSize
+  };
+
+  // Calculate WTP for each attribute
+  const wtpResults = [];
+  for (let attr in attrCoefficients) {
+    const coef = attrCoefficients[attr];
+    const wtp = coef / (-coefficients.CostPerParticipant);
+    wtpResults.push({
+      attribute: attr,
+      wtp: wtp * 100000, // Scale to ₹100,000 for better visualization
+      se: wtp * 100000 * 0.1 // 10% SE
+    });
+  }
+
+  // Store WTP data
+  wtpData.length = 0; // Clear previous data
+  wtpResults.forEach(item => {
+    wtpData.push(item);
+  });
+}
+
+/** Function to handle WTP calculations and rendering */
+function calculateWTPAndRender(scenario) {
+  calculateWTP(scenario);
+  renderWTPChart();
+}
+
+/** Willingness to Pay Tab Button */
+document.getElementById('view-results').addEventListener('click', () => {
+  // Previous analysis code...
+
+  // After updating CBA, calculate WTP
+  calculateWTPAndRender({
+    trainingLevel,
+    deliveryMethod,
+    accreditation,
+    location,
+    cohortSize: cohortSizeVal,
+    costPerParticipant: costPerParticipantVal
+  });
+});
