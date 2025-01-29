@@ -11,244 +11,244 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>STEPS Decision Aid Tool</h1>
-  </header>
+  <div class="container">
+    <header>
+      <h1>STEPS Decision Aid Tool</h1>
+    </header>
 
-  <div class="tabs">
-    <button class="tablink active" onclick="openTab('introTab', this)">Introduction</button>
-    <button class="tablink" onclick="openTab('instructionsTab', this)">Instructions</button>
-    <button class="tablink" onclick="openTab('attributesTab', this)">Attributes</button>
-    <button class="tablink" onclick="openTab('inputsTab', this)">Inputs</button>
-    <button class="tablink" onclick="openTab('uptakeTab', this)">Predicted Uptake</button>
-    <button class="tablink" onclick="openTab('wtpTab', this)">Willingness to Pay</button>
-    <button class="tablink" onclick="openTab('cbaTab', this)">Costs & Benefits</button>
-    <button class="tablink" onclick="openTab('scenariosTab', this)">Scenarios</button>
-  </div>
+    <div class="tabs">
+      <button class="tablink active" onclick="openTab('introTab', this)">Introduction</button>
+      <button class="tablink" onclick="openTab('instructionsTab', this)">Instructions</button>
+      <button class="tablink" onclick="openTab('attributesTab', this)">Attributes</button>
+      <button class="tablink" onclick="openTab('inputsTab', this)">Inputs</button>
+      <button class="tablink" onclick="openTab('uptakeTab', this)">Predicted Uptake</button>
+      <button class="tablink" onclick="openTab('wtpTab', this)">Willingness to Pay</button>
+      <button class="tablink" onclick="openTab('cbaTab', this)">Costs & Benefits</button>
+      <button class="tablink" onclick="openTab('scenariosTab', this)">Scenarios</button>
+    </div>
 
-  <!-- Introduction Tab -->
-  <div id="introTab" class="tabcontent" style="display: block;">
-    <div class="intro-box">
+    <!-- Introduction Tab -->
+    <div id="introTab" class="tabcontent" style="display: block;">
+      <div class="intro-box">
+        <p>
+          Scaling Field Epidemiology Training Programs (FETP) in India is crucial for enhancing public health surveillance, outbreak response, and data-driven decision-making. This tool utilizes educated guess estimates based on an error component logit model to predict program uptake probabilities and conduct cost-benefit analyses, enabling informed decisions on program scaling based on key attributes.
+        </p>
+        <p>Use the tabs above to navigate:</p>
+        <ul>
+          <li><strong>Instructions</strong> – Guidance for each tool feature.</li>
+          <li><strong>Attributes</strong> – Detailed descriptions of the tool attributes.</li>
+          <li><strong>Inputs</strong> – Configure your training scenario’s parameters.</li>
+          <li><strong>Predicted Uptake</strong> – View charts predicting training uptake.</li>
+          <li><strong>Willingness to Pay</strong> – Analyze the monetary value of each attribute.</li>
+          <li><strong>Costs & Benefits</strong> – Analyze the financial implications of scenarios.</li>
+          <li><strong>Scenarios</strong> – Save, compare, or export multiple training configurations.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Instructions Tab -->
+    <div id="instructionsTab" class="tabcontent">
+      <h2>How to Use This Tool</h2>
+      <ol>
+        <li>Review the <strong>Attributes</strong> to understand the key factors influencing training program scaling.</li>
+        <li>Navigate to the <strong>Inputs</strong> tab to configure your desired training scenario by selecting different attribute levels.</li>
+        <li>After setting your inputs, switch to the <strong>Predicted Uptake</strong> tab to view the predicted training uptake based on your configuration.</li>
+        <li>Check the <strong>Willingness to Pay</strong> tab to analyze the monetary value of each attribute.</li>
+        <li>Proceed to the <strong>Costs & Benefits</strong> tab to analyze the financial implications of your scenario.</li>
+        <li>Use the <strong>Scenarios</strong> tab to save your configurations, compare multiple scenarios, or export your results to PDF for reporting.</li>
+      </ol>
+    </div>
+
+    <!-- Attributes Tab -->
+    <div id="attributesTab" class="tabcontent">
+      <h2>Tool Attributes</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Attribute</th>
+            <th>Levels</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Training Level</td>
+            <td>Frontline, Intermediate, Advanced</td>
+            <td>The complexity and depth of the training program.</td>
+          </tr>
+          <tr>
+            <td>Delivery Method</td>
+            <td>In-Person, Online, Hybrid</td>
+            <td>The mode through which training is delivered to participants.</td>
+          </tr>
+          <tr>
+            <td>Accreditation</td>
+            <td>National, International, None</td>
+            <td>The formal recognition of the training program by authoritative bodies.</td>
+          </tr>
+          <tr>
+            <td>Location of Training</td>
+            <td>District-Level, State-Level, Regional Centers</td>
+            <td>The geographical setting where training is conducted.</td>
+          </tr>
+          <tr>
+            <td>Cohort Size</td>
+            <td>Small (20), Medium (50), Large (100)</td>
+            <td>The number of participants in each training batch, based on WHO recommendations.</td>
+          </tr>
+          <tr>
+            <td>Cost per Participant</td>
+            <td>Continuous (₹100,000 - ₹600,000)</td>
+            <td>The financial investment required per trainee.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Inputs Tab -->
+    <div id="inputsTab" class="tabcontent">
+      <h2>Configure Training Scenario</h2>
       <p>
-        Scaling Field Epidemiology Training Programs (FETP) in India is crucial for enhancing public health surveillance, outbreak response, and data-driven decision-making. This tool utilizes educated guess estimates based on an error component logit model to predict program uptake probabilities and conduct cost-benefit analyses, enabling informed decisions on program scaling based on key attributes.
+        Adjust the parameters below to configure your desired training scenario. Once configured, click “View Results” to see the predicted uptake and cost-benefit analysis.
       </p>
-      <p>Use the tabs above to navigate:</p>
-      <ul>
-        <li><strong>Instructions</strong> – Guidance for each tool feature.</li>
-        <li><strong>Attributes</strong> – Detailed descriptions of the tool attributes.</li>
-        <li><strong>Inputs</strong> – Configure your training scenario’s parameters.</li>
-        <li><strong>Predicted Uptake</strong> – View charts predicting training uptake.</li>
-        <li><strong>Willingness to Pay</strong> – Analyze the monetary value of each attribute.</li>
-        <li><strong>Costs & Benefits</strong> – Analyze the financial implications of scenarios.</li>
-        <li><strong>Scenarios</strong> – Save, compare, or export multiple training configurations.</li>
-      </ul>
+      <form id="scenario-form">
+        <div class="form-group">
+          <label for="training-level">Training Level:</label>
+          <select class="form-control" id="training-level" required>
+            <option value="Frontline">Frontline</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="delivery-method">Delivery Method:</label>
+          <select class="form-control" id="delivery-method" required>
+            <option value="In-Person">In-Person</option>
+            <option value="Online">Online</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="accreditation">Accreditation:</label>
+          <select class="form-control" id="accreditation" required>
+            <option value="National">National</option>
+            <option value="International">International</option>
+            <option value="None">None</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="location">Location of Training:</label>
+          <select class="form-control" id="location" required>
+            <option value="District">District-Level</option>
+            <option value="State">State-Level</option>
+            <option value="Regional">Regional Centers</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cohort-size">Cohort Size:</label>
+          <input type="range" class="form-control-range" id="cohort-size" min="20" max="100" step="30" value="50">
+          <small id="cohort-size-value">50</small>
+        </div>
+        <div class="form-group">
+          <label for="cost-per-participant">Cost per Participant (₹):</label>
+          <input type="range" class="form-control-range" id="cost-per-participant" min="100000" max="600000" step="50000" value="300000">
+          <small id="cost-per-participant-value">₹300,000</small>
+        </div>
+        <button type="button" class="btn btn-primary" id="view-results">View Results</button>
+      </form>
     </div>
-  </div>
 
-  <!-- Instructions Tab -->
-  <div id="instructionsTab" class="tabcontent">
-    <h2>How to Use This Tool</h2>
-    <ol>
-      <li>Review the <strong>Attributes</strong> to understand the key factors influencing training program scaling.</li>
-      <li>Navigate to the <strong>Inputs</strong> tab to configure your desired training scenario by selecting different attribute levels.</li>
-      <li>After setting your inputs, switch to the <strong>Predicted Uptake</strong> tab to view the predicted training uptake based on your configuration.</li>
-      <li>Check the <strong>Willingness to Pay</strong> tab to analyze the monetary value of each attribute.</li>
-      <li>Proceed to the <strong>Costs & Benefits</strong> tab to analyze the financial implications of your scenario.</li>
-      <li>Use the <strong>Scenarios</strong> tab to save your configurations, compare multiple scenarios, or export your results to PDF for reporting.</li>
-    </ol>
-  </div>
-
-  <!-- Attributes Tab -->
-  <div id="attributesTab" class="tabcontent">
-    <h2>Tool Attributes</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Attribute</th>
-          <th>Levels</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Training Level</td>
-          <td>Frontline, Intermediate, Advanced</td>
-          <td>The complexity and depth of the training program.</td>
-        </tr>
-        <tr>
-          <td>Delivery Method</td>
-          <td>In-Person, Online, Hybrid</td>
-          <td>The mode through which training is delivered to participants.</td>
-        </tr>
-        <tr>
-          <td>Accreditation</td>
-          <td>National, International, None</td>
-          <td>The formal recognition of the training program by authoritative bodies.</td>
-        </tr>
-        <tr>
-          <td>Location of Training</td>
-          <td>District-Level, State-Level, Regional Centers</td>
-          <td>The geographical setting where training is conducted.</td>
-        </tr>
-        <tr>
-          <td>Cohort Size</td>
-          <td>Small (20), Medium (50), Large (100)</td>
-          <td>The number of participants in each training batch, based on WHO recommendations.</td>
-        </tr>
-        <tr>
-          <td>Cost per Participant</td>
-          <td>Continuous (₹100,000 - ₹600,000)</td>
-          <td>The financial investment required per trainee.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Inputs Tab -->
-  <div id="inputsTab" class="tabcontent">
-    <h2>Configure Training Scenario</h2>
-    <p>
-      Adjust the parameters below to configure your desired training scenario. Once configured, click “View Results” to see the predicted uptake and cost-benefit analysis.
-    </p>
-    <form id="scenario-form">
-      <div class="form-group">
-        <label for="training-level">Training Level:</label>
-        <select class="form-control" id="training-level" required>
-          <option value="Frontline">Frontline</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="delivery-method">Delivery Method:</label>
-        <select class="form-control" id="delivery-method" required>
-          <option value="In-Person">In-Person</option>
-          <option value="Online">Online</option>
-          <option value="Hybrid">Hybrid</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="accreditation">Accreditation:</label>
-        <select class="form-control" id="accreditation" required>
-          <option value="National">National</option>
-          <option value="International">International</option>
-          <option value="None">None</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="location">Location of Training:</label>
-        <select class="form-control" id="location" required>
-          <option value="District">District-Level</option>
-          <option value="State">State-Level</option>
-          <option value="Regional">Regional Centers</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="cohort-size">Cohort Size:</label>
-        <input type="range" class="form-control-range" id="cohort-size" min="20" max="100" step="30" value="50">
-        <small id="cohort-size-value">50</small>
-      </div>
-      <div class="form-group">
-        <label for="cost-per-participant">Cost per Participant (₹):</label>
-        <input type="range" class="form-control-range" id="cost-per-participant" min="100000" max="600000" step="50000" value="300000">
-        <small id="cost-per-participant-value">₹300,000</small>
-      </div>
-      <button type="button" class="btn btn-primary" id="view-results">View Results</button>
-    </form>
-  </div>
-
-  <!-- Predicted Uptake Tab -->
-  <div id="uptakeTab" class="tabcontent">
-    <h2>Predicted Training Uptake</h2>
-    <div id="uptake-content">
-      <p>Based on your configured scenario, the predicted uptake of the training program is displayed below.</p>
-      <canvas id="uptakeChart" width="400" height="200"></canvas>
-    </div>
-  </div>
-
-  <!-- Willingness to Pay (WTP) Tab -->
-  <div id="wtpTab" class="tabcontent">
-    <h2>Willingness to Pay (WTP) Results</h2>
-    <p>
-      The willingness-to-pay (WTP) for each programme attribute is calculated by taking the ratio 
-      of the attribute’s coefficient to the negative of the cost coefficient. This metric 
-      quantifies the monetary value respondents place on each programme attribute, holding other 
-      factors constant.
-    </p>
-    <p>
-      For example, among the programme types, community engagement is the most highly valued, 
-      with a WTP of ₹14,470 (SE=3,310, p &lt; 0.001). This shows older adults are willing to pay 
-      an additional ₹14,470 for community-based programmes, compared to the reference peer 
-      support scenario.
-    </p>
-    <div class="buttons-row">
-      <button onclick="renderWTPChart()">Show WTP Plots</button>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-box">
-        <h3>WTP (₹) with Error Bars</h3>
-        <canvas id="wtpChartMain"></canvas>
+    <!-- Predicted Uptake Tab -->
+    <div id="uptakeTab" class="tabcontent">
+      <h2>Predicted Training Uptake</h2>
+      <div id="uptake-content">
+        <p>Based on your configured scenario, the predicted uptake of the training program is displayed below.</p>
+        <canvas id="uptakeChart" width="400" height="200"></canvas>
       </div>
     </div>
-  </div>
 
-  <!-- Costs & Benefits Tab -->
-  <div id="cbaTab" class="tabcontent">
-    <h2>Costs &amp; Benefits</h2>
-    <div id="cba-content">
-      <h3>Cost Components</h3>
-      <ul>
-        <li><strong>Advertisement:</strong> ₹34,990.60 (Includes advertisements in local media and online platforms)</li>
-        <li><strong>Training Materials:</strong> ₹50,000 (Includes manuals, digital resources, and equipment)</li>
-        <li><strong>Trainer Salaries:</strong> ₹150,000 (Compensation for trainers conducting sessions)</li>
-        <li><strong>Venue Hire:</strong> ₹40,000 (Cost of renting training facilities)</li>
-        <li><strong>Participant Support:</strong> ₹30,000 (Includes transportation and accommodation for participants, if necessary)</li>
-        <li><strong>Administrative Costs:</strong> ₹25,000 (Includes project management and administrative support)</li>
-        <li><strong>Material and Logistical Support:</strong> ₹50,000 (Purchase of technology, equipment, training materials, and software licenses)</li>
-        <li><strong>Training of Trainers:</strong> ₹60,000 (Costs for upskilling trainers and mentors)</li>
-        <li><strong>Opportunity Costs:</strong> ₹80,000 (Lost work hours and backfill costs for participants)</li>
-        <li><strong>System Adjustments:</strong> ₹40,000 (Costs for adjusting current systems and protocols)</li>
-        <li><strong>Program Monitoring & Evaluation:</strong> ₹70,000 (Routine M&E and impact evaluation costs)</li>
-      </ul>
-      <h3>Benefits Measurement</h3>
+    <!-- Willingness to Pay (WTP) Tab -->
+    <div id="wtpTab" class="tabcontent">
+      <h2>Willingness to Pay (WTP) Results</h2>
       <p>
-        Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs). Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response capabilities.
+        The willingness-to-pay (WTP) for each programme attribute is calculated by taking the ratio 
+        of the attribute’s coefficient to the negative of the cost coefficient. This metric 
+        quantifies the monetary value respondents place on each programme attribute, holding other 
+        factors constant.
       </p>
-      <canvas id="cbaChart" width="400" height="200"></canvas>
-    </div>
-  </div>
-
-  <!-- Scenarios Tab -->
-  <div id="scenariosTab" class="tabcontent">
-    <h2>Saved Scenarios</h2>
-    <p>
-      Save your scenario from <strong>Inputs</strong> and compare or export multiple configurations, 
-      including cost-benefit charts, to PDF.
-    </p>
-    <form id="save-scenario-form">
-      <div class="form-group">
-        <label for="scenario-name">Scenario Name:</label>
-        <input type="text" class="form-control" id="scenario-name" placeholder="Enter a name for your scenario">
+      <p>
+        For example, among the programme types, community engagement is the most highly valued, 
+        with a WTP of ₹14,470 (SE=3,310, p &lt; 0.001). This shows older adults are willing to pay 
+        an additional ₹14,470 for community-based programmes, compared to the reference peer 
+        support scenario.
+      </p>
+      <div class="buttons-row">
+        <button class="btn btn-success" onclick="renderWTPChart()">Show WTP Plots</button>
       </div>
-      <button type="button" class="btn btn-info" id="save-scenario">Save Scenario</button>
-    </form>
-    <hr>
-    <h4>Saved Scenarios:</h4>
-    <ul class="list-group" id="saved-scenarios-list">
-      <!-- Saved scenarios will appear here -->
-    </ul>
-    <hr>
-    <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
-  </div>
+      <div class="chart-grid">
+        <div class="chart-box">
+          <h3>WTP (₹) with Error Bars</h3>
+          <canvas id="wtpChartMain"></canvas>
+        </div>
+      </div>
+    </div>
 
-  <footer>
-    <p>
-      &copy; 2025 STEPS. All Rights Reserved. <br/>
-      Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
-    </p>
-  </footer>
-</div>
-<script src="script.js"></script>
+    <!-- Costs & Benefits Tab -->
+    <div id="cbaTab" class="tabcontent">
+      <h2>Costs &amp; Benefits</h2>
+      <div id="cba-content">
+        <h3>Cost Components</h3>
+        <ul>
+          <li><strong>Advertisement:</strong> ₹34,990.60 (Includes advertisements in local media and online platforms)</li>
+          <li><strong>Training Materials:</strong> ₹50,000 (Includes manuals, digital resources, and equipment)</li>
+          <li><strong>Trainer Salaries:</strong> ₹150,000 (Compensation for trainers conducting sessions)</li>
+          <li><strong>Venue Hire:</strong> ₹40,000 (Cost of renting training facilities)</li>
+          <li><strong>Participant Support:</strong> ₹30,000 (Includes transportation and accommodation for participants, if necessary)</li>
+          <li><strong>Administrative Costs:</strong> ₹25,000 (Includes project management and administrative support)</li>
+          <li><strong>Material and Logistical Support:</strong> ₹50,000 (Purchase of technology, equipment, training materials, and software licenses)</li>
+          <li><strong>Training of Trainers:</strong> ₹60,000 (Costs for upskilling trainers and mentors)</li>
+          <li><strong>Opportunity Costs:</strong> ₹80,000 (Lost work hours and backfill costs for participants)</li>
+          <li><strong>System Adjustments:</strong> ₹40,000 (Costs for adjusting current systems and protocols)</li>
+          <li><strong>Program Monitoring & Evaluation:</strong> ₹70,000 (Routine M&E and impact evaluation costs)</li>
+        </ul>
+        <h3>Benefits Measurement</h3>
+        <p>
+          Benefits are measured in terms of improved public health outcomes, quantified as Quality-Adjusted Life Years (QALYs). Each participant gains an estimated 0.05 QALYs through enhanced epidemiological skills, leading to better disease surveillance and outbreak response capabilities.
+        </p>
+        <canvas id="cbaChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Scenarios Tab -->
+    <div id="scenariosTab" class="tabcontent">
+      <h2>Saved Scenarios</h2>
+      <p>
+        Save your scenario from <strong>Inputs</strong> and compare or export multiple configurations, 
+        including cost-benefit charts, to PDF.
+      </p>
+      <form id="save-scenario-form">
+        <div class="form-group">
+          <label for="scenario-name">Scenario Name:</label>
+          <input type="text" class="form-control" id="scenario-name" placeholder="Enter a name for your scenario">
+        </div>
+        <button type="button" class="btn btn-info" id="save-scenario">Save Scenario</button>
+      </form>
+      <hr>
+      <h4>Saved Scenarios:</h4>
+      <ul class="list-group" id="saved-scenarios-list">
+        <!-- Saved scenarios will appear here -->
+      </ul>
+      <hr>
+      <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
+    </div>
+
+    <footer>
+      <p>
+        &copy; 2025 STEPS. All Rights Reserved. <br/>
+        Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
+      </p>
+    </footer>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
