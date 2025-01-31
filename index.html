@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>STEPS Decision Aid Tool</title>
   <link rel="stylesheet" href="styles.css"/>
+  <!-- Font Awesome for Icons -->
+  <link 
+    rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
+    integrity="sha512-AAmSnT0pZ5G1tSBQf6CWKePsyzaW+WYejEpJ8OrIPUtGm2E4Qp58Xdmig2N3gC3p8KGkK8bXF+0AAlcSXkPd5g==" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer"
+/>
   <!-- Chart.js Library -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- jsPDF Library -->
@@ -21,7 +29,7 @@
       <button class="tablink" onclick="openTab('instructionsTab', this)">Instructions</button>
       <button class="tablink" onclick="openTab('attributesTab', this)">Attributes</button>
       <button class="tablink" onclick="openTab('inputsTab', this)">Inputs</button>
-      <button class="tablink" onclick="openTab('uptakeTab', this)">Predicted Uptake</button>
+      <button class="tablink" onclick="openTab('uptakeTab', this)">Predicted Program Uptake</button>
       <button class="tablink" onclick="openTab('wtpTab', this)">Willingness to Pay</button>
       <button class="tablink" onclick="openTab('cbaTab', this)">Costs & Benefits</button>
       <button class="tablink" onclick="openTab('scenariosTab', this)">Scenarios</button>
@@ -31,17 +39,19 @@
     <div id="introTab" class="tabcontent" style="display: block;">
       <div class="intro-box">
         <p>
-          Scaling Field Epidemiology Training Programs (FETP) in India is crucial for improving public health surveillance, outbreak response, and data-driven decision-making. This tool uses an error component logit model to predict uptake probabilities and perform cost-benefit analyses, empowering you to make data-informed decisions on program scaling.
+          <strong>STEPS (Scalable Training Estimation and Planning System)</strong> is designed to help decision makers 
+          plan and scale Field Epidemiology Training Programs (FETP) in India. This tool predicts how many participants 
+          are likely to join a program (program uptake) and conducts cost-benefit analyses to support data-driven decisions.
         </p>
-        <p>Use the tabs above to navigate:</p>
+        <p>Use the tabs above to navigate through the tool's features:</p>
         <ul>
-          <li><strong>Instructions</strong> – Guidance for using the tool.</li>
-          <li><strong>Attributes</strong> – Overview of the training attributes considered in the analysis.</li>
-          <li><strong>Inputs</strong> – Configure your scenario’s parameters.</li>
-          <li><strong>Predicted Uptake</strong> – Check real-time predicted training uptake.</li>
-          <li><strong>Willingness to Pay</strong> – Analyze the monetary value of each attribute.</li>
-          <li><strong>Costs & Benefits</strong> – View detailed cost and benefit analysis for your configuration.</li>
-          <li><strong>Scenarios</strong> – Save multiple scenarios, compare them, or export to PDF.</li>
+          <li><strong>Instructions</strong> – A brief guide to using this decision aid.</li>
+          <li><strong>Attributes</strong> – An overview of key training attributes and levels.</li>
+          <li><strong>Inputs</strong> – Configure your FETP scenario's parameters.</li>
+          <li><strong>Predicted Program Uptake</strong> – View real-time estimates of likely participation.</li>
+          <li><strong>Willingness to Pay</strong> – Examine how much more or less participants value each attribute.</li>
+          <li><strong>Costs & Benefits</strong> – Review financial implications, costs, and net benefits.</li>
+          <li><strong>Scenarios</strong> – Save, compare, or export your scenario analyses.</li>
         </ul>
       </div>
     </div>
@@ -50,19 +60,19 @@
     <div id="instructionsTab" class="tabcontent">
       <h2>How to Use This Tool</h2>
       <ol>
-        <li>Review <strong>Attributes</strong> to understand available training attributes and levels.</li>
-        <li>Visit <strong>Inputs</strong> to configure your scenario using radio buttons and sliders.</li>
-        <li>Click <strong>Calculate &amp; View Results</strong> to compute predicted uptake and cost-benefit analysis.</li>
-        <li>Check <strong>Predicted Uptake</strong> to see the chart of training uptake.</li>
-        <li>Open <strong>Willingness to Pay</strong> to view bar charts with error bars for each attribute.</li>
-        <li>Examine <strong>Costs &amp; Benefits</strong> for financial breakdowns and net benefits.</li>
-        <li>Use <strong>Scenarios</strong> to save, load, compare, or export your configurations.</li>
+        <li>Check <strong>Attributes</strong> for a clear overview of training attributes and levels.</li>
+        <li>Visit <strong>Inputs</strong> to select training parameters and budget constraints.</li>
+        <li>Click <strong>Predict Program Uptake</strong> to calculate and display results.</li>
+        <li>Open <strong>Predicted Program Uptake</strong> to see a live chart of participation estimates.</li>
+        <li>Explore <strong>Willingness to Pay</strong> for attribute-based monetary valuations.</li>
+        <li>Review <strong>Costs &amp; Benefits</strong> for a breakdown of financial returns.</li>
+        <li>Use <strong>Scenarios</strong> to save configurations, compare them, or export as a PDF report.</li>
       </ol>
     </div>
 
     <!-- Attributes Tab -->
     <div id="attributesTab" class="tabcontent">
-      <h2>Tool Attributes</h2>
+      <h2>Attributes <i class="fas fa-info-circle"></i></h2>
       <table class="table">
         <thead>
           <tr>
@@ -73,33 +83,33 @@
         </thead>
         <tbody>
           <tr>
-            <td>Training Level</td>
+            <td><i class="fas fa-chalkboard-teacher"></i> Training Level</td>
             <td>Frontline, Intermediate, Advanced</td>
             <td>Complexity and depth of the training curriculum.</td>
           </tr>
           <tr>
-            <td>Delivery Method</td>
+            <td><i class="fas fa-laptop-house"></i> Delivery Method</td>
             <td>In-Person, Online, Hybrid</td>
             <td>Mode of instruction and participant engagement.</td>
           </tr>
           <tr>
-            <td>Accreditation</td>
+            <td><i class="fas fa-certificate"></i> Accreditation</td>
             <td>National, International, None</td>
-            <td>Formal recognition of program quality.</td>
+            <td>Formal recognition of program quality or standard.</td>
           </tr>
           <tr>
-            <td>Location of Training</td>
+            <td><i class="fas fa-map-marker-alt"></i> Location of Training</td>
             <td>District-Level, State-Level, Regional Centers</td>
             <td>Geographical location where training is conducted.</td>
           </tr>
           <tr>
-            <td>Cohort Size</td>
+            <td><i class="fas fa-users"></i> Cohort Size</td>
             <td>Small (500), Medium (1000), Large (2000)</td>
             <td>Number of participants per training batch.</td>
           </tr>
           <tr>
-            <td>Cost per Participant</td>
-            <td>Continuous (₹100,000 - ₹600,000)</td>
+            <td><i class="fas fa-rupee-sign"></i> Cost per Participant</td>
+            <td>Continuous (₹100,000 – ₹600,000)</td>
             <td>Financial investment required per trainee.</td>
           </tr>
         </tbody>
@@ -167,7 +177,7 @@
           </div>
         </div>
 
-        <!-- Location -->
+        <!-- Location of Training -->
         <div class="form-group">
           <label>Location of Training:</label>
           <div class="radio-group">
@@ -188,7 +198,7 @@
 
         <!-- Cohort Size -->
         <div class="form-group">
-          <label for="cohort-size">Cohort Size (500-2000):</label>
+          <label for="cohort-size">Cohort Size (500–2000):</label>
           <input 
             type="range" 
             class="form-control-range" 
@@ -217,30 +227,28 @@
         </div>
 
         <button type="button" class="btn btn-primary" id="view-results">
-          Calculate & View Results
+          Predict Program Uptake
         </button>
       </form>
     </div>
 
-    <!-- Predicted Uptake Tab -->
+    <!-- Predicted Program Uptake Tab -->
     <div id="uptakeTab" class="tabcontent">
-      <h2>Predicted Training Uptake</h2>
+      <h2>Predicted Program Uptake</h2>
       <div id="uptake-content">
-        <p>Results will appear here after calculation.</p>
+        <p>Your predicted program uptake will display here once calculated.</p>
         <canvas id="uptakeChart" width="400" height="200"></canvas>
       </div>
     </div>
 
     <!-- WTP Tab -->
     <div id="wtpTab" class="tabcontent">
-      <h2>Willingness to Pay (WTP)</h2>
+      <h2>Willingness to Pay</h2>
       <p>
-        The chart below displays how much more (or less) participants are willing to pay for each attribute, 
-        relative to a benchmark scenario. Error bars indicate statistical uncertainty (±10%).
+        The chart below shows how much participants value each attribute compared 
+        to a baseline scenario. Positive bars indicate higher willingness to pay, 
+        while negative bars mean they prefer the baseline.
       </p>
-      <div class="buttons-row">
-        <button class="btn btn-success" onclick="renderWTPChart()">Show WTP Plot</button>
-      </div>
       <div class="chart-grid">
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
@@ -250,9 +258,9 @@
 
     <!-- Costs & Benefits Tab -->
     <div id="cbaTab" class="tabcontent">
-      <h2>Costs & Benefits</h2>
+      <h2>Costs &amp; Benefits</h2>
       <div id="cba-content">
-        <p>Financial breakdown and net benefits appear here.</p>
+        <p>A summary of total costs, total benefits, and net benefits will display here.</p>
         <canvas id="cbaChart" width="400" height="200"></canvas>
       </div>
     </div>
@@ -261,7 +269,7 @@
     <div id="scenariosTab" class="tabcontent">
       <h2>Saved Scenarios</h2>
       <p>
-        Save the current scenario, then compare or export multiple configurations to PDF.
+        Save the current scenario, then manage multiple scenarios below, or export them to PDF.
       </p>
       <form id="save-scenario-form">
         <div class="form-group">
@@ -270,18 +278,22 @@
             type="text" 
             class="form-control" 
             id="scenario-name" 
-            placeholder="Enter scenario name"
+            placeholder="Enter scenario name here"
           >
         </div>
-        <button type="button" class="btn btn-info" id="save-scenario">Save Scenario</button>
+        <button type="button" class="btn btn-info" id="save-scenario">
+          Save Scenario
+        </button>
       </form>
       <hr>
       <h4>Saved Scenarios:</h4>
       <ul class="list-group" id="saved-scenarios-list">
-        <!-- Appended items go here -->
+        <!-- Appended scenario items go here -->
       </ul>
-      <hr/>
-      <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
+      <hr>
+      <button class="btn btn-secondary" id="export-pdf">
+        Export Scenarios to PDF
+      </button>
     </div>
 
     <footer>
