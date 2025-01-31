@@ -2,7 +2,7 @@
  * SCRIPT.JS
  * 1) Tab switching (simplified for guaranteed functionality)
  * 2) Range slider label updates
- * 3) Realistic DCE coefficients
+ * 3) DCE coefficients
  * 4) Predicted Program Uptake & Cost-Benefit
  * 5) WTP chart
  * 6) Scenario saving & PDF export
