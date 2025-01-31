@@ -31,17 +31,17 @@
     <div id="introTab" class="tabcontent" style="display: block;">
       <div class="intro-box">
         <p>
-          Scaling Field Epidemiology Training Programs (FETP) in India is crucial for improving public health surveillance, outbreak response, and decision-making. This tool uses estimates based on an error component logit model to predict program uptake probabilities and conduct cost-benefit analyses, allowing informed decisions on program scaling based on key attributes.
+          Scaling Field Epidemiology Training Programs (FETP) in India is crucial for enhancing public health surveillance, outbreak response, and data-driven decision-making. This tool uses an error component logit model to predict uptake probabilities and perform cost-benefit analyses, empowering you to make data-informed decisions on program scaling.
         </p>
         <p>Use the tabs above to navigate:</p>
         <ul>
-          <li><strong>Instructions</strong> – Guidance for each tool feature.</li>
-          <li><strong>Attributes</strong> – Detailed descriptions of the tool attributes.</li>
-          <li><strong>Inputs</strong> – Configure your training scenario’s parameters.</li>
-          <li><strong>Predicted Uptake</strong> – View charts predicting training uptake.</li>
+          <li><strong>Instructions</strong> – Guidance for using the tool.</li>
+          <li><strong>Attributes</strong> – Overview of the training attributes considered in the analysis.</li>
+          <li><strong>Inputs</strong> – Configure your scenario’s parameters.</li>
+          <li><strong>Predicted Uptake</strong> – Check real-time predicted training uptake.</li>
           <li><strong>Willingness to Pay</strong> – Analyze the monetary value of each attribute.</li>
-          <li><strong>Costs & Benefits</strong> – Analyze financial implications using realistic cost and benefit data.</li>
-          <li><strong>Scenarios</strong> – Save, compare, or export multiple configurations.</li>
+          <li><strong>Costs & Benefits</strong> – View detailed cost and benefit analysis for your configuration.</li>
+          <li><strong>Scenarios</strong> – Save multiple scenarios, compare them, or export to PDF.</li>
         </ul>
       </div>
     </div>
@@ -50,13 +50,13 @@
     <div id="instructionsTab" class="tabcontent">
       <h2>How to Use This Tool</h2>
       <ol>
-        <li>Review the <strong>Attributes</strong> tab to understand key factors influencing training program scaling.</li>
-        <li>Go to the <strong>Inputs</strong> tab to configure your training scenario by selecting various attribute levels and adjusting the sliders.</li>
-        <li>Click “Calculate &amp; View Results” to generate predicted uptake and a cost-benefit analysis.</li>
-        <li>Visit the <strong>Predicted Uptake</strong> tab to see the updated chart.</li>
-        <li>Check the <strong>Willingness to Pay</strong> tab for attribute-specific valuations.</li>
-        <li>Use the <strong>Costs &amp; Benefits</strong> tab for a detailed financial breakdown.</li>
-        <li>Go to the <strong>Scenarios</strong> tab to save configurations, compare them, or export results to PDF.</li>
+        <li>Review <strong>Attributes</strong> to understand available training attributes and levels.</li>
+        <li>Visit <strong>Inputs</strong> to configure your scenario using radio buttons and sliders.</li>
+        <li>Click <strong>Calculate &amp; View Results</strong> to compute predicted uptake and cost-benefit analysis.</li>
+        <li>Check <strong>Predicted Uptake</strong> to see the chart of training uptake.</li>
+        <li>Open <strong>Willingness to Pay</strong> to view bar charts with error bars for each attribute.</li>
+        <li>Examine <strong>Costs &amp; Benefits</strong> for financial breakdowns and net benefits.</li>
+        <li>Use <strong>Scenarios</strong> to save, load, compare, or export your configurations.</li>
       </ol>
     </div>
 
@@ -75,27 +75,27 @@
           <tr>
             <td>Training Level</td>
             <td>Frontline, Intermediate, Advanced</td>
-            <td>Complexity and depth of the training program.</td>
+            <td>Complexity and depth of the training curriculum.</td>
           </tr>
           <tr>
             <td>Delivery Method</td>
             <td>In-Person, Online, Hybrid</td>
-            <td>Mode of instruction delivery.</td>
+            <td>Mode of instruction and participant engagement.</td>
           </tr>
           <tr>
             <td>Accreditation</td>
             <td>National, International, None</td>
-            <td>Formal recognition of the training program.</td>
+            <td>Formal recognition of program quality.</td>
           </tr>
           <tr>
             <td>Location of Training</td>
             <td>District-Level, State-Level, Regional Centers</td>
-            <td>Geographical setting for the training.</td>
+            <td>Geographical location where training is conducted.</td>
           </tr>
           <tr>
             <td>Cohort Size</td>
             <td>Small (500), Medium (1000), Large (2000)</td>
-            <td>Number of participants in each training batch.</td>
+            <td>Number of participants per training batch.</td>
           </tr>
           <tr>
             <td>Cost per Participant</td>
@@ -108,8 +108,7 @@
 
     <!-- Inputs Tab -->
     <div id="inputsTab" class="tabcontent">
-      <h2>Configure Training Scenario</h2>
-      <p>Adjust the parameters below. Then click “Calculate &amp; View Results” to see predicted uptake and cost-benefit analyses.</p>
+      <h2>Configure Your Training Scenario</h2>
       <form id="scenario-form">
         <!-- Training Level -->
         <div class="form-group">
@@ -168,7 +167,7 @@
           </div>
         </div>
 
-        <!-- Location of Training -->
+        <!-- Location -->
         <div class="form-group">
           <label>Location of Training:</label>
           <div class="radio-group">
@@ -189,19 +188,37 @@
 
         <!-- Cohort Size -->
         <div class="form-group">
-          <label for="cohort-size">Cohort Size:</label>
-          <input type="range" class="form-control-range" id="cohort-size" min="500" max="2000" step="500" value="1000">
+          <label for="cohort-size">Cohort Size (500-2000):</label>
+          <input 
+            type="range" 
+            class="form-control-range" 
+            id="cohort-size" 
+            min="500" 
+            max="2000" 
+            step="500" 
+            value="1000"
+          >
           <small id="cohort-size-value">1000</small>
         </div>
 
         <!-- Cost per Participant -->
         <div class="form-group">
-          <label for="cost-per-participant">Cost per Participant (₹):</label>
-          <input type="range" class="form-control-range" id="cost-per-participant" min="100000" max="600000" step="50000" value="300000">
+          <label for="cost-per-participant">Cost per Participant (₹100,000–₹600,000):</label>
+          <input 
+            type="range" 
+            class="form-control-range" 
+            id="cost-per-participant" 
+            min="100000" 
+            max="600000" 
+            step="50000" 
+            value="300000"
+          >
           <small id="cost-per-participant-value">₹300,000</small>
         </div>
 
-        <button type="button" class="btn btn-primary" id="view-results">Calculate &amp; View Results</button>
+        <button type="button" class="btn btn-primary" id="view-results">
+          Calculate & View Results
+        </button>
       </form>
     </div>
 
@@ -209,23 +226,23 @@
     <div id="uptakeTab" class="tabcontent">
       <h2>Predicted Training Uptake</h2>
       <div id="uptake-content">
-        <p>Predicted uptake results appear here.</p>
+        <p>Results will appear here after calculation.</p>
         <canvas id="uptakeChart" width="400" height="200"></canvas>
       </div>
     </div>
 
-    <!-- Willingness to Pay (WTP) Tab -->
+    <!-- WTP Tab -->
     <div id="wtpTab" class="tabcontent">
-      <h2>Willingness to Pay (WTP) Results</h2>
+      <h2>Willingness to Pay (WTP)</h2>
       <p>
-        The willingness-to-pay (WTP) for each programme attribute is calculated by comparing its coefficient to the (negative) cost coefficient, reflecting how much respondents value that attribute financially.
+        The chart below displays how much more (or less) participants are willing to pay for each attribute, 
+        relative to a benchmark scenario. Error bars indicate statistical uncertainty (±10%).
       </p>
       <div class="buttons-row">
-        <button class="btn btn-success" onclick="renderWTPChart()">Show WTP Plots</button>
+        <button class="btn btn-success" onclick="renderWTPChart()">Show WTP Plot</button>
       </div>
       <div class="chart-grid">
         <div class="chart-box">
-          <h3>WTP (₹) with Error Bars</h3>
           <canvas id="wtpChartMain"></canvas>
         </div>
       </div>
@@ -233,25 +250,9 @@
 
     <!-- Costs & Benefits Tab -->
     <div id="cbaTab" class="tabcontent">
-      <h2>Costs &amp; Benefits</h2>
+      <h2>Costs & Benefits</h2>
       <div id="cba-content">
-        <h3>Cost Components</h3>
-        <ul>
-          <li><strong>Trainer Salaries:</strong> ₹1,200,000</li>
-          <li><strong>Venue Hire:</strong> ₹400,000</li>
-          <li><strong>Training Materials:</strong> ₹500,000</li>
-          <li><strong>Participant Support:</strong> ₹300,000</li>
-          <li><strong>Administrative Costs:</strong> ₹250,000</li>
-          <li><strong>Technology Infrastructure:</strong> ₹600,000</li>
-          <li><strong>Marketing &amp; Recruitment:</strong> ₹350,000</li>
-          <li><strong>Opportunity Costs:</strong> ₹800,000</li>
-          <li><strong>System Adjustments:</strong> ₹400,000</li>
-          <li><strong>Monitoring &amp; Evaluation:</strong> ₹700,000</li>
-        </ul>
-        <h3>Benefits Measurement</h3>
-        <p>
-          Benefits are measured in terms of improved public health outcomes. Each participant provides an estimated 0.05 QALYs, reflecting better disease surveillance and outbreak response capacity.
-        </p>
+        <p>Financial breakdown and net benefits appear here.</p>
         <canvas id="cbaChart" width="400" height="200"></canvas>
       </div>
     </div>
@@ -260,22 +261,26 @@
     <div id="scenariosTab" class="tabcontent">
       <h2>Saved Scenarios</h2>
       <p>
-        Save your current scenario from <strong>Inputs</strong> and compare or export multiple configurations, 
-        including cost-benefit charts, to PDF.
+        Save the current scenario, then compare or export multiple configurations to PDF.
       </p>
       <form id="save-scenario-form">
         <div class="form-group">
           <label for="scenario-name">Scenario Name:</label>
-          <input type="text" class="form-control" id="scenario-name" placeholder="Enter a name for your scenario">
+          <input 
+            type="text" 
+            class="form-control" 
+            id="scenario-name" 
+            placeholder="Enter scenario name"
+          >
         </div>
         <button type="button" class="btn btn-info" id="save-scenario">Save Scenario</button>
       </form>
       <hr>
       <h4>Saved Scenarios:</h4>
       <ul class="list-group" id="saved-scenarios-list">
-        <!-- Saved scenarios will appear here -->
+        <!-- Appended items go here -->
       </ul>
-      <hr>
+      <hr/>
       <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
     </div>
 
@@ -283,7 +288,7 @@
       <p>
         &copy; 2025 STEPS. All Rights Reserved. <br/>
         Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia <br/>
-        For support, please contact: <a href="mailto:mesfin.genie@newcastle.edu.au">mesfin.genie@newcastle.edu.au</a>
+        <strong>Support:</strong> <a href="mailto:mesfin.genie@newcastle.edu.au">mesfin.genie@newcastle.edu.au</a>
       </p>
     </footer>
   </div>
