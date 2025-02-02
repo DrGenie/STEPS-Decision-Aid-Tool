@@ -1,4 +1,4 @@
-/* RESET & BASEs */
+/* RESET & BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -70,8 +70,7 @@ header p {
   margin-bottom: 10px;
   color: #2c3e50;
 }
-.tabcontent p,
-.tabcontent li {
+.tabcontent p, .tabcontent li {
   margin-bottom: 10px;
   line-height: 1.4;
 }
@@ -87,7 +86,6 @@ header p {
   display: flex;
   flex-direction: column;
   margin-bottom: 8px;
-  position: relative;
 }
 .form-item label {
   font-weight: 600;
@@ -204,6 +202,25 @@ header p {
 .attribute-content p {
   font-size: 0.95em;
   color: #7f8c8d;
+}
+.attributes-list .attribute-card::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.attributes-list .attribute-card:hover::after,
+.attributes-list .attribute-card:focus::after {
+  opacity: 1;
 }
 
 /* CHARTS */
