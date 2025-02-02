@@ -1,4 +1,4 @@
-/* RESET & BASEs */
+/* RESET & BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -24,6 +24,7 @@ header h1 {
   text-align: center;
   margin-bottom: 15px;
   color: #2c3e50;
+  font-size: 2em;
 }
 header p {
   font-size: 1.05em;
@@ -69,7 +70,8 @@ header p {
   margin-bottom: 10px;
   color: #2c3e50;
 }
-.tabcontent p, .tabcontent li {
+.tabcontent p,
+.tabcontent li {
   margin-bottom: 10px;
   line-height: 1.4;
 }
@@ -212,10 +214,11 @@ header p {
   padding: 15px;
   margin-top: 15px;
   overflow: hidden;
+  max-height: 300px;
 }
 .chart-box canvas {
   width: 100%;
-  max-height: 300px;
+  max-height: 280px;
 }
 
 /* SUMMARY TABLE (Costs & Benefits) */
@@ -249,11 +252,12 @@ header p {
   border-radius: 4px;
   margin-bottom: 10px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 5px;
 }
-.scenario-list .list-group-item button {
-  margin-left: 10px;
+.scenario-list .list-group-item > div {
+  display: flex;
+  gap: 10px;
 }
 
 /* FOOTER */
@@ -268,7 +272,7 @@ footer {
 
 /* RESPONSIVE DESIGN */
 @media (max-width: 992px) {
-  .attribute-card {
+  .attribute-card, .list-group-item {
     width: calc(50% - 20px);
   }
 }
