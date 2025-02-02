@@ -1,19 +1,19 @@
 /****************************************************************************
  * SCRIPT.JS
- * Enhanced tabs, intuitive SVG level cards with tooltips, realistic uptake 
- * predictions, detailed cost–benefit analysis with educational summaries, 
- * comprehensive WTP calculation (each attribute level vs. a baseline), 
- * and scenario management with PDF export.
+ * Enhanced tabs, SVG level cards with tooltips, realistic uptake predictions,
+ * detailed cost–benefit analysis with educational summaries,
+ * comprehensive WTP calculation relative to baseline levels,
+ * and full scenario management with PDF export.
  *
  * Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
  ****************************************************************************/
 
-/** Set default tab on page load */
+/** Set default tab */
 window.onload = function() {
   openTab('introTab', document.querySelector('.tablink'));
 };
 
-/** Tab Switching Function */
+/** Tab Switching */
 function openTab(tabId, btn) {
   const tabs = document.getElementsByClassName("tabcontent");
   for (let tab of tabs) { tab.style.display = "none"; }
@@ -34,14 +34,18 @@ function openTab(tabId, btn) {
 const cohortSlider = document.getElementById("cohort-size");
 const cohortDisplay = document.getElementById("cohort-size-value");
 cohortDisplay.textContent = cohortSlider.value;
-cohortSlider.addEventListener("input", () => { cohortDisplay.textContent = cohortSlider.value; });
+cohortSlider.addEventListener("input", () => {
+  cohortDisplay.textContent = cohortSlider.value;
+});
 
 const costSlider = document.getElementById("cost-per-participant");
 const costDisplay = document.getElementById("cost-per-participant-value");
 costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`;
-costSlider.addEventListener("input", () => { costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`; });
+costSlider.addEventListener("input", () => {
+  costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`;
+});
 
-/** Realistic Coefficient Estimates */
+/** Coefficient Estimates (Realistic based on literature) */
 const coefficients = {
   ASC: 1.0,
   TrainingLevel: { // Baseline: Advanced
@@ -69,19 +73,19 @@ const coefficients = {
   ASC_optout: 0.3
 };
 
-/** Realistic Cost–Benefit Data (USD) */
+/** Cost–Benefit Data (USD) */
 const costBenefitEstimates = {
   Frontline: { cost: 250000, benefit: 750000 },
   Intermediate: { cost: 450000, benefit: 1300000 },
   Advanced: { cost: 650000, benefit: 2000000 }
 };
 
-/** Global Chart Variables */
+/** Global Chart Variables & Data */
 let uptakeChart, cbaChart, wtpChart;
 let wtpData = [];
 let currentUptake = 0, currentTotalCost = 0, currentTotalBenefit = 0, currentNetBenefit = 0;
 
-/** Random Error */
+/** Random Error Function */
 function getRandomError(min, max) { return Math.random() * (max - min) + min; }
 
 /** Compute Uptake Fraction */
@@ -110,6 +114,7 @@ function buildScenarioFromInputs() {
 
 /** Predict Program Uptake & Render Charts */
 document.getElementById("view-results").addEventListener("click", () => {
+  document.getElementById("calc-feedback").textContent = "Calculating...";
   const scenario = buildScenarioFromInputs();
   if (!scenario) return;
   
@@ -127,15 +132,22 @@ document.getElementById("view-results").addEventListener("click", () => {
   predictedUptake = Math.min(Math.max(predictedUptake, 0), 100);
   currentUptake = predictedUptake;
   
+  // Update Predicted Uptake Tab
   const uptakeDiv = document.getElementById("uptake-content");
   uptakeDiv.innerHTML = `
     <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
     <div class="chart-box">
       <canvas id="uptakeChart"></canvas>
     </div>
+    <div class="recommendation">
+      ${predictedUptake < 30 ? "Uptake is low. Consider reducing costs or increasing accessibility." :
+        predictedUptake < 70 ? "Uptake is moderate. Adjust session frequency or cost for improvement." :
+        "Uptake is high. The current configuration is effective."}
+    </div>
   `;
   drawUptakeChart(predictedUptake);
   
+  // Compute Cost–Benefit
   const totalCost = scenario.cohortSize * costBenefitEstimates[scenario.trainingLevel].cost;
   const totalBenefit = scenario.cohortSize * costBenefitEstimates[scenario.trainingLevel].benefit;
   const netBenefit = totalBenefit - totalCost;
@@ -148,7 +160,7 @@ document.getElementById("view-results").addEventListener("click", () => {
     <p>
       <strong>Cost-Benefit Analysis:</strong><br>
       Total cost is calculated as (Cohort Size × Training Cost).<br>
-      Benefits are estimated from QALY gains (assumed 0.05 QALY per participant) multiplied by $50,000 per QALY.
+      Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
     </p>
     <div class="chart-box">
       <canvas id="cbaChart"></canvas>
@@ -168,11 +180,85 @@ document.getElementById("view-results").addEventListener("click", () => {
         </tbody>
       </table>
     </div>
+    <div class="detailed-info">
+      <h4>Detailed Cost Components</h4>
+      <div class="cost-cards">
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-newspaper"></i> Local Press Ads</h4>
+          <p><strong>Unit Cost:</strong> $1,500</p>
+          <p><strong>Quantity:</strong> 2</p>
+          <p><strong>Total:</strong> $3,000</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-print"></i> Printing of Leaflets</h4>
+          <p><strong>Unit Cost:</strong> $0.12</p>
+          <p><strong>Quantity:</strong> 10,000</p>
+          <p><strong>Total:</strong> $1,200</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-envelope"></i> Postage of Leaflets</h4>
+          <p><strong>Unit Cost:</strong> $0.15</p>
+          <p><strong>Quantity:</strong> 10,000</p>
+          <p><strong>Total:</strong> $1,500</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-user"></i> Administrative Personnel</h4>
+          <p><strong>Unit Cost:</strong> $50</p>
+          <p><strong>Quantity:</strong> 10</p>
+          <p><strong>Total:</strong> $500</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-chalkboard-teacher"></i> Trainer Cost (5-hour sessions)</h4>
+          <p><strong>Unit Cost:</strong> $223.86</p>
+          <p><strong>Quantity:</strong> 100</p>
+          <p><strong>Total:</strong> $22,386</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-percent"></i> On-Costs (30%)</h4>
+          <p><strong>Unit Cost:</strong> $44.77</p>
+          <p><strong>Quantity:</strong> 100</p>
+          <p><strong>Total:</strong> $4,477</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-user-tie"></i> Facilitator Salaries</h4>
+          <p><strong>Unit Cost:</strong> $100</p>
+          <p><strong>Quantity:</strong> 100</p>
+          <p><strong>Total:</strong> $10,000</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-box"></i> Material Costs</h4>
+          <p><strong>Unit Cost:</strong> $50</p>
+          <p><strong>Quantity:</strong> 100</p>
+          <p><strong>Total:</strong> $5,000</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-building"></i> Venue Hire</h4>
+          <p><strong>Unit Cost:</strong> $15</p>
+          <p><strong>Quantity:</strong> 100</p>
+          <p><strong>Total:</strong> $1,500</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-clock"></i> Session Time Cost</h4>
+          <p><strong>Unit Cost:</strong> $20</p>
+          <p><strong>Quantity:</strong> 250</p>
+          <p><strong>Total:</strong> $5,000</p>
+        </div>
+        <div class="cost-card">
+          <h4><i class="fa-solid fa-road"></i> Travel Costs</h4>
+          <p><strong>Unit Cost:</strong> $10</p>
+          <p><strong>Quantity:</strong> 250</p>
+          <p><strong>Total:</strong> $2,500</p>
+        </div>
+      </div>
+    </div>
   `;
   drawCBAChart(totalCost, totalBenefit, netBenefit);
   
+  // Calculate and Render WTP Chart
   calculateWTP(scenario);
   renderWTPChart();
+  
+  document.getElementById("calc-feedback").textContent = "Calculation complete.";
 });
 
 /** Draw Uptake Chart */
@@ -192,17 +278,13 @@ function drawUptakeChart(uptakeVal) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: {
-          display: true,
-          text: `Predicted Program Uptake: ${uptakeVal.toFixed(1)}%`,
-          font: { size: 16 }
-        }
+        title: { display: true, text: `Predicted Program Uptake: ${uptakeVal.toFixed(1)}%`, font: { size: 16 } }
       }
     }
   });
 }
 
-/** Draw Cost-Benefit Chart */
+/** Draw Cost–Benefit Chart */
 function drawCBAChart(totalCost, totalBenefit, netBenefit) {
   const ctx = document.getElementById("cbaChart").getContext("2d");
   if (cbaChart) cbaChart.destroy();
@@ -221,11 +303,7 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
       maintainAspectRatio: false,
       scales: { y: { beginAtZero: true } },
       plugins: {
-        title: {
-          display: true,
-          text: "Cost-Benefit Analysis",
-          font: { size: 16 }
-        }
+        title: { display: true, text: "Cost-Benefit Analysis", font: { size: 16 } }
       }
     }
   });
@@ -233,6 +311,7 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
 
 /** Calculate WTP for Each Attribute Level */
 function calculateWTP(scenario) {
+  // Baseline levels for reference:
   const benchmarks = {
     TrainingLevel: "Advanced",
     DeliveryMethod: "Online",
@@ -253,7 +332,7 @@ function calculateWTP(scenario) {
     const wtpVal = diff / -coefficients.CostPerParticipant;
     results.push({
       attribute: attr,
-      wtp: wtpVal * 1000,
+      wtp: wtpVal * 1000, // scaled to USD $1000 units
       se: Math.abs(wtpVal * 1000) * 0.1
     });
   }
@@ -328,7 +407,7 @@ document.getElementById("save-scenario").addEventListener("click", () => {
   if (!scenario) return;
   scenario.predictedUptake = currentUptake.toFixed(1);
   scenario.netBenefit = currentNetBenefit.toFixed(2);
-  scenario.details = { ...scenario }; // store all inputs
+  scenario.details = { ...scenario };
   scenario.name = `Scenario ${savedScenarios.length + 1}`;
   savedScenarios.push(scenario);
   updateScenarioList();
