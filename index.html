@@ -16,7 +16,9 @@
   <div class="container">
     <header>
       <h1>STEPS Decision Aid Tool</h1>
-      <p>This tool helps decision makers plan and scale Field Epidemiology Training Programs (FETP) in India by estimating programme uptake, costs, benefits, and willingness‐to‐pay for key attributes.</p>
+      <p>
+        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) in India. It estimates programme uptake, computes detailed cost–benefit outcomes, and assesses willingness‐to‐pay (WTP) for key programme features.
+      </p>
     </header>
 
     <nav class="tabs" role="tablist">
@@ -50,16 +52,16 @@
     <section id="introTab" class="tabcontent" tabindex="0" style="display: block;">
       <div class="intro-box">
         <p>
-          <strong>STEPS (Scalable Training Estimation and Planning System)</strong> is designed to support decision makers in optimizing Field Epidemiology Training Programs (FETP) across India. By estimating how many participants will enroll, calculating detailed cost–benefit outcomes, and assessing the monetary value of various programme features, STEPS provides clear, actionable insights.
+          <strong>STEPS (Scalable Training Estimation and Planning System)</strong> helps you plan cost-effective Field Epidemiology Training Programs by estimating participant uptake and analyzing costs versus benefits. The tool converts technical inputs into clear, actionable insights.
         </p>
         <ul>
-          <li><strong>Instructions</strong> – Follow simple steps to use the tool.</li>
-          <li><strong>Attributes</strong> – Review key programme features with icons and tooltips.</li>
-          <li><strong>Inputs</strong> – Set up your scenario using user-friendly controls.</li>
-          <li><strong>WTP Results</strong> – View willingness-to-pay estimates for each attribute level.</li>
-          <li><strong>Predicted Program Uptake</strong> – See the estimated participation rate.</li>
-          <li><strong>Costs & Benefits</strong> – Examine a detailed, educational cost–benefit analysis.</li>
-          <li><strong>Scenarios</strong> – Save and compare different configurations, then export a report.</li>
+          <li><strong>Instructions</strong> – Step-by-step guidance.</li>
+          <li><strong>Attributes</strong> – Overview of programme features with icons and helpful tooltips.</li>
+          <li><strong>Inputs</strong> – Set your programme parameters using interactive controls.</li>
+          <li><strong>WTP Results</strong> – See the value participants assign to each attribute level.</li>
+          <li><strong>Predicted Program Uptake</strong> – View the estimated participation rate.</li>
+          <li><strong>Costs & Benefits</strong> – Explore a detailed cost–benefit analysis with educational summaries.</li>
+          <li><strong>Scenarios</strong> – Save and compare different configurations, and export reports.</li>
         </ul>
       </div>
     </section>
@@ -69,13 +71,13 @@
       <div class="calculation-info">
         <h4>How to Use This Tool</h4>
         <ol>
-          <li>Review the <strong>Attributes</strong> tab to understand each programme feature. Hover over icons for more information.</li>
-          <li>In the <strong>Inputs</strong> tab, set your scenario by selecting levels and adjusting sliders.</li>
-          <li>Click <strong>"Predict Program Uptake"</strong> to update the charts and analysis sections.</li>
-          <li>Visit <strong>WTP Results</strong> to see the monetary valuation for each attribute level.</li>
-          <li>Review <strong>Predicted Program Uptake</strong> for an overview of estimated participation.</li>
-          <li>Check <strong>Costs & Benefits</strong> for a detailed explanation of how total costs, benefits, and net benefits are computed.</li>
-          <li>Save and compare scenarios in the <strong>Scenarios</strong> tab, or export them to a PDF report.</li>
+          <li>Review the <strong>Attributes</strong> tab to learn about each programme feature. Hover over icons for details.</li>
+          <li>In the <strong>Inputs</strong> tab, set your scenario using level cards and sliders.</li>
+          <li>Click <strong>"Predict Program Uptake"</strong> to update the predictions and analysis sections.</li>
+          <li>Examine the <strong>WTP Results</strong> for monetary valuations of each attribute level.</li>
+          <li>See the <strong>Predicted Program Uptake</strong> chart for estimated participation rates.</li>
+          <li>Review the <strong>Costs & Benefits</strong> tab for a breakdown of total costs, benefits, and net returns—with an educational explanation.</li>
+          <li>Save and compare scenarios in the <strong>Scenarios</strong> tab, then export reports if desired.</li>
         </ol>
       </div>
     </section>
@@ -85,7 +87,7 @@
       <h2>Key Attributes</h2>
       <div class="attributes-list">
         <!-- Training Level Card -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Choose between Frontline, Intermediate, or Advanced training. Advanced is considered the baseline.">
+        <div class="attribute-card" tabindex="0" data-tooltip="Select between Frontline, Intermediate, or Advanced. 'Advanced' is used as the baseline for valuation.">
           <div class="attribute-icon">
             <i class="fa-solid fa-chalkboard-teacher"></i>
           </div>
@@ -95,7 +97,7 @@
           </div>
         </div>
         <!-- Delivery Method Card -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Select the delivery method: In-Person, Online, or Hybrid. Online is the baseline.">
+        <div class="attribute-card" tabindex="0" data-tooltip="Choose In-Person, Online, or Hybrid. 'Online' is the baseline.">
           <div class="attribute-icon">
             <i class="fa-solid fa-laptop-house"></i>
           </div>
@@ -105,7 +107,7 @@
           </div>
         </div>
         <!-- Accreditation Card -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Accreditation adds credibility. Use 'None' as baseline.">
+        <div class="attribute-card" tabindex="0" data-tooltip="Accreditation adds credibility. 'None' is the baseline.">
           <div class="attribute-icon">
             <i class="fa-solid fa-certificate"></i>
           </div>
@@ -115,7 +117,7 @@
           </div>
         </div>
         <!-- Location Card -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Location of training affects accessibility. District-Level is the baseline.">
+        <div class="attribute-card" tabindex="0" data-tooltip="Location impacts accessibility. 'District-Level' is the baseline.">
           <div class="attribute-icon">
             <i class="fa-solid fa-map-marker-alt"></i>
           </div>
@@ -125,7 +127,7 @@
           </div>
         </div>
         <!-- Cohort Size Card -->
-        <div class="attribute-card" tabindex="0" data-tooltip="The number of participants in each training batch.">
+        <div class="attribute-card" tabindex="0" data-tooltip="Select the number of participants. Larger cohorts may lower per-participant cost but can affect quality.">
           <div class="attribute-icon">
             <i class="fa-solid fa-users"></i>
           </div>
@@ -135,7 +137,7 @@
           </div>
         </div>
         <!-- Cost per Participant Card -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Programme cost per participant in USD (includes tuition, materials, etc.).">
+        <div class="attribute-card" tabindex="0" data-tooltip="Cost per participant in USD. This includes tuition, materials, and other expenses.">
           <div class="attribute-icon">
             <i class="fa-solid fa-dollar-sign"></i>
           </div>
@@ -222,7 +224,9 @@
     <section id="wtpTab" class="tabcontent" tabindex="0">
       <div class="calculation-info">
         <h4>Willingness to Pay (WTP) Results</h4>
-        <p>The chart below shows the additional value (in USD) that participants are willing to pay for each attribute level compared to a reference level.</p>
+        <p>
+          The chart below shows the additional value (in USD) that participants are willing to pay for each attribute level relative to a baseline.
+        </p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
         </div>
@@ -233,7 +237,9 @@
     <section id="cbaTab" class="tabcontent" tabindex="0">
       <div class="calculation-info">
         <h4>Costs & Benefits Analysis</h4>
-        <p>This section details the overall cost, benefit, and net benefit of your configuration. Costs include both fixed and variable components, while benefits are derived from expected Quality-Adjusted Life Year (QALY) gains multiplied by $50,000 per QALY.</p>
+        <p>
+          This section provides a breakdown of the total costs, total benefits, and net benefit. Costs include fixed expenses (e.g., trainer salaries, venue, materials) and variable costs (e.g., administrative support, travel). Benefits are estimated based on QALY gains (assumed at 0.05 per participant) multiplied by $50,000 per QALY.
+        </p>
         <div class="chart-box">
           <canvas id="cbaChart"></canvas>
         </div>
@@ -246,7 +252,7 @@
               </tr>
             </thead>
             <tbody id="benefit-summary-table">
-              <!-- Summary rows inserted via script -->
+              <!-- Summary inserted by script -->
             </tbody>
           </table>
         </div>
@@ -257,19 +263,25 @@
     <section id="scenariosTab" class="tabcontent" tabindex="0">
       <div class="calculation-info">
         <h4>Saved Scenarios</h4>
-        <p>Save your current configuration and compare different scenarios. You may also export a PDF report.</p>
+        <p>
+          Your saved scenarios are listed below. Each scenario shows all input selections, the predicted uptake, and the net benefit.
+        </p>
         <div class="buttons-row">
           <button class="btn btn-info" id="save-scenario">Save Current Scenario</button>
           <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
         </div>
         <div class="scenario-list" id="saved-scenarios-list">
-          <!-- Saved scenarios will be listed here -->
+          <!-- Scenarios listed here -->
         </div>
       </div>
     </section>
 
     <footer>
-      <p>&copy; 2025 STEPS. All Rights Reserved.<br />Mesfin Genie, Newcastle Business School, University of Newcastle, Australia<br /><strong>Support:</strong> <a href="mailto:mesfin.genie@newcastle.edu.au">mesfin.genie@newcastle.edu.au</a></p>
+      <p>
+        &copy; 2025 STEPS. All Rights Reserved.<br />
+        Mesfin Genie, Newcastle Business School, University of Newcastle, Australia<br />
+        <strong>Support:</strong> <a href="mailto:mesfin.genie@newcastle.edu.au">mesfin.genie@newcastle.edu.au</a>
+      </p>
     </footer>
   </div>
   <script src="script.js"></script>
