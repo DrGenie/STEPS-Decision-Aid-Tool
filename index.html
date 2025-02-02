@@ -1,20 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>STEPS Decision Aid Tool</title>
-  <link rel="stylesheet" href="styles.css"/>
-
+  <link rel="stylesheet" href="styles.css" />
   <!-- Font Awesome for Icons -->
-  <link 
-    rel="stylesheet" 
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
-    integrity="sha512-AAmSnT0pZ5G1tSBQf6CWKePsyzaW+WYejEpJ8OrIPUtGm2E4Qp58Xdmig2N3gC3p8KGkK8bXF+0AAlcSXkPd5g==" 
-    crossorigin="anonymous" 
-    referrerpolicy="no-referrer"
-  />
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papNMzNnQn5iH+1G+FHu8SyuXHs6A1k+Ln7tK5qRo1l5eYm6Jzv+1pArJ7N4C9FfpRrmAgM3tYWd3FZ9jKz1Bw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Chart.js Library -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- jsPDF Library -->
@@ -24,300 +16,260 @@
   <div class="container">
     <header>
       <h1>STEPS Decision Aid Tool</h1>
+      <p>This tool helps decision makers plan and scale Field Epidemiology Training Programs (FETP) in India by estimating programme uptake, costs, benefits, and willingness‐to‐pay for key attributes.</p>
     </header>
 
-    <div class="tabs">
-      <button class="tablink active" onclick="openTab('introTab', this)">Introduction</button>
-      <button class="tablink" onclick="openTab('instructionsTab', this)">Instructions</button>
-      <button class="tablink" onclick="openTab('attributesTab', this)">Attributes</button>
-      <button class="tablink" onclick="openTab('inputsTab', this)">Inputs</button>
-      <button class="tablink" onclick="openTab('uptakeTab', this)">Predicted Program Uptake</button>
-      <button class="tablink" onclick="openTab('wtpTab', this)">Willingness to Pay</button>
-      <button class="tablink" onclick="openTab('cbaTab', this)">Costs &amp; Benefits</button>
-      <button class="tablink" onclick="openTab('scenariosTab', this)">Scenarios</button>
-    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tablink active" role="tab" aria-selected="true" aria-controls="introTab" onclick="openTab('introTab', this)">
+        <i class="fa-solid fa-info-circle"></i><span> Introduction</span>
+      </button>
+      <button class="tablink" role="tab" aria-selected="false" aria-controls="instructionsTab" onclick="openTab('instructionsTab', this)">
+        <i class="fa-solid fa-circle-question"></i><span> Instructions</span>
+      </button>
+      <button class="tablink" role="tab" aria-selected="false" aria-controls="attributesTab" onclick="openTab('attributesTab', this)">
+        <i class="fa-solid fa-list"></i><span> Attributes</span>
+      </button>
+      <button class="tablink" role="tab" aria-selected="false" aria-controls="inputsTab" onclick="openTab('inputsTab', this)">
+        <i class="fa-solid fa-sliders"></i><span> Inputs</span>
+      </button>
+      <button class="tablink" role="tab" aria-selected="false" aria-controls="wtpTab" onclick="openTab('wtpTab', this)">
+        <i class="fa-solid fa-chart-bar"></i><span> WTP Results</span>
+      </button>
+      <button class="tablink" role="tab" aria-selected="false" aria-controls="uptakeTab" onclick="openTab('uptakeTab', this)">
+        <i class="fa-solid fa-chart-line"></i><span> Predicted Program Uptake</span>
+      </button>
+      <button class="tablink" role="tab" aria-selected="false" aria-controls="cbaTab" onclick="openTab('cbaTab', this)">
+        <i class="fa-solid fa-calculator"></i><span> Costs & Benefits</span>
+      </button>
+      <button class="tablink" role="tab" aria-selected="false" aria-controls="scenariosTab" onclick="openTab('scenariosTab', this)">
+        <i class="fa-solid fa-folder-open"></i><span> Scenarios</span>
+      </button>
+    </nav>
 
     <!-- Introduction Tab -->
-    <div id="introTab" class="tabcontent" style="display: block;">
+    <section id="introTab" class="tabcontent" tabindex="0" style="display: block;">
       <div class="intro-box">
         <p>
-          <strong>STEPS (Scalable Training Estimation and Planning System)</strong> supports decisions around 
-          Field Epidemiology Training Programs (FETP) in India. By estimating how many participants 
-          will enroll, calculating costs and benefits, and analyzing how different attributes affect 
-          willingness to pay, STEPS helps you plan effective, cost-efficient programs.
+          <strong>STEPS (Scalable Training Estimation and Planning System)</strong> is designed to support decision makers in optimizing Field Epidemiology Training Programs (FETP) across India. By estimating how many participants will enroll, calculating detailed cost–benefit outcomes, and assessing the monetary value of various programme features, STEPS provides clear, actionable insights.
         </p>
-        <p>Use the tabs above to navigate through these features:</p>
         <ul>
-          <li><strong>Instructions</strong> – Quick guide to using the tool.</li>
-          <li><strong>Attributes</strong> – Key training attributes with icons and tooltips.</li>
-          <li><strong>Inputs</strong> – Configure your scenario’s parameters.</li>
-          <li><strong>Predicted Program Uptake</strong> – Charts of potential participation.</li>
-          <li><strong>Willingness to Pay</strong> – How each attribute influences perceived value.</li>
-          <li><strong>Costs &amp; Benefits</strong> – Detailed financial breakdown and net calculations.</li>
-          <li><strong>Scenarios</strong> – Save, load, compare, or export scenario reports to PDF.</li>
+          <li><strong>Instructions</strong> – Follow simple steps to use the tool.</li>
+          <li><strong>Attributes</strong> – Review key programme features with icons and tooltips.</li>
+          <li><strong>Inputs</strong> – Set up your scenario using user-friendly controls.</li>
+          <li><strong>WTP Results</strong> – View willingness-to-pay estimates for each attribute level.</li>
+          <li><strong>Predicted Program Uptake</strong> – See the estimated participation rate.</li>
+          <li><strong>Costs & Benefits</strong> – Examine a detailed, educational cost–benefit analysis.</li>
+          <li><strong>Scenarios</strong> – Save and compare different configurations, then export a report.</li>
         </ul>
       </div>
-    </div>
+    </section>
 
     <!-- Instructions Tab -->
-    <div id="instructionsTab" class="tabcontent">
-      <h2>How to Use This Tool</h2>
-      <ol>
-        <li>
-          <strong>Review Attributes:</strong> See the training parameters in <strong>Attributes</strong>.
-        </li>
-        <li>
-          <strong>Set Up Inputs:</strong> Specify your training level, delivery method, accreditation, location, cohort size, 
-          and cost per participant in <strong>Inputs</strong>.
-        </li>
-        <li>
-          <strong>Predict Program Uptake:</strong> Click the button to see participation estimates, plus cost and benefit charts.
-        </li>
-        <li>
-          <strong>Check Willingness to Pay:</strong> Explore how each attribute level compares to a reference point in the 
-          <strong>Willingness to Pay</strong> tab.
-        </li>
-        <li>
-          <strong>View Costs &amp; Benefits:</strong> Understand your total costs, benefits, and net returns in the
-          <strong>Costs &amp; Benefits</strong> tab.
-        </li>
-        <li>
-          <strong>Manage Scenarios:</strong> Under <strong>Scenarios</strong>, save or export multiple configurations.
-        </li>
-      </ol>
-    </div>
+    <section id="instructionsTab" class="tabcontent" tabindex="0">
+      <div class="calculation-info">
+        <h4>How to Use This Tool</h4>
+        <ol>
+          <li>Review the <strong>Attributes</strong> tab to understand each programme feature. Hover over icons for more info.</li>
+          <li>In the <strong>Inputs</strong> tab, set your scenario by selecting levels and adjusting sliders.</li>
+          <li>Click <strong>"Predict Program Uptake"</strong> to update the charts and analysis sections.</li>
+          <li>Visit <strong>WTP Results</strong> to see the monetary valuation for each attribute level.</li>
+          <li>Review <strong>Predicted Program Uptake</strong> for an overview of estimated participation.</li>
+          <li>Check <strong>Costs & Benefits</strong> for a detailed explanation of how total costs, benefits, and net benefits are computed.</li>
+          <li>Save and compare scenarios in the <strong>Scenarios</strong> tab, or export them to a PDF report.</li>
+        </ol>
+      </div>
+    </section>
 
     <!-- Attributes Tab -->
-    <div id="attributesTab" class="tabcontent">
-      <h2>Attributes</h2>
-      <div class="attribute-cards">
-        <!-- Training Level -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Frontline, Intermediate, or Advanced training level determines the complexity of skills taught.">
-          <i class="fas fa-chalkboard-teacher fa-2x"></i>
-          <h3>Training Level</h3>
-          <p>Frontline, Intermediate, Advanced</p>
+    <section id="attributesTab" class="tabcontent" tabindex="0">
+      <h2>Key Attributes</h2>
+      <div class="attributes-list">
+        <!-- Training Level Card -->
+        <div class="attribute-card" tabindex="0" data-tooltip="Choose between Frontline, Intermediate, or Advanced training. Advanced is considered the baseline.">
+          <div class="attribute-icon">
+            <i class="fa-solid fa-chalkboard-teacher"></i>
+          </div>
+          <div class="attribute-content">
+            <h4>Training Level</h4>
+            <p>Frontline, Intermediate, Advanced</p>
+          </div>
         </div>
-
-        <!-- Delivery Method -->
-        <div class="attribute-card" tabindex="0" data-tooltip="In-person, fully online, or a mix (hybrid) approach to training delivery.">
-          <i class="fas fa-laptop-house fa-2x"></i>
-          <h3>Delivery Method</h3>
-          <p>In-Person, Online, Hybrid</p>
+        <!-- Delivery Method Card -->
+        <div class="attribute-card" tabindex="0" data-tooltip="Select the delivery method: In-Person, Online, or Hybrid. Online is the baseline.">
+          <div class="attribute-icon">
+            <i class="fa-solid fa-laptop-house"></i>
+          </div>
+          <div class="attribute-content">
+            <h4>Delivery Method</h4>
+            <p>In-Person, Online, Hybrid</p>
+          </div>
         </div>
-
-        <!-- Accreditation -->
-        <div class="attribute-card" tabindex="0" data-tooltip="National or international accreditation can add recognized quality assurances.">
-          <i class="fas fa-certificate fa-2x"></i>
-          <h3>Accreditation</h3>
-          <p>National, International, None</p>
+        <!-- Accreditation Card -->
+        <div class="attribute-card" tabindex="0" data-tooltip="Accreditation adds credibility. Use 'None' as baseline.">
+          <div class="attribute-icon">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <div class="attribute-content">
+            <h4>Accreditation</h4>
+            <p>National, International, None</p>
+          </div>
         </div>
-
-        <!-- Location -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Site of training: District, State, or Regional centers for multi-district coverage.">
-          <i class="fas fa-map-marker-alt fa-2x"></i>
-          <h3>Location</h3>
-          <p>District-Level, State-Level, Regional Centers</p>
+        <!-- Location Card -->
+        <div class="attribute-card" tabindex="0" data-tooltip="Location of training affects accessibility. District-Level is the baseline.">
+          <div class="attribute-icon">
+            <i class="fa-solid fa-map-marker-alt"></i>
+          </div>
+          <div class="attribute-content">
+            <h4>Location</h4>
+            <p>District-Level, State-Level, Regional Centers</p>
+          </div>
         </div>
-
-        <!-- Cohort Size -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Number of participants in each training batch. Larger cohorts can reduce per-participant costs but might affect quality.">
-          <i class="fas fa-users fa-2x"></i>
-          <h3>Cohort Size</h3>
-          <p>500, 1000, 2000</p>
+        <!-- Cohort Size Card -->
+        <div class="attribute-card" tabindex="0" data-tooltip="The number of participants in each training batch.">
+          <div class="attribute-icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="attribute-content">
+            <h4>Cohort Size</h4>
+            <p>500, 1000, 2000</p>
+          </div>
         </div>
-
-        <!-- Cost per Participant -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Continuous range from ₹100,000 to ₹600,000 per participant. This includes tuition, materials, lodging, etc.">
-          <i class="fas fa-rupee-sign fa-2x"></i>
-          <h3>Cost per Participant</h3>
-          <p>₹100K – ₹600K</p>
+        <!-- Cost per Participant Card -->
+        <div class="attribute-card" tabindex="0" data-tooltip="Programme cost per participant in USD (includes tuition, materials, etc.).">
+          <div class="attribute-icon">
+            <i class="fa-solid fa-dollar-sign"></i>
+          </div>
+          <div class="attribute-content">
+            <h4>Cost per Participant</h4>
+            <p>$1,000 – $6,000</p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Inputs Tab -->
-    <div id="inputsTab" class="tabcontent">
-      <h2>Configure Your Training Scenario</h2>
-      <form id="scenario-form">
-        <!-- Training Level -->
-        <div class="form-group">
-          <label>Training Level</label>
-          <div class="radio-group">
-            <label>
-              <input type="radio" name="training-level" value="Frontline" checked>
-              Frontline
-            </label>
-            <label>
-              <input type="radio" name="training-level" value="Intermediate">
-              Intermediate
-            </label>
-            <label>
-              <input type="radio" name="training-level" value="Advanced">
-              Advanced
-            </label>
+    <section id="inputsTab" class="tabcontent" tabindex="0">
+      <h2>Configure Your Scenario</h2>
+      <div class="input-card">
+        <h3>Programme Inputs</h3>
+        <p>Select the desired levels for each attribute below.</p>
+        <div class="form-grid">
+          <!-- Categorical Inputs -->
+          <div class="form-item">
+            <label>Training Level:</label>
+            <div class="radio-group">
+              <label><input type="radio" name="training-level" value="Frontline" checked> Frontline</label>
+              <label><input type="radio" name="training-level" value="Intermediate"> Intermediate</label>
+              <label><input type="radio" name="training-level" value="Advanced"> Advanced</label>
+            </div>
+          </div>
+          <div class="form-item">
+            <label>Delivery Method:</label>
+            <div class="radio-group">
+              <label><input type="radio" name="delivery-method" value="In-Person" checked> In-Person</label>
+              <label><input type="radio" name="delivery-method" value="Online"> Online</label>
+              <label><input type="radio" name="delivery-method" value="Hybrid"> Hybrid</label>
+            </div>
+          </div>
+          <div class="form-item">
+            <label>Accreditation:</label>
+            <div class="radio-group">
+              <label><input type="radio" name="accreditation" value="National" checked> National</label>
+              <label><input type="radio" name="accreditation" value="International"> International</label>
+              <label><input type="radio" name="accreditation" value="None"> None</label>
+            </div>
+          </div>
+          <div class="form-item">
+            <label>Location:</label>
+            <div class="radio-group">
+              <label><input type="radio" name="location" value="District-Level" checked> District-Level</label>
+              <label><input type="radio" name="location" value="State-Level"> State-Level</label>
+              <label><input type="radio" name="location" value="Regional Centers"> Regional Centers</label>
+            </div>
+          </div>
+          <!-- Continuous Inputs -->
+          <div class="form-item">
+            <label for="cohort-size">Cohort Size:</label>
+            <input type="range" class="form-control-range" id="cohort-size" min="500" max="2000" step="500" value="1000">
+            <small id="cohort-size-value">1000</small>
+          </div>
+          <div class="form-item">
+            <label for="cost-per-participant">Cost per Participant (USD):</label>
+            <input type="range" class="form-control-range" id="cost-per-participant" min="1000" max="6000" step="100" value="3000">
+            <small id="cost-per-participant-value">$3,000</small>
           </div>
         </div>
-
-        <!-- Delivery Method -->
-        <div class="form-group">
-          <label>Delivery Method</label>
-          <div class="radio-group">
-            <label>
-              <input type="radio" name="delivery-method" value="In-Person" checked>
-              In-Person
-            </label>
-            <label>
-              <input type="radio" name="delivery-method" value="Online">
-              Online
-            </label>
-            <label>
-              <input type="radio" name="delivery-method" value="Hybrid">
-              Hybrid
-            </label>
-          </div>
+        <div class="buttons-row">
+          <button type="button" class="btn btn-primary" id="view-results">
+            Predict Program Uptake
+          </button>
         </div>
-
-        <!-- Accreditation -->
-        <div class="form-group">
-          <label>Accreditation</label>
-          <div class="radio-group">
-            <label>
-              <input type="radio" name="accreditation" value="National" checked>
-              National
-            </label>
-            <label>
-              <input type="radio" name="accreditation" value="International">
-              International
-            </label>
-            <label>
-              <input type="radio" name="accreditation" value="None">
-              None
-            </label>
-          </div>
-        </div>
-
-        <!-- Location of Training -->
-        <div class="form-group">
-          <label>Location of Training</label>
-          <div class="radio-group">
-            <label>
-              <input type="radio" name="location" value="District-Level" checked>
-              District-Level
-            </label>
-            <label>
-              <input type="radio" name="location" value="State-Level">
-              State-Level
-            </label>
-            <label>
-              <input type="radio" name="location" value="Regional Centers">
-              Regional Centers
-            </label>
-          </div>
-        </div>
-
-        <!-- Cohort Size -->
-        <div class="form-group">
-          <label for="cohort-size">Cohort Size (500–2000)</label>
-          <input 
-            type="range" 
-            class="form-control-range" 
-            id="cohort-size" 
-            min="500" 
-            max="2000" 
-            step="500" 
-            value="1000"
-          >
-          <small id="cohort-size-value">1000</small>
-        </div>
-
-        <!-- Cost per Participant -->
-        <div class="form-group">
-          <label for="cost-per-participant">Cost per Participant (₹100K–600K)</label>
-          <input 
-            type="range" 
-            class="form-control-range" 
-            id="cost-per-participant" 
-            min="100000" 
-            max="600000" 
-            step="50000" 
-            value="300000"
-          >
-          <small id="cost-per-participant-value">₹300,000</small>
-        </div>
-
-        <button type="button" class="btn btn-primary" id="view-results">
-          Predict Program Uptake
-        </button>
-      </form>
-    </div>
+      </div>
+    </section>
 
     <!-- Predicted Program Uptake Tab -->
-    <div id="uptakeTab" class="tabcontent">
+    <section id="uptakeTab" class="tabcontent" tabindex="0">
       <h2>Predicted Program Uptake</h2>
       <div id="uptake-content">
-        <p>Results will appear here after you click "Predict Program Uptake".</p>
-        <canvas id="uptakeChart" width="400" height="200"></canvas>
+        <p>Your predicted programme uptake will appear here.</p>
+        <div class="chart-box">
+          <canvas id="uptakeChart"></canvas>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Willingness to Pay Tab -->
-    <div id="wtpTab" class="tabcontent">
-      <h2>Willingness to Pay</h2>
-      <p>
-        The bar chart below indicates how much more or less participants might pay for each attribute level, 
-        relative to a reference scenario. 
-      </p>
-      <div class="chart-grid">
+    <!-- WTP Results Tab -->
+    <section id="wtpTab" class="tabcontent" tabindex="0">
+      <div class="calculation-info">
+        <h4>Willingness to Pay (WTP) Results</h4>
+        <p>The chart below shows the additional value (in USD) that participants are willing to pay for each attribute level compared to a reference level.</p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Costs & Benefits Tab -->
-    <div id="cbaTab" class="tabcontent">
-      <h2>Costs &amp; Benefits</h2>
-      <div id="cba-content">
-        <p>After predicting, a summary of your scenario’s total costs, total benefits, and net benefits displays here.</p>
-        <canvas id="cbaChart" width="400" height="200"></canvas>
+    <section id="cbaTab" class="tabcontent" tabindex="0">
+      <div class="calculation-info">
+        <h4>Costs & Benefits Analysis</h4>
+        <p>This section details the overall cost, benefit, and net benefit of your configuration. Costs include both fixed and variable components, while benefits are derived from expected Quality-Adjusted Life Year (QALY) gains multiplied by $50,000 per QALY.</p>
+        <div class="chart-box">
+          <canvas id="cbaChart"></canvas>
+        </div>
+        <div class="summary-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Value (USD)</th>
+              </tr>
+            </thead>
+            <tbody id="benefit-summary-table">
+              <!-- Summary rows inserted via script -->
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </section>
 
     <!-- Scenarios Tab -->
-    <div id="scenariosTab" class="tabcontent">
-      <h2>Saved Scenarios</h2>
-      <p>
-        Save your current scenario from <strong>Inputs</strong> and compare or export multiple configurations, 
-        including cost-benefit charts, to PDF.
-      </p>
-      <form id="save-scenario-form">
-        <div class="form-group">
-          <label for="scenario-name">Scenario Name:</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            id="scenario-name" 
-            placeholder="Enter scenario name"
-          >
+    <section id="scenariosTab" class="tabcontent" tabindex="0">
+      <div class="calculation-info">
+        <h4>Saved Scenarios</h4>
+        <p>Save your current configuration and compare different scenarios. You may also export a PDF report.</p>
+        <div class="buttons-row">
+          <button class="btn btn-info" id="save-scenario">Save Current Scenario</button>
+          <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
         </div>
-        <button type="button" class="btn btn-info" id="save-scenario">
-          Save Scenario
-        </button>
-      </form>
-      <hr>
-      <h4>Saved Scenarios:</h4>
-      <ul class="list-group" id="saved-scenarios-list"></ul>
-      <hr>
-      <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
-    </div>
+        <div class="scenario-list" id="saved-scenarios-list">
+          <!-- Saved scenarios will be listed here -->
+        </div>
+      </div>
+    </section>
 
     <footer>
-      <p>
-        &copy; 2025 STEPS. All Rights Reserved. <br/>
-        Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia <br/>
-        <strong>Support:</strong> 
-        <a href="mailto:mesfin.genie@newcastle.edu.au">mesfin.genie@newcastle.edu.au</a>
-      </p>
+      <p>&copy; 2025 STEPS. All Rights Reserved.<br />Mesfin Genie, Newcastle Business School, University of Newcastle, Australia<br /><strong>Support:</strong> <a href="mailto:mesfin.genie@newcastle.edu.au">mesfin.genie@newcastle.edu.au</a></p>
     </footer>
   </div>
   <script src="script.js"></script>
