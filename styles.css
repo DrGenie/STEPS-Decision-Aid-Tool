@@ -215,7 +215,7 @@ header p {
   border: 1px solid #bdc3c7;
   border-radius: 8px;
   padding: 15px;
-  width: calc(33.33% - 20px);
+  width: calc(50% - 20px); /* Two per row on larger screens */
   display: flex;
   align-items: center;
   gap: 15px;
@@ -288,7 +288,7 @@ header p {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 15px;
-  width: calc(33.33% - 20px);
+  width: calc(50% - 20px);
   margin-bottom: 20px;
 }
 .cost-card h4 {
