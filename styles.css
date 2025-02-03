@@ -83,10 +83,10 @@ header p {
 /* CARD STYLE */
 .card {
   background-color: #f7f9fc;
+  border: 1px solid #bdc3c7;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
-  border: 1px solid #bdc3c7;
 }
 
 /* FORM & BUTTONS */
@@ -138,6 +138,7 @@ header p {
 /* INPUT CARD & SUMMARY CARDS */
 .input-card {
   background-color: #f7f9fc;
+  border: 1px solid #bdc3c7;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
@@ -178,15 +179,16 @@ header p {
 }
 .info-button i {
   color: #2980b9;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
-.tooltip-text {
+.tooltip {
   visibility: hidden;
-  width: 240px;
+  width: 220px;
   background-color: #2c3e50;
   color: #fff;
-  padding: 10px;
-  border-radius: 6px;
+  font-size: 0.8em;
+  padding: 6px;
+  border-radius: 4px;
   position: absolute;
   z-index: 10;
   top: 120%;
@@ -195,8 +197,8 @@ header p {
   opacity: 0;
   transition: opacity 0.3s;
 }
-.info-container:hover .tooltip-text,
-.info-container:focus-within .tooltip-text {
+.attribute-card:hover .tooltip,
+.attribute-card:focus-within .tooltip {
   visibility: visible;
   opacity: 1;
 }
@@ -210,6 +212,7 @@ header p {
 }
 .attribute-card {
   background-color: #f7f9fc;
+  border: 1px solid #bdc3c7;
   border-radius: 8px;
   padding: 15px;
   width: calc(33.33% - 20px);
