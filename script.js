@@ -1,14 +1,14 @@
 /****************************************************************************
  * SCRIPT.JS
  * Enhanced tabs with SVG icons and tooltips, realistic uptake predictions,
- * detailed cost–benefit analysis with educational summaries,
+ * detailed cost–benefit analysis with dynamic summary and educational explanations,
  * comprehensive WTP calculation (non-reference levels only),
  * scenario management with PDF export, and a modal popup for results.
  *
  * Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
  ****************************************************************************/
 
-/** Set default tab on page load */
+/** Set default tab on load */
 window.onload = function() {
   openTab('introTab', document.querySelector('.tablink'));
 };
@@ -16,8 +16,8 @@ window.onload = function() {
 /** Tab Switching Function */
 function openTab(tabId, btn) {
   const tabs = document.getElementsByClassName("tabcontent");
-  for (let tab of tabs) {
-    tab.style.display = "none";
+  for (let tab of tabs) { 
+    tab.style.display = "none"; 
   }
   const tabButtons = document.getElementsByClassName("tablink");
   for (let button of tabButtons) {
@@ -87,17 +87,18 @@ const costBenefitEstimates = {
   Advanced: { cost: 650000, benefit: 2000000 }
 };
 
-/** Global Chart Variables & Results */
+/** Global Variables */
 let uptakeChart, cbaChart, wtpChart;
 let wtpData = [];
 let currentUptake = 0, currentTotalCost = 0, currentTotalBenefit = 0, currentNetBenefit = 0;
+const baseCohortSize = 250; // Base cohort size used for uptake calculations
 
-/** Utility function: Random Error */
+/** Utility: Random Error */
 function getRandomError(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-/** Compute Uptake Fraction using a logit formula */
+/** Compute Uptake Fraction using logit model */
 function computeUptakeFraction(sc) {
   const U_alt = coefficients.ASC +
     coefficients.TrainingLevel[sc.trainingLevel] +
@@ -110,7 +111,7 @@ function computeUptakeFraction(sc) {
   return Math.exp(U_alt) / (Math.exp(U_alt) + Math.exp(U_opt));
 }
 
-/** Build Scenario from Input Selections */
+/** Build Scenario from Inputs */
 function buildScenarioFromInputs() {
   const trainingLevel = document.querySelector('input[name="training-level"]:checked').value;
   const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
@@ -121,23 +122,21 @@ function buildScenarioFromInputs() {
   return { trainingLevel, deliveryMethod, accreditation, location, cohortSize, cost_per_participant };
 }
 
-/** Show Modal Popup with Results */
+/** Show Modal with Results */
 function showResultsModal(contentHTML) {
   const modal = document.getElementById("resultsModal");
   document.getElementById("modal-results").innerHTML = contentHTML;
   modal.style.display = "block";
 }
-
 function closeModal() {
   document.getElementById("resultsModal").style.display = "none";
 }
 
-/** Calculate & Display Results When Button Clicked */
+/** Calculate & Display Results */
 document.getElementById("view-results").addEventListener("click", () => {
   const scenario = buildScenarioFromInputs();
   if (!scenario) return;
   
-  // Calculate predicted uptake using logit formula
   let utility = coefficients.ASC +
     coefficients.TrainingLevel[scenario.trainingLevel] +
     coefficients.DeliveryMethod[scenario.deliveryMethod] +
@@ -148,20 +147,20 @@ document.getElementById("view-results").addEventListener("click", () => {
   
   const uptakeFraction = Math.exp(utility) / (Math.exp(utility) + Math.exp(coefficients.ASC_optout));
   let predictedUptake = uptakeFraction * 100;
-  predictedUptake += getRandomError(-3, 3); // add a little noise
+  predictedUptake += getRandomError(-3, 3);
   predictedUptake = Math.min(Math.max(predictedUptake, 0), 100);
   currentUptake = predictedUptake;
   
-  // Build modal summary content
+  // Modal summary content
   const modalContent = `
     <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
-    <p>${predictedUptake < 30 ? "Uptake is low. Consider reducing costs or improving accessibility." :
-      predictedUptake < 70 ? "Uptake is moderate. Review your input selections for potential improvements." :
+    <p>${predictedUptake < 30 ? "Uptake is low. Consider reducing costs or improving local accessibility." :
+      predictedUptake < 70 ? "Uptake is moderate. Consider revising your input selections for improvement." :
       "Uptake is high. The current configuration appears effective."}</p>
   `;
   showResultsModal(modalContent);
   
-  // Draw full Uptake Chart in the Uptake Tab
+  // Draw full Uptake Chart in Uptake Tab
   drawUptakeChart(predictedUptake);
   
   // Compute Cost–Benefit Values
@@ -172,111 +171,35 @@ document.getElementById("view-results").addEventListener("click", () => {
   currentTotalBenefit = totalBenefit;
   currentNetBenefit = netBenefit;
   
-  // Update Costs & Benefits Tab content (assumes element with id "cba-content" exists)
-  const cbaDiv = document.getElementById("cba-content");
-  cbaDiv.innerHTML = `
-    <p>
-      <strong>Cost-Benefit Analysis:</strong><br>
-      Total cost = Cohort Size × Training Cost.<br>
-      Benefits = (Cohort Size × 0.05 QALY) × $50,000.
-    </p>
-    <div class="chart-box">
-      <canvas id="cbaChart"></canvas>
-    </div>
-    <div class="summary-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Value (USD)</th>
-          </tr>
-        </thead>
-        <tbody id="benefit-summary-table">
-          <tr><td>Total Cost</td><td>$${totalCost.toLocaleString()}</td></tr>
-          <tr><td>Total Benefit</td><td>$${totalBenefit.toLocaleString()}</td></tr>
-          <tr><td>Net Benefit</td><td>$${netBenefit.toLocaleString()}</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="detailed-info">
-      <h4>Detailed Cost Components</h4>
-      <div class="cost-cards">
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-newspaper"></i> Local Press Ads</h4>
-          <p><strong>Unit Cost:</strong> $1,500</p>
-          <p><strong>Quantity:</strong> 2</p>
-          <p><strong>Total:</strong> $3,000</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-print"></i> Printing of Leaflets</h4>
-          <p><strong>Unit Cost:</strong> $0.12</p>
-          <p><strong>Quantity:</strong> 10,000</p>
-          <p><strong>Total:</strong> $1,200</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-envelope"></i> Postage of Leaflets</h4>
-          <p><strong>Unit Cost:</strong> $0.15</p>
-          <p><strong>Quantity:</strong> 10,000</p>
-          <p><strong>Total:</strong> $1,500</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-user"></i> Administrative Personnel</h4>
-          <p><strong>Unit Cost:</strong> $50</p>
-          <p><strong>Quantity:</strong> 10</p>
-          <p><strong>Total:</strong> $500</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-chalkboard-teacher"></i> Trainer Cost (5-hour sessions)</h4>
-          <p><strong>Unit Cost:</strong> $223.86</p>
-          <p><strong>Quantity:</strong> 100</p>
-          <p><strong>Total:</strong> $22,386</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-percent"></i> On-Costs (30%)</h4>
-          <p><strong>Unit Cost:</strong> $44.77</p>
-          <p><strong>Quantity:</strong> 100</p>
-          <p><strong>Total:</strong> $4,477</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-user-tie"></i> Facilitator Salaries</h4>
-          <p><strong>Unit Cost:</strong> $100</p>
-          <p><strong>Quantity:</strong> 100</p>
-          <p><strong>Total:</strong> $10,000</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-box"></i> Material Costs</h4>
-          <p><strong>Unit Cost:</strong> $50</p>
-          <p><strong>Quantity:</strong> 100</p>
-          <p><strong>Total:</strong> $5,000</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-building"></i> Venue Hire</h4>
-          <p><strong>Unit Cost:</strong> $15</p>
-          <p><strong>Quantity:</strong> 100</p>
-          <p><strong>Total:</strong> $1,500</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-clock"></i> Session Time Cost</h4>
-          <p><strong>Unit Cost:</strong> $20</p>
-          <p><strong>Quantity:</strong> 250</p>
-          <p><strong>Total:</strong> $5,000</p>
-        </div>
-        <div class="cost-card">
-          <h4><i class="fa-solid fa-road"></i> Travel Costs</h4>
-          <p><strong>Unit Cost:</strong> $10</p>
-          <p><strong>Quantity:</strong> 250</p>
-          <p><strong>Total:</strong> $2,500</p>
-        </div>
-      </div>
-    </div>
+  // Update dynamic summary in Costs & Benefits Tab
+  const participants = (predictedUptake / 100) * baseCohortSize;
+  const qalyScenario = document.getElementById("qalySelect").value;
+  let qalyPerParticipant = 0.05; // default moderate
+  if (qalyScenario === "low") qalyPerParticipant = 0.02;
+  else if (qalyScenario === "high") qalyPerParticipant = 0.1;
+  const totalQALYs = participants * qalyPerParticipant;
+  const monetizedBenefits = totalQALYs * 50000;
+  
+  const summaryHTML = `
+    <table>
+      <tr><td><strong>Uptake (%)</strong></td><td>${predictedUptake.toFixed(1)}%</td></tr>
+      <tr><td><strong>Participants</strong></td><td>${participants.toFixed(0)}</td></tr>
+      <tr><td><strong>Total Training Cost</strong></td><td>$${totalCost.toLocaleString()}</td></tr>
+      <tr><td><strong>Cost per Participant</strong></td><td>$${(totalCost / participants).toFixed(2)}</td></tr>
+      <tr><td><strong>Total QALYs</strong></td><td>${totalQALYs.toFixed(2)}</td></tr>
+      <tr><td><strong>Monetized Benefits</strong></td><td>$${monetizedBenefits.toLocaleString()}</td></tr>
+      <tr><td><strong>Net Benefit</strong></td><td>$${netBenefit.toLocaleString()}</td></tr>
+    </table>
   `;
+  document.getElementById("cba-summary").innerHTML = summaryHTML;
+  
   drawCBAChart(totalCost, totalBenefit, netBenefit);
   
   calculateWTP(scenario);
   renderWTPChart();
 });
 
-/** Draw Predicted Uptake Chart in Uptake Tab */
+/** Draw Uptake Chart (in Uptake Tab) */
 function drawUptakeChart(uptakeVal) {
   const ctx = document.getElementById("uptakeChart").getContext("2d");
   if (uptakeChart) uptakeChart.destroy();
@@ -334,8 +257,9 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
   });
 }
 
-/** Calculate WTP for Each Attribute Level (Exclude Reference if diff == 0) */
+/** Calculate WTP for Each Attribute Level (Exclude Reference Levels) */
 function calculateWTP(scenario) {
+  // Benchmark (reference) levels:
   const benchmarks = {
     TrainingLevel: "Advanced",
     DeliveryMethod: "Online",
@@ -353,7 +277,7 @@ function calculateWTP(scenario) {
   let results = [];
   for (let attr in diffs) {
     const diff = diffs[attr];
-    if (Math.abs(diff) < 1e-6) continue; // Skip if no difference (baseline)
+    if (Math.abs(diff) < 1e-6) continue; // skip if same as reference
     const wtpVal = diff / -coefficients.CostPerParticipant;
     results.push({
       attribute: attr,
@@ -390,9 +314,7 @@ function renderWTPChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: {
-        y: { beginAtZero: true }
-      },
+      scales: { y: { beginAtZero: true } },
       plugins: {
         legend: { display: false },
         title: { display: true, text: "Willingness to Pay (USD)", font: { size: 16 } }
@@ -464,6 +386,7 @@ function updateScenarioList() {
 
 function loadScenario(index) {
   const s = savedScenarios[index];
+  // For categorical attributes, set the radio buttons based on the stored scenario
   document.querySelector(`input[name="training-level"][value="${s.details.trainingLevel}"]`).checked = true;
   document.querySelector(`input[name="delivery-method"][value="${s.details.deliveryMethod}"]`).checked = true;
   document.querySelector(`input[name="accreditation"][value="${s.details.accreditation}"]`).checked = true;
