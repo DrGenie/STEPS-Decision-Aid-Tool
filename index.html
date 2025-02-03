@@ -17,7 +17,7 @@
     <header>
       <h1>STEPS Decision Aid Tool</h1>
       <p>
-        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) in India by predicting programme uptake, performing detailed cost–benefit analysis, and evaluating willingness‐to‐pay (WTP) for key features.
+        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) in India by predicting programme uptake, performing detailed cost–benefit analysis, and evaluating willingness‐to‐pay (WTP) for key features—all in USD.
       </p>
       <div class="vertical-line"></div>
     </header>
@@ -53,16 +53,16 @@
     <section id="introTab" class="tabcontent" tabindex="0" style="display: block;">
       <div class="intro-box">
         <p>
-          <strong>STEPS</strong> predicts participant uptake, computes cost–benefit outcomes, and evaluates the extra value (WTP) that programme features provide.
+          <strong>STEPS</strong> converts technical inputs into clear, actionable insights. It predicts participant uptake, computes cost–benefit outcomes, and evaluates the extra value (WTP) that programme features provide.
         </p>
         <div class="vertical-line"></div>
         <ul>
           <li><strong>Instructions</strong>: Step-by-step guidance.</li>
-          <li><strong>Attributes</strong>: Review programme features with icons and tooltips.</li>
-          <li><strong>Inputs</strong>: Configure your scenario using input cards.</li>
-          <li><strong>WTP Results</strong>: View extra value (in USD) for each feature relative to a baseline.</li>
-          <li><strong>Predicted Program Uptake</strong>: See the estimated participation uptake with recommendations.</li>
-          <li><strong>Costs & Benefits</strong>: Detailed analysis with educational summaries.</li>
+          <li><strong>Attributes</strong>: Review programme features with icons and detailed tooltips.</li>
+          <li><strong>Inputs</strong>: Configure your scenario using intuitive input cards.</li>
+          <li><strong>WTP Results</strong>: View extra value (in USD) for each feature relative to its baseline.</li>
+          <li><strong>Predicted Program Uptake</strong>: See the estimated participation rate with recommendations.</li>
+          <li><strong>Costs & Benefits</strong>: Detailed analysis with breakdown of cost components and benefit calculations.</li>
           <li><strong>Scenarios</strong>: Save, compare, and export your configurations.</li>
         </ul>
       </div>
@@ -74,12 +74,12 @@
         <h4>How to Use This Tool</h4>
         <div class="vertical-line"></div>
         <ol>
-          <li>Review the <strong>Attributes</strong> tab to learn about each programme feature. Hover over icons for details.</li>
-          <li>In the <strong>Inputs</strong> tab, select your desired levels using input cards (each displays its reference) and adjust the sliders.</li>
-          <li>Click <strong>"Calculate & View Results"</strong> to open a popup modal with a summary of predicted uptake and recommendations.</li>
-          <li>Examine the <strong>WTP Results</strong> tab for a bar chart comparing each attribute level (except the reference) to the baseline.</li>
-          <li>Review the <strong>Predicted Program Uptake</strong> tab for a full uptake chart with detailed recommendations.</li>
-          <li>Check the <strong>Costs & Benefits</strong> tab for a detailed breakdown of cost components and benefit calculations with an educational explanation.</li>
+          <li>Review the <strong>Attributes</strong> tab to learn about each programme feature. Hover over icons to see detailed descriptions and reference levels.</li>
+          <li>In the <strong>Inputs</strong> tab, select your desired levels using input cards (each shows its baseline) and adjust the sliders.</li>
+          <li>Click <strong>"Calculate & View Results"</strong> to immediately open a popup modal summarizing predicted uptake and recommendations.</li>
+          <li>Examine the <strong>WTP Results</strong> tab to view a narrow bar chart for each attribute level (excluding the reference) and a brief explanation of WTP calculation (e.g., difference divided by cost coefficient, scaled by 1000).</li>
+          <li>Review the <strong>Predicted Program Uptake</strong> tab for the full uptake chart and tailored recommendations.</li>
+          <li>Check the <strong>Costs & Benefits</strong> tab for a detailed breakdown (with cost component cards) and an educational explanation.</li>
           <li>Save your scenario in the <strong>Scenarios</strong> tab to compare configurations or export a PDF report.</li>
         </ol>
       </div>
@@ -89,7 +89,7 @@
     <section id="attributesTab" class="tabcontent" tabindex="0">
       <h2>Key Attributes</h2>
       <div class="attributes-list">
-        <!-- Training Level Card -->
+        <!-- Training Level -->
         <div class="attribute-card" tabindex="0" data-tooltip="Choose between Frontline, Intermediate, or Advanced. (Reference: Advanced)">
           <div class="attribute-icon">
             <i class="fa-solid fa-chalkboard-teacher"></i>
@@ -99,7 +99,7 @@
             <p>Frontline, Intermediate, Advanced</p>
           </div>
         </div>
-        <!-- Delivery Method Card -->
+        <!-- Delivery Method -->
         <div class="attribute-card" tabindex="0" data-tooltip="Select In-Person, Online, or Hybrid. (Reference: Online)">
           <div class="attribute-icon">
             <i class="fa-solid fa-laptop-house"></i>
@@ -109,7 +109,7 @@
             <p>In-Person, Online, Hybrid</p>
           </div>
         </div>
-        <!-- Accreditation Card -->
+        <!-- Accreditation -->
         <div class="attribute-card" tabindex="0" data-tooltip="Accreditation level. (Reference: None)">
           <div class="attribute-icon">
             <i class="fa-solid fa-certificate"></i>
@@ -119,7 +119,7 @@
             <p>National, International, None</p>
           </div>
         </div>
-        <!-- Location Card -->
+        <!-- Location -->
         <div class="attribute-card" tabindex="0" data-tooltip="Training location. (Reference: District-Level)">
           <div class="attribute-icon">
             <i class="fa-solid fa-map-marker-alt"></i>
@@ -129,7 +129,7 @@
             <p>District-Level, State-Level, Regional Centers</p>
           </div>
         </div>
-        <!-- Cohort Size Card -->
+        <!-- Cohort Size -->
         <div class="attribute-card" tabindex="0" data-tooltip="Select the number of participants per batch.">
           <div class="attribute-icon">
             <i class="fa-solid fa-users"></i>
@@ -139,7 +139,7 @@
             <p>500, 1000, 2000</p>
           </div>
         </div>
-        <!-- Cost per Participant Card -->
+        <!-- Cost per Participant -->
         <div class="attribute-card" tabindex="0" data-tooltip="Programme cost per participant in USD. (Reference: $1,000)">
           <div class="attribute-icon">
             <i class="fa-solid fa-dollar-sign"></i>
@@ -219,7 +219,7 @@
         <span class="close-button" onclick="closeModal()">&times;</span>
         <h3>Calculation Results</h3>
         <div id="modal-results">
-          <!-- Results injected by script -->
+          <!-- Modal results injected by script -->
         </div>
       </div>
     </div>
@@ -241,7 +241,7 @@
       <div class="calculation-info">
         <h4>Willingness to Pay (WTP) Results</h4>
         <p>
-          The chart below shows the extra value (in USD) that participants are willing to pay for each attribute level (excluding the baseline) relative to its reference.
+          WTP is calculated as the difference in the attribute’s coefficient from its baseline (reference) level divided by the (negative) cost coefficient, then scaled (×1000) to express the value in USD. For example, if Frontline training has a coefficient 0.8 higher than Advanced (reference) and the cost coefficient is –0.0004, the WTP is (0.8/0.0004)*1000 = $2000 extra.
         </p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
@@ -254,7 +254,7 @@
       <div class="calculation-info">
         <h4>Costs & Benefits Analysis</h4>
         <p>
-          Total costs are calculated as (Cohort Size × Training Cost) where costs include fixed components (local press ads, printing, postage, administrative personnel, trainer fees, on-costs, facilitator salaries) and variable components (material costs, venue hire, session time, travel). Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
+          Total costs = (Cohort Size × Training Cost). Fixed costs include local press ads, printing, postage, administrative personnel, trainer fees, on-costs, and facilitator salaries. Variable costs include material costs, venue hire, session time, and travel. Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
         </p>
         <div class="chart-box">
           <canvas id="cbaChart"></canvas>
@@ -382,6 +382,7 @@
       </div>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
