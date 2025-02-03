@@ -59,7 +59,7 @@
         <div class="vertical-line"></div>
         <ul>
           <li><strong>Instructions</strong>: Step-by-step guidance.</li>
-          <li><strong>Attributes</strong>: Review training programme features with icons and detailed tooltips showing reference levels.</li>
+          <li><strong>Attributes</strong>: Review training programme features with icons and tooltips showing reference levels.</li>
           <li><strong>Inputs</strong>: Configure your scenario using intuitive input cards.</li>
           <li><strong>WTP Results</strong>: View a narrow bar chart of extra value (in USD) for each non-reference attribute level.</li>
           <li><strong>Predicted Program Uptake</strong>: See the estimated participation rate with tailored recommendations.</li>
@@ -75,11 +75,11 @@
         <h4>How to Use This Tool</h4>
         <div class="vertical-line"></div>
         <ol>
-          <li>Review the <strong>Attributes</strong> tab to learn about each training programme feature. Hover over an icon for a detailed description and its reference level.</li>
-          <li>In the <strong>Inputs</strong> tab, configure your scenario using input cards. For each attribute, the reference (benchmark) level is shown and not selectable. Only non‑reference options appear.</li>
+          <li>Review the <strong>Attributes</strong> tab to learn about each training programme feature. Hover over an icon to see its detailed description and reference level.</li>
+          <li>In the <strong>Inputs</strong> tab, configure your scenario using input cards. Only non‑reference options are selectable while the reference (benchmark) is displayed.</li>
           <li>Click <strong>"Calculate & View Results"</strong> to open a popup modal summarizing predicted uptake and recommendations. The full uptake chart appears in the Predicted Program Uptake tab.</li>
           <li>Examine the <strong>WTP Results</strong> tab to view a narrow bar chart for each non‑reference attribute level.</li>
-          <li>Review the <strong>Costs & Benefits</strong> tab to see a detailed breakdown including a dynamic summary table and cost component cards, with an educational explanation.</li>
+          <li>Review the <strong>Costs & Benefits</strong> tab to see a dynamic summary (with QALY gain selector) plus a bar chart and detailed cost component cards.</li>
           <li>Save your scenario in the <strong>Scenarios</strong> tab to compare configurations or export a PDF report.</li>
         </ol>
       </div>
@@ -89,7 +89,7 @@
     <section id="attributesTab" class="tabcontent" tabindex="0">
       <h2>Key Attributes</h2>
       <div class="attributes-list">
-        <!-- Attribute Card 1: Cost per Session -->
+        <!-- Attribute Card 1: Training Level -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <svg width="24" height="24" fill="#2980b9" xmlns="http://www.w3.org/2000/svg">
@@ -97,47 +97,15 @@
               <path d="M10 15l-3-3 1.4-1.4 1.6 1.6L15 7l1.4 1.4-6.4 6.4z" fill="#2980b9"/>
             </svg>
             <div class="tooltip" role="tooltip">
-              The out-of-pocket fee (in AUD) participants pay per session.
+              <strong>Reference: Advanced</strong><br/>Options: Frontline, Intermediate, Advanced.
             </div>
           </div>
           <div class="attribute-content">
-            <h4>Cost per Session</h4>
-            <p>The fee paid by participants each session.</p>
+            <h4>Training Level</h4>
+            <p>Frontline, Intermediate, Advanced</p>
           </div>
         </div>
-        <!-- Attribute Card 2: Accessibility -->
-        <div class="attribute-card" tabindex="0">
-          <div class="attribute-icon">
-            <svg width="24" height="24" fill="#e67e22" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="#e67e22" stroke-width="2" fill="none"/>
-              <path d="M12 4a8 8 0 0 1 0 16 8 8 0 0 1 0-16z" fill="#e67e22"/>
-            </svg>
-            <div class="tooltip" role="tooltip">
-              <strong>Reference: At Home</strong><br/>Offered locally (up to 12 km) versus in a wider community (50+ km).
-            </div>
-          </div>
-          <div class="attribute-content">
-            <h4>Accessibility</h4>
-            <p>Local or wider community delivery.</p>
-          </div>
-        </div>
-        <!-- Attribute Card 3: Frequency of Interaction -->
-        <div class="attribute-card" tabindex="0">
-          <div class="attribute-icon">
-            <svg width="24" height="24" fill="#27ae60" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="#27ae60" stroke-width="2" fill="none"/>
-              <path d="M12 6v6l4 2" stroke="#27ae60" stroke-width="2" fill="none"/>
-            </svg>
-            <div class="tooltip" role="tooltip">
-              <strong>Reference: Daily</strong><br/>Weekly sessions may boost engagement compared to monthly.
-            </div>
-          </div>
-          <div class="attribute-content">
-            <h4>Frequency of Interaction</h4>
-            <p>Weekly or monthly sessions.</p>
-          </div>
-        </div>
-        <!-- Attribute Card 4: Method of Interaction -->
+        <!-- Attribute Card 2: Delivery Method -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <svg width="24" height="24" fill="#8e44ad" xmlns="http://www.w3.org/2000/svg">
@@ -145,44 +113,44 @@
               <path d="M8 12h8M12 8v8" stroke="#8e44ad" stroke-width="2" fill="none"/>
             </svg>
             <div class="tooltip" role="tooltip">
-              <strong>Reference: In-person</strong><br/>Virtual sessions are online; hybrid sessions combine both.
+              <strong>Reference: Online</strong><br/>Options: In-Person, Online, Hybrid.
             </div>
           </div>
           <div class="attribute-content">
-            <h4>Method of Interaction</h4>
-            <p>Virtual or hybrid.</p>
+            <h4>Delivery Method</h4>
+            <p>In-Person, Online, Hybrid</p>
           </div>
         </div>
-        <!-- Attribute Card 5: Duration of Each Interaction -->
+        <!-- Attribute Card 3: Accreditation -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <svg width="24" height="24" fill="#3498db" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="#3498db" stroke-width="2" fill="none"/>
-              <path d="M12 6v6l4 2" stroke="#3498db" stroke-width="2" fill="none"/>
+            <svg width="24" height="24" fill="#27ae60" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#27ae60" stroke-width="2" fill="none"/>
+              <path d="M12 4v16" stroke="#27ae60" stroke-width="2" fill="none"/>
             </svg>
             <div class="tooltip" role="tooltip">
-              <strong>Reference: 30-minute</strong><br/>Longer sessions (2 or 4 hours) affect depth and scheduling.
+              <strong>Reference: None</strong><br/>Options: National, International, None.
             </div>
           </div>
           <div class="attribute-content">
-            <h4>Duration of Each Interaction</h4>
-            <p>2-hour or 4-hour sessions.</p>
+            <h4>Accreditation</h4>
+            <p>National, International, None</p>
           </div>
         </div>
-        <!-- Attribute Card 6: Type of Support Programme -->
+        <!-- Attribute Card 4: Location -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <svg width="24" height="24" fill="#e74c3c" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="#e74c3c" stroke-width="2" fill="none"/>
-              <path d="M8 12l2-2 4 4 6-6" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            <svg width="24" height="24" fill="#e67e22" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#e67e22" stroke-width="2" fill="none"/>
+              <path d="M12 4a8 8 0 0 1 0 16 8 8 0 0 1 0-16z" fill="#e67e22"/>
             </svg>
             <div class="tooltip" role="tooltip">
-              <strong>Reference: Peer Support</strong><br/>Options include community engagement, counselling, or VR-based sessions.
+              <strong>Reference: District-Level</strong><br/>Options: District-Level, State-Level, Regional Centers.
             </div>
           </div>
           <div class="attribute-content">
-            <h4>Type of Support Programme</h4>
-            <p>Community engagement, counselling, or VR-based sessions.</p>
+            <h4>Location</h4>
+            <p>District-Level, State-Level, Regional Centers</p>
           </div>
         </div>
       </div>
@@ -193,9 +161,9 @@
       <h2>Configure Your Scenario</h2>
       <div class="input-card">
         <h3>Programme Inputs</h3>
-        <p>Select your desired levels using the cards below. (Reference levels are shown and are not selectable.) Then adjust the sliders.</p>
+        <p>Select your desired non‑reference options below, and adjust the sliders.</p>
         <div class="form-grid">
-          <!-- Categorical Input Cards (non-reference only) -->
+          <!-- Categorical Input Cards (only non-reference options) -->
           <div class="input-summary-card">
             <h4>Training Level <span class="reference">[Reference: Advanced]</span></h4>
             <div class="radio-group">
