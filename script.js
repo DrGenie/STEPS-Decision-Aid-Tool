@@ -8,16 +8,16 @@
  * Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
  ****************************************************************************/
 
-/** Set default tab */
+/** Set default tab on page load */
 window.onload = function() {
   openTab('introTab', document.querySelector('.tablink'));
 };
 
-/** Tab Switching */
+/** Tab Switching Function */
 function openTab(tabId, btn) {
   const tabs = document.getElementsByClassName("tabcontent");
-  for (let tab of tabs) { 
-    tab.style.display = "none"; 
+  for (let tab of tabs) {
+    tab.style.display = "none";
   }
   const tabButtons = document.getElementsByClassName("tablink");
   for (let button of tabButtons) {
@@ -28,8 +28,13 @@ function openTab(tabId, btn) {
   btn.classList.add("active");
   btn.setAttribute("aria-selected", "true");
 
-  if (tabId === "wtpTab") renderWTPChart();
-  if (tabId === "cbaTab") renderCostsBenefits();
+  // Update charts when switching to their tabs
+  if (tabId === "wtpTab") {
+    renderWTPChart();
+  }
+  if (tabId === "cbaTab") {
+    renderCostsBenefits();
+  }
 }
 
 /** Range Slider Updates */
@@ -47,7 +52,7 @@ costSlider.addEventListener("input", () => {
   costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`;
 });
 
-/** Coefficient Estimates */
+/** Coefficient Estimates for Training Programme Attributes */
 const coefficients = {
   ASC: 1.0,
   TrainingLevel: { // Baseline: Advanced
@@ -75,24 +80,24 @@ const coefficients = {
   ASC_optout: 0.3
 };
 
-/** Cost–Benefit Data (USD) */
+/** Cost–Benefit Estimates (USD) by Training Level */
 const costBenefitEstimates = {
   Frontline: { cost: 250000, benefit: 750000 },
   Intermediate: { cost: 450000, benefit: 1300000 },
   Advanced: { cost: 650000, benefit: 2000000 }
 };
 
-/** Global Variables */
+/** Global Chart Variables & Results */
 let uptakeChart, cbaChart, wtpChart;
 let wtpData = [];
 let currentUptake = 0, currentTotalCost = 0, currentTotalBenefit = 0, currentNetBenefit = 0;
 
-/** Random Error */
+/** Utility function: Random Error */
 function getRandomError(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-/** Compute Uptake Fraction */
+/** Compute Uptake Fraction using a logit formula */
 function computeUptakeFraction(sc) {
   const U_alt = coefficients.ASC +
     coefficients.TrainingLevel[sc.trainingLevel] +
@@ -105,7 +110,7 @@ function computeUptakeFraction(sc) {
   return Math.exp(U_alt) / (Math.exp(U_alt) + Math.exp(U_opt));
 }
 
-/** Build Scenario from Inputs */
+/** Build Scenario from Input Selections */
 function buildScenarioFromInputs() {
   const trainingLevel = document.querySelector('input[name="training-level"]:checked').value;
   const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked').value;
@@ -116,21 +121,23 @@ function buildScenarioFromInputs() {
   return { trainingLevel, deliveryMethod, accreditation, location, cohortSize, cost_per_participant };
 }
 
-/** Show Modal with Results */
+/** Show Modal Popup with Results */
 function showResultsModal(contentHTML) {
   const modal = document.getElementById("resultsModal");
   document.getElementById("modal-results").innerHTML = contentHTML;
   modal.style.display = "block";
 }
+
 function closeModal() {
   document.getElementById("resultsModal").style.display = "none";
 }
 
-/** Predict Program Uptake & Render Modal Summary */
+/** Calculate & Display Results When Button Clicked */
 document.getElementById("view-results").addEventListener("click", () => {
   const scenario = buildScenarioFromInputs();
   if (!scenario) return;
   
+  // Calculate predicted uptake using logit formula
   let utility = coefficients.ASC +
     coefficients.TrainingLevel[scenario.trainingLevel] +
     coefficients.DeliveryMethod[scenario.deliveryMethod] +
@@ -141,7 +148,7 @@ document.getElementById("view-results").addEventListener("click", () => {
   
   const uptakeFraction = Math.exp(utility) / (Math.exp(utility) + Math.exp(coefficients.ASC_optout));
   let predictedUptake = uptakeFraction * 100;
-  predictedUptake += getRandomError(-3, 3);
+  predictedUptake += getRandomError(-3, 3); // add a little noise
   predictedUptake = Math.min(Math.max(predictedUptake, 0), 100);
   currentUptake = predictedUptake;
   
@@ -149,15 +156,15 @@ document.getElementById("view-results").addEventListener("click", () => {
   const modalContent = `
     <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
     <p>${predictedUptake < 30 ? "Uptake is low. Consider reducing costs or improving accessibility." :
-      predictedUptake < 70 ? "Uptake is moderate. Review input selections for possible improvements." :
+      predictedUptake < 70 ? "Uptake is moderate. Review your input selections for potential improvements." :
       "Uptake is high. The current configuration appears effective."}</p>
   `;
   showResultsModal(modalContent);
   
-  // Draw full Uptake Chart in Uptake Tab
+  // Draw full Uptake Chart in the Uptake Tab
   drawUptakeChart(predictedUptake);
   
-  // Compute Cost–Benefit
+  // Compute Cost–Benefit Values
   const totalCost = scenario.cohortSize * costBenefitEstimates[scenario.trainingLevel].cost;
   const totalBenefit = scenario.cohortSize * costBenefitEstimates[scenario.trainingLevel].benefit;
   const netBenefit = totalBenefit - totalCost;
@@ -165,7 +172,7 @@ document.getElementById("view-results").addEventListener("click", () => {
   currentTotalBenefit = totalBenefit;
   currentNetBenefit = netBenefit;
   
-  // Update Costs & Benefits Tab content
+  // Update Costs & Benefits Tab content (assumes element with id "cba-content" exists)
   const cbaDiv = document.getElementById("cba-content");
   cbaDiv.innerHTML = `
     <p>
@@ -269,7 +276,7 @@ document.getElementById("view-results").addEventListener("click", () => {
   renderWTPChart();
 });
 
-/** Draw Uptake Chart */
+/** Draw Predicted Uptake Chart in Uptake Tab */
 function drawUptakeChart(uptakeVal) {
   const ctx = document.getElementById("uptakeChart").getContext("2d");
   if (uptakeChart) uptakeChart.destroy();
@@ -286,7 +293,11 @@ function drawUptakeChart(uptakeVal) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: `Predicted Program Uptake: ${uptakeVal.toFixed(1)}%`, font: { size: 16 } }
+        title: {
+          display: true,
+          text: `Predicted Program Uptake: ${uptakeVal.toFixed(1)}%`,
+          font: { size: 16 }
+        }
       }
     }
   });
@@ -309,15 +320,21 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: { y: { beginAtZero: true } },
+      scales: {
+        y: { beginAtZero: true }
+      },
       plugins: {
-        title: { display: true, text: "Cost-Benefit Analysis", font: { size: 16 } }
+        title: {
+          display: true,
+          text: "Cost-Benefit Analysis",
+          font: { size: 16 }
+        }
       }
     }
   });
 }
 
-/** Calculate WTP for Each Attribute Level (Excluding Reference Levels) */
+/** Calculate WTP for Each Attribute Level (Exclude Reference if diff == 0) */
 function calculateWTP(scenario) {
   const benchmarks = {
     TrainingLevel: "Advanced",
@@ -336,7 +353,7 @@ function calculateWTP(scenario) {
   let results = [];
   for (let attr in diffs) {
     const diff = diffs[attr];
-    if (Math.abs(diff) < 1e-6) continue; // skip reference levels
+    if (Math.abs(diff) < 1e-6) continue; // Skip if no difference (baseline)
     const wtpVal = diff / -coefficients.CostPerParticipant;
     results.push({
       attribute: attr,
@@ -347,7 +364,7 @@ function calculateWTP(scenario) {
   wtpData = results;
 }
 
-/** Render WTP Chart */
+/** Render WTP Chart (narrow bars) */
 function renderWTPChart() {
   const ctx = document.getElementById("wtpChartMain").getContext("2d");
   if (wtpChart) wtpChart.destroy();
@@ -373,7 +390,9 @@ function renderWTPChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: { y: { beginAtZero: true } },
+      scales: {
+        y: { beginAtZero: true }
+      },
       plugins: {
         legend: { display: false },
         title: { display: true, text: "Willingness to Pay (USD)", font: { size: 16 } }
