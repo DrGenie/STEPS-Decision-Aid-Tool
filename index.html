@@ -17,7 +17,7 @@
     <header>
       <h1>STEPS Decision Aid Tool</h1>
       <p>
-        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) in India by predicting programme uptake, performing detailed cost–benefit analysis, and evaluating willingness‐to‐pay (WTP) for key features.
+        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) in India by predicting programme uptake, performing detailed cost–benefit analysis, and evaluating willingness‐to‐pay (WTP) for key features—all in USD.
       </p>
       <div class="vertical-line"></div>
     </header>
@@ -42,7 +42,7 @@
         <i class="fa-solid fa-chart-line"></i><span> Predicted Program Uptake</span>
       </button>
       <button class="tablink" role="tab" aria-selected="false" aria-controls="cbaTab" onclick="openTab('cbaTab', this)">
-        <i class="fa-solid fa-calculator"></i><span> Costs & Benefits</span>
+        <i class="fa-solid fa-calculator"></i><span> Costs &amp; Benefits</span>
       </button>
       <button class="tablink" role="tab" aria-selected="false" aria-controls="scenariosTab" onclick="openTab('scenariosTab', this)">
         <i class="fa-solid fa-folder-open"></i><span> Scenarios</span>
@@ -51,18 +51,19 @@
 
     <!-- Introduction Tab -->
     <section id="introTab" class="tabcontent" tabindex="0" style="display: block;">
-      <div class="intro-box">
+      <div class="card">
+        <h2>Introduction</h2>
         <p>
-          <strong>STEPS</strong> predicts participant uptake, computes cost–benefit analysis, and evaluates the extra value (WTP) that programme features provide.
+          <strong>STEPS</strong> converts technical inputs into clear, actionable insights. It predicts participant uptake, computes cost–benefit outcomes, and evaluates the extra value (WTP) that programme features provide.
         </p>
         <div class="vertical-line"></div>
         <ul>
           <li><strong>Instructions</strong>: Step-by-step guidance.</li>
-          <li><strong>Attributes</strong>: Review programme features with icons and detailed tooltips.</li>
+          <li><strong>Attributes</strong>: Review programme features with icons and detailed tooltips showing reference levels.</li>
           <li><strong>Inputs</strong>: Configure your scenario using intuitive input cards.</li>
-          <li><strong>WTP Results</strong>: View extra value (in USD) for each feature relative to its baseline.</li>
-          <li><strong>Predicted Program Uptake</strong>: See the estimated participation rate with recommendations.</li>
-          <li><strong>Costs & Benefits</strong>: Detailed analysis with breakdown of cost components and benefit calculations.</li>
+          <li><strong>WTP Results</strong>: View a narrow bar chart of extra value (in USD) for each attribute level (excluding the reference).</li>
+          <li><strong>Predicted Program Uptake</strong>: See the estimated participation rate with tailored recommendations.</li>
+          <li><strong>Costs & Benefits</strong>: Detailed analysis with breakdowns and educational explanations.</li>
           <li><strong>Scenarios</strong>: Save, compare, and export your configurations.</li>
         </ul>
       </div>
@@ -70,16 +71,15 @@
 
     <!-- Instructions Tab -->
     <section id="instructionsTab" class="tabcontent" tabindex="0">
-      <div class="calculation-info">
+      <div class="card calculation-info">
         <h4>How to Use This Tool</h4>
         <div class="vertical-line"></div>
         <ol>
-          <li>Review the <strong>Attributes</strong> tab to learn about each programme feature. Hover over icons to see detailed descriptions and reference levels.</li>
-          <li>In the <strong>Inputs</strong> tab, select your desired levels using input cards (each shows its baseline) and adjust the sliders.</li>
-          <li>Click <strong>"Calculate & View Results"</strong> to immediately open a popup modal summarizing predicted uptake and recommendations.</li>
-          <li>Examine the <strong>WTP Results</strong> tab to view a narrow bar chart for each attribute level (excluding the reference) and a brief explanation of WTP calculation (e.g., difference divided by cost coefficient, scaled by 1000).</li>
-          <li>Review the <strong>Predicted Program Uptake</strong> tab for the full uptake chart and tailored recommendations.</li>
-          <li>Check the <strong>Costs & Benefits</strong> tab for a detailed breakdown (with cost component cards) and an educational explanation.</li>
+          <li>Review the <strong>Attributes</strong> tab to learn about each programme feature. Hover over an icon for detailed description and its reference level.</li>
+          <li>In the <strong>Inputs</strong> tab, select your desired levels using input cards (each shows its reference) and adjust the sliders.</li>
+          <li>Click <strong>"Calculate & View Results"</strong> to open a popup modal summarizing the predicted uptake and recommendations. (The full uptake chart is shown in the Uptake tab.)</li>
+          <li>Examine the <strong>WTP Results</strong> tab to view a narrow bar chart for each non-reference attribute level along with a brief explanation of how WTP is calculated.</li>
+          <li>Review the <strong>Costs & Benefits</strong> tab for a detailed breakdown of cost components (displayed as cards) and benefit calculations.</li>
           <li>Save your scenario in the <strong>Scenarios</strong> tab to compare configurations or export a PDF report.</li>
         </ol>
       </div>
@@ -89,64 +89,100 @@
     <section id="attributesTab" class="tabcontent" tabindex="0">
       <h2>Key Attributes</h2>
       <div class="attributes-list">
-        <!-- Training Level -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Choose between Frontline, Intermediate, or Advanced. (Reference: Advanced)">
+        <!-- Attribute Card 1: Cost per Session -->
+        <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <i class="fa-solid fa-chalkboard-teacher"></i>
+            <svg width="24" height="24" fill="#2980b9" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#2980b9" stroke-width="2" fill="none"/>
+              <path d="M10 15l-3-3 1.4-1.4 1.6 1.6L15 7l1.4 1.4-6.4 6.4z" fill="#2980b9"/>
+            </svg>
+            <div class="tooltip" role="tooltip">
+              The out-of-pocket fee (in AUD) participants pay per session.
+            </div>
           </div>
           <div class="attribute-content">
-            <h4>Training Level</h4>
-            <p>Frontline, Intermediate, Advanced</p>
+            <h4>Cost per Session</h4>
+            <p>The fee paid by participants each session.</p>
           </div>
         </div>
-        <!-- Delivery Method -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Select In-Person, Online, or Hybrid. (Reference: Online)">
+        <!-- Attribute Card 2: Accessibility -->
+        <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <i class="fa-solid fa-laptop-house"></i>
+            <svg width="24" height="24" fill="#e67e22" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#e67e22" stroke-width="2" fill="none"/>
+              <path d="M12 4a8 8 0 0 1 0 16 8 8 0 0 1 0-16z" fill="#e67e22"/>
+            </svg>
+            <div class="tooltip" role="tooltip">
+              <strong>Reference: At Home</strong><br/>Offered locally (up to 12 km) versus in a wider community (50+ km).
+            </div>
           </div>
           <div class="attribute-content">
-            <h4>Delivery Method</h4>
-            <p>In-Person, Online, Hybrid</p>
+            <h4>Accessibility</h4>
+            <p>Local or wider community delivery.</p>
           </div>
         </div>
-        <!-- Accreditation -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Accreditation level. (Reference: None)">
+        <!-- Attribute Card 3: Frequency of Interaction -->
+        <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <i class="fa-solid fa-certificate"></i>
+            <svg width="24" height="24" fill="#27ae60" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#27ae60" stroke-width="2" fill="none"/>
+              <path d="M12 6v6l4 2" stroke="#27ae60" stroke-width="2" fill="none"/>
+            </svg>
+            <div class="tooltip" role="tooltip">
+              <strong>Reference: Daily</strong><br/>Weekly sessions may boost engagement relative to monthly.
+            </div>
           </div>
           <div class="attribute-content">
-            <h4>Accreditation</h4>
-            <p>National, International, None</p>
+            <h4>Frequency of Interaction</h4>
+            <p>Weekly or monthly sessions.</p>
           </div>
         </div>
-        <!-- Location -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Training location. (Reference: District-Level)">
+        <!-- Attribute Card 4: Method of Interaction -->
+        <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <i class="fa-solid fa-map-marker-alt"></i>
+            <svg width="24" height="24" fill="#8e44ad" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#8e44ad" stroke-width="2" fill="none"/>
+              <path d="M8 12h8M12 8v8" stroke="#8e44ad" stroke-width="2" fill="none"/>
+            </svg>
+            <div class="tooltip" role="tooltip">
+              <strong>Reference: In-person</strong><br/>Virtual sessions are online; hybrid sessions combine both.
+            </div>
           </div>
           <div class="attribute-content">
-            <h4>Location</h4>
-            <p>District-Level, State-Level, Regional Centers</p>
+            <h4>Method of Interaction</h4>
+            <p>Virtual or hybrid.</p>
           </div>
         </div>
-        <!-- Cohort Size -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Select the number of participants per batch.">
+        <!-- Attribute Card 5: Duration of Each Interaction -->
+        <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <i class="fa-solid fa-users"></i>
+            <svg width="24" height="24" fill="#3498db" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#3498db" stroke-width="2" fill="none"/>
+              <path d="M12 6v6l4 2" stroke="#3498db" stroke-width="2" fill="none"/>
+            </svg>
+            <div class="tooltip" role="tooltip">
+              <strong>Reference: 30-minute</strong><br/>Longer sessions (2 or 4 hours) affect depth and scheduling.
+            </div>
           </div>
           <div class="attribute-content">
-            <h4>Cohort Size</h4>
-            <p>500, 1000, 2000</p>
+            <h4>Duration of Each Interaction</h4>
+            <p>2-hour or 4-hour sessions.</p>
           </div>
         </div>
-        <!-- Cost per Participant -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Programme cost per participant in USD. (Reference: $1,000)">
+        <!-- Attribute Card 6: Type of Support Programme -->
+        <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <i class="fa-solid fa-dollar-sign"></i>
+            <svg width="24" height="24" fill="#e74c3c" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#e74c3c" stroke-width="2" fill="none"/>
+              <path d="M8 12l2-2 4 4 6-6" stroke="#e74c3c" stroke-width="2" fill="none"/>
+            </svg>
+            <div class="tooltip" role="tooltip">
+              <strong>Reference: Peer Support</strong><br/>Options include community engagement, counselling, or VR-based sessions.
+            </div>
           </div>
           <div class="attribute-content">
-            <h4>Cost per Participant</h4>
-            <p>$500 – $6,000</p>
+            <h4>Type of Support Programme</h4>
+            <p>Community engagement, counselling, or VR-based sessions.</p>
           </div>
         </div>
       </div>
@@ -241,7 +277,7 @@
       <div class="calculation-info">
         <h4>Willingness to Pay (WTP) Results</h4>
         <p>
-          WTP is calculated as the difference in the attribute’s coefficient from its baseline (reference) level divided by the (negative) cost coefficient, then scaled (×1000) to express the value in USD. For example, if Frontline training has a coefficient 0.8 higher than Advanced (reference) and the cost coefficient is –0.0004, the WTP is (0.8/0.0004)*1000 = $2000 extra.
+          WTP is calculated as the difference between an attribute level’s coefficient and its baseline divided by the (negative) cost coefficient, then scaled by 1000 to yield a USD value. Only non-reference levels are shown.
         </p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
@@ -254,7 +290,7 @@
       <div class="calculation-info">
         <h4>Costs & Benefits Analysis</h4>
         <p>
-          Total costs = (Cohort Size × Training Cost). Fixed costs include local press ads, printing, postage, administrative personnel, trainer fees, on-costs, and facilitator salaries. Variable costs include material costs, venue hire, session time, and travel. Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
+          Total costs = (Cohort Size × Training Cost). Fixed costs include local press ads, printing, postage, administrative personnel, trainer fees, on‑costs, and facilitator salaries. Variable costs include material costs, venue hire, session time, and travel. Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
         </p>
         <div class="chart-box">
           <canvas id="cbaChart"></canvas>
