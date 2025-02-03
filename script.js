@@ -1,7 +1,7 @@
 /****************************************************************************
  * SCRIPT.JS
  * Enhanced tabs with SVG icons and tooltips, realistic uptake predictions,
- * detailed cost–benefit analysis with dynamic summary and educational explanations,
+ * detailed cost–benefit analysis with summary and educational explanations,
  * comprehensive WTP calculation (non-reference levels only),
  * scenario management with PDF export, and a modal popup for results.
  *
