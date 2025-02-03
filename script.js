@@ -2,8 +2,8 @@
  * SCRIPT.JS
  * Enhanced tabs, SVG level cards with tooltips, realistic uptake predictions,
  * detailed cost–benefit analysis with educational summaries,
- * comprehensive WTP calculation relative to baseline levels,
- * scenario management with PDF export, and modal popup for results.
+ * comprehensive WTP calculation (non-reference levels only),
+ * scenario management with PDF export, and a modal popup for results.
  *
  * Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
  ****************************************************************************/
@@ -41,7 +41,7 @@ const costDisplay = document.getElementById("cost-per-participant-value");
 costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`;
 costSlider.addEventListener("input", () => { costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`; });
 
-/** Coefficient Estimates (Realistic, with baseline values) */
+/** Coefficient Estimates */
 const coefficients = {
   ASC: 1.0,
   TrainingLevel: { // Baseline: Advanced
@@ -76,7 +76,7 @@ const costBenefitEstimates = {
   Advanced: { cost: 650000, benefit: 2000000 }
 };
 
-/** Global Chart Variables & Data */
+/** Global Variables */
 let uptakeChart, cbaChart, wtpChart;
 let wtpData = [];
 let currentUptake = 0, currentTotalCost = 0, currentTotalBenefit = 0, currentNetBenefit = 0;
@@ -119,7 +119,7 @@ function closeModal() {
   document.getElementById("resultsModal").style.display = "none";
 }
 
-/** Predict Program Uptake & Render Results */
+/** Predict Program Uptake & Render Modal Results */
 document.getElementById("view-results").addEventListener("click", () => {
   const scenario = buildScenarioFromInputs();
   if (!scenario) return;
@@ -138,19 +138,16 @@ document.getElementById("view-results").addEventListener("click", () => {
   predictedUptake = Math.min(Math.max(predictedUptake, 0), 100);
   currentUptake = predictedUptake;
   
-  // Build modal content
+  // Build modal content (only textual summary)
   const modalContent = `
     <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
-    <div class="chart-box">
-      <canvas id="uptakeChart"></canvas>
-    </div>
-    <div class="recommendation">
-      ${predictedUptake < 30 ? "Uptake is low. Consider reducing cost or increasing accessibility." :
-        predictedUptake < 70 ? "Uptake is moderate. Adjust session frequency or cost for improvement." :
-        "Uptake is high. The current configuration is effective."}
-    </div>
+    <p>${predictedUptake < 30 ? "Uptake is low. Consider reducing cost or increasing accessibility." :
+      predictedUptake < 70 ? "Uptake is moderate. Consider adjusting session frequency or cost." :
+      "Uptake is high. The current configuration appears effective."}</p>
   `;
   showResultsModal(modalContent);
+  
+  // Draw Uptake Chart in Uptake Tab
   drawUptakeChart(predictedUptake);
   
   // Compute Cost–Benefit
@@ -161,8 +158,9 @@ document.getElementById("view-results").addEventListener("click", () => {
   currentTotalBenefit = totalBenefit;
   currentNetBenefit = netBenefit;
   
-  // Update Cost-Benefit section (in modal)
-  const cbaContent = `
+  // Update Costs & Benefits Tab content
+  const cbaDiv = document.getElementById("cba-content");
+  cbaDiv.innerHTML = `
     <p>
       <strong>Cost-Benefit Analysis:</strong><br>
       Total cost = Cohort Size × Training Cost.<br>
@@ -312,7 +310,7 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
   });
 }
 
-/** Calculate WTP for Each Attribute Level */
+/** Calculate WTP for Each Attribute Level (Excluding Reference) */
 function calculateWTP(scenario) {
   const benchmarks = {
     TrainingLevel: "Advanced",
@@ -353,7 +351,7 @@ function renderWTPChart() {
   wtpChart = new Chart(ctx, {
     type: "bar",
     data: {
-      labels: labels,
+      labels,
       datasets: [{
         label: "WTP (USD)",
         data: values,
