@@ -3,7 +3,7 @@
  * Enhanced tabs, SVG level cards with tooltips, realistic uptake predictions,
  * detailed cost–benefit analysis with educational summaries,
  * comprehensive WTP calculation relative to baseline levels,
- * and full scenario management with PDF export.
+ * scenario management with PDF export, and modal popup for results.
  *
  * Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
  ****************************************************************************/
@@ -34,18 +34,14 @@ function openTab(tabId, btn) {
 const cohortSlider = document.getElementById("cohort-size");
 const cohortDisplay = document.getElementById("cohort-size-value");
 cohortDisplay.textContent = cohortSlider.value;
-cohortSlider.addEventListener("input", () => {
-  cohortDisplay.textContent = cohortSlider.value;
-});
+cohortSlider.addEventListener("input", () => { cohortDisplay.textContent = cohortSlider.value; });
 
 const costSlider = document.getElementById("cost-per-participant");
 const costDisplay = document.getElementById("cost-per-participant-value");
 costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`;
-costSlider.addEventListener("input", () => {
-  costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`;
-});
+costSlider.addEventListener("input", () => { costDisplay.textContent = `$${parseInt(costSlider.value).toLocaleString()}`; });
 
-/** Coefficient Estimates (Realistic based on literature) */
+/** Coefficient Estimates (Realistic, with baseline values) */
 const coefficients = {
   ASC: 1.0,
   TrainingLevel: { // Baseline: Advanced
@@ -69,7 +65,7 @@ const coefficients = {
     "Regional Centers": 0.3
   },
   CohortSize: -0.002,
-  CostPerParticipant: -0.0004, // per USD
+  CostPerParticipant: -0.0004,
   ASC_optout: 0.3
 };
 
@@ -85,7 +81,7 @@ let uptakeChart, cbaChart, wtpChart;
 let wtpData = [];
 let currentUptake = 0, currentTotalCost = 0, currentTotalBenefit = 0, currentNetBenefit = 0;
 
-/** Random Error Function */
+/** Random Error */
 function getRandomError(min, max) { return Math.random() * (max - min) + min; }
 
 /** Compute Uptake Fraction */
@@ -112,9 +108,19 @@ function buildScenarioFromInputs() {
   return { trainingLevel, deliveryMethod, accreditation, location, cohortSize, cost_per_participant };
 }
 
-/** Predict Program Uptake & Render Charts */
+/** Show Modal with Results */
+function showResultsModal(contentHTML) {
+  const modal = document.getElementById("resultsModal");
+  document.getElementById("modal-results").innerHTML = contentHTML;
+  modal.style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("resultsModal").style.display = "none";
+}
+
+/** Predict Program Uptake & Render Results */
 document.getElementById("view-results").addEventListener("click", () => {
-  document.getElementById("calc-feedback").textContent = "Calculating...";
   const scenario = buildScenarioFromInputs();
   if (!scenario) return;
   
@@ -132,19 +138,19 @@ document.getElementById("view-results").addEventListener("click", () => {
   predictedUptake = Math.min(Math.max(predictedUptake, 0), 100);
   currentUptake = predictedUptake;
   
-  // Update Predicted Uptake Tab
-  const uptakeDiv = document.getElementById("uptake-content");
-  uptakeDiv.innerHTML = `
+  // Build modal content
+  const modalContent = `
     <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
     <div class="chart-box">
       <canvas id="uptakeChart"></canvas>
     </div>
     <div class="recommendation">
-      ${predictedUptake < 30 ? "Uptake is low. Consider reducing costs or increasing accessibility." :
+      ${predictedUptake < 30 ? "Uptake is low. Consider reducing cost or increasing accessibility." :
         predictedUptake < 70 ? "Uptake is moderate. Adjust session frequency or cost for improvement." :
         "Uptake is high. The current configuration is effective."}
     </div>
   `;
+  showResultsModal(modalContent);
   drawUptakeChart(predictedUptake);
   
   // Compute Cost–Benefit
@@ -155,12 +161,12 @@ document.getElementById("view-results").addEventListener("click", () => {
   currentTotalBenefit = totalBenefit;
   currentNetBenefit = netBenefit;
   
-  const cbaDiv = document.getElementById("cba-content");
-  cbaDiv.innerHTML = `
+  // Update Cost-Benefit section (in modal)
+  const cbaContent = `
     <p>
       <strong>Cost-Benefit Analysis:</strong><br>
-      Total cost is calculated as (Cohort Size × Training Cost).<br>
-      Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
+      Total cost = Cohort Size × Training Cost.<br>
+      Benefits = (Cohort Size × 0.05 QALY) × $50,000.
     </p>
     <div class="chart-box">
       <canvas id="cbaChart"></canvas>
@@ -254,11 +260,8 @@ document.getElementById("view-results").addEventListener("click", () => {
   `;
   drawCBAChart(totalCost, totalBenefit, netBenefit);
   
-  // Calculate and Render WTP Chart
   calculateWTP(scenario);
   renderWTPChart();
-  
-  document.getElementById("calc-feedback").textContent = "Calculation complete.";
 });
 
 /** Draw Uptake Chart */
@@ -311,7 +314,6 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
 
 /** Calculate WTP for Each Attribute Level */
 function calculateWTP(scenario) {
-  // Baseline levels for reference:
   const benchmarks = {
     TrainingLevel: "Advanced",
     DeliveryMethod: "Online",
@@ -332,7 +334,7 @@ function calculateWTP(scenario) {
     const wtpVal = diff / -coefficients.CostPerParticipant;
     results.push({
       attribute: attr,
-      wtp: wtpVal * 1000, // scaled to USD $1000 units
+      wtp: wtpVal * 1000,
       se: Math.abs(wtpVal * 1000) * 0.1
     });
   }
@@ -351,7 +353,7 @@ function renderWTPChart() {
   wtpChart = new Chart(ctx, {
     type: "bar",
     data: {
-      labels,
+      labels: labels,
       datasets: [{
         label: "WTP (USD)",
         data: values,
