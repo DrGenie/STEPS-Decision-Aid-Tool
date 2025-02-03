@@ -1,4 +1,4 @@
-/* RESET &aa BASE */
+/* RESET & BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -80,7 +80,7 @@ header p {
   line-height: 1.4;
 }
 
-/* CARD STYLE (for Intro & Instructions) */
+/* CARD STYLE */
 .card {
   background-color: #f7f9fc;
   border-radius: 8px;
