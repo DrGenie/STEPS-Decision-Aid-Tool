@@ -17,8 +17,9 @@
     <header>
       <h1>STEPS Decision Aid Tool</h1>
       <p>
-        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) in India by predicting programme uptake, performing detailed cost–benefit analysis, and evaluating willingness‐to‐pay (WTP) for key features—all in USD.
+        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) in India by predicting programme uptake, performing detailed cost–benefit analysis, and evaluating willingness‐to‐pay (WTP) for key features.
       </p>
+      <div class="vertical-line"></div>
     </header>
 
     <nav class="tabs" role="tablist">
@@ -52,8 +53,9 @@
     <section id="introTab" class="tabcontent" tabindex="0" style="display: block;">
       <div class="intro-box">
         <p>
-          <strong>STEPS</strong> converts technical inputs into clear, actionable insights. It predicts participant uptake, computes cost–benefit outcomes, and evaluates the extra value (WTP) that programme features provide.
+          <strong>STEPS</strong> predicts participant uptake, computes cost–benefit outcomes, and evaluates the extra value (WTP) that programme features provide.
         </p>
+        <div class="vertical-line"></div>
         <ul>
           <li><strong>Instructions</strong>: Step-by-step guidance.</li>
           <li><strong>Attributes</strong>: Review programme features with icons and tooltips.</li>
@@ -70,13 +72,14 @@
     <section id="instructionsTab" class="tabcontent" tabindex="0">
       <div class="calculation-info">
         <h4>How to Use This Tool</h4>
+        <div class="vertical-line"></div>
         <ol>
           <li>Review the <strong>Attributes</strong> tab to learn about each programme feature. Hover over icons for details.</li>
-          <li>In the <strong>Inputs</strong> tab, select your desired levels using the input cards and adjust the sliders.</li>
-          <li>Click <strong>"Calculate & View Results"</strong> to automatically open a popup modal with your results and recommendations.</li>
-          <li>Examine the <strong>WTP Results</strong> tab to see a bar chart comparing each attribute level to its baseline.</li>
-          <li>Review the <strong>Predicted Program Uptake</strong> tab for your estimated participation rate and tailored recommendations.</li>
-          <li>Check the <strong>Costs & Benefits</strong> tab for a detailed breakdown of costs (shown as cards) and benefits with an educational summary.</li>
+          <li>In the <strong>Inputs</strong> tab, select your desired levels using input cards (each displays its reference) and adjust the sliders.</li>
+          <li>Click <strong>"Calculate & View Results"</strong> to open a popup modal with a summary of predicted uptake and recommendations.</li>
+          <li>Examine the <strong>WTP Results</strong> tab for a bar chart comparing each attribute level (except the reference) to the baseline.</li>
+          <li>Review the <strong>Predicted Program Uptake</strong> tab for a full uptake chart with detailed recommendations.</li>
+          <li>Check the <strong>Costs & Benefits</strong> tab for a detailed breakdown of cost components and benefit calculations with an educational explanation.</li>
           <li>Save your scenario in the <strong>Scenarios</strong> tab to compare configurations or export a PDF report.</li>
         </ol>
       </div>
@@ -127,7 +130,7 @@
           </div>
         </div>
         <!-- Cohort Size Card -->
-        <div class="attribute-card" tabindex="0" data-tooltip="Number of participants per batch.">
+        <div class="attribute-card" tabindex="0" data-tooltip="Select the number of participants per batch.">
           <div class="attribute-icon">
             <i class="fa-solid fa-users"></i>
           </div>
@@ -205,6 +208,7 @@
           <button type="button" class="btn btn-primary" id="view-results">
             Calculate & View Results
           </button>
+          <div id="calc-feedback" class="calc-feedback"></div>
         </div>
       </div>
     </section>
@@ -215,7 +219,7 @@
         <span class="close-button" onclick="closeModal()">&times;</span>
         <h3>Calculation Results</h3>
         <div id="modal-results">
-          <!-- Results will be injected here -->
+          <!-- Results injected by script -->
         </div>
       </div>
     </div>
@@ -236,7 +240,9 @@
     <section id="wtpTab" class="tabcontent" tabindex="0">
       <div class="calculation-info">
         <h4>Willingness to Pay (WTP) Results</h4>
-        <p>The chart below shows the extra value (in USD) that participants are willing to pay for each attribute level relative to the baseline.</p>
+        <p>
+          The chart below shows the extra value (in USD) that participants are willing to pay for each attribute level (excluding the baseline) relative to its reference.
+        </p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
         </div>
@@ -248,13 +254,7 @@
       <div class="calculation-info">
         <h4>Costs & Benefits Analysis</h4>
         <p>
-          Total costs are calculated as (Cohort Size × Training Cost) where costs include fixed and variable components:
-          <br>
-          - Fixed costs: Local press ads, printing, postage, administrative personnel, trainer fees, on-costs, facilitator salaries.
-          <br>
-          - Variable costs: Material costs, venue hire, session time, and travel.
-          <br>
-          Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
+          Total costs are calculated as (Cohort Size × Training Cost) where costs include fixed components (local press ads, printing, postage, administrative personnel, trainer fees, on-costs, facilitator salaries) and variable components (material costs, venue hire, session time, travel). Benefits are estimated from QALY gains (assumed 0.05 per participant) multiplied by $50,000 per QALY.
         </p>
         <div class="chart-box">
           <canvas id="cbaChart"></canvas>
@@ -351,7 +351,7 @@
       <div class="calculation-info">
         <h4>Saved Scenarios</h4>
         <p>
-          Your saved scenarios are listed below. Each scenario shows all selected inputs, predicted uptake, and net benefit.
+          Your saved scenarios appear below. Each scenario shows all selected inputs along with predicted uptake and net benefit.
         </p>
         <div class="buttons-row">
           <button class="btn btn-info" id="save-scenario">Save Current Scenario</button>
@@ -378,7 +378,7 @@
       <span class="close-button" onclick="closeModal()">&times;</span>
       <h3>Calculation Results</h3>
       <div id="modal-results">
-        <!-- Results will be injected here by script -->
+        <!-- Results injected by script -->
       </div>
     </div>
   </div>
