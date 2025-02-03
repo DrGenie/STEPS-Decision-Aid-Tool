@@ -8,7 +8,7 @@
  * Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
  ****************************************************************************/
 
-/** Set default tab on load */
+/** Set default tab on page load */
 window.onload = function() {
   openTab('introTab', document.querySelector('.tablink'));
 };
@@ -16,8 +16,8 @@ window.onload = function() {
 /** Tab Switching Function */
 function openTab(tabId, btn) {
   const tabs = document.getElementsByClassName("tabcontent");
-  for (let tab of tabs) { 
-    tab.style.display = "none"; 
+  for (let tab of tabs) {
+    tab.style.display = "none";
   }
   const tabButtons = document.getElementsByClassName("tablink");
   for (let button of tabButtons) {
@@ -28,13 +28,8 @@ function openTab(tabId, btn) {
   btn.classList.add("active");
   btn.setAttribute("aria-selected", "true");
 
-  // Update charts when switching to their tabs
-  if (tabId === "wtpTab") {
-    renderWTPChart();
-  }
-  if (tabId === "cbaTab") {
-    renderCostsBenefits();
-  }
+  if (tabId === "wtpTab") renderWTPChart();
+  if (tabId === "cbaTab") renderCostsBenefits();
 }
 
 /** Range Slider Updates */
@@ -91,14 +86,14 @@ const costBenefitEstimates = {
 let uptakeChart, cbaChart, wtpChart;
 let wtpData = [];
 let currentUptake = 0, currentTotalCost = 0, currentTotalBenefit = 0, currentNetBenefit = 0;
-const baseCohortSize = 250; // Base cohort size used for uptake calculations
+const baseCohortSize = 250; // Base cohort used for dynamic calculations
 
 /** Utility: Random Error */
 function getRandomError(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-/** Compute Uptake Fraction using logit model */
+/** Compute Uptake Fraction using a logit model */
 function computeUptakeFraction(sc) {
   const U_alt = coefficients.ASC +
     coefficients.TrainingLevel[sc.trainingLevel] +
@@ -144,26 +139,22 @@ document.getElementById("view-results").addEventListener("click", () => {
     coefficients.Location[scenario.location] +
     coefficients.CohortSize * scenario.cohortSize +
     coefficients.CostPerParticipant * scenario.cost_per_participant;
-  
   const uptakeFraction = Math.exp(utility) / (Math.exp(utility) + Math.exp(coefficients.ASC_optout));
   let predictedUptake = uptakeFraction * 100;
   predictedUptake += getRandomError(-3, 3);
   predictedUptake = Math.min(Math.max(predictedUptake, 0), 100);
   currentUptake = predictedUptake;
   
-  // Modal summary content
   const modalContent = `
     <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
     <p>${predictedUptake < 30 ? "Uptake is low. Consider reducing costs or improving local accessibility." :
-      predictedUptake < 70 ? "Uptake is moderate. Consider revising your input selections for improvement." :
+      predictedUptake < 70 ? "Uptake is moderate. Review your input selections for potential improvements." :
       "Uptake is high. The current configuration appears effective."}</p>
   `;
   showResultsModal(modalContent);
   
-  // Draw full Uptake Chart in Uptake Tab
   drawUptakeChart(predictedUptake);
   
-  // Compute Cost–Benefit Values
   const totalCost = scenario.cohortSize * costBenefitEstimates[scenario.trainingLevel].cost;
   const totalBenefit = scenario.cohortSize * costBenefitEstimates[scenario.trainingLevel].benefit;
   const netBenefit = totalBenefit - totalCost;
@@ -171,10 +162,9 @@ document.getElementById("view-results").addEventListener("click", () => {
   currentTotalBenefit = totalBenefit;
   currentNetBenefit = netBenefit;
   
-  // Update dynamic summary in Costs & Benefits Tab
   const participants = (predictedUptake / 100) * baseCohortSize;
   const qalyScenario = document.getElementById("qalySelect").value;
-  let qalyPerParticipant = 0.05; // default moderate
+  let qalyPerParticipant = 0.05;
   if (qalyScenario === "low") qalyPerParticipant = 0.02;
   else if (qalyScenario === "high") qalyPerParticipant = 0.1;
   const totalQALYs = participants * qalyPerParticipant;
@@ -199,7 +189,7 @@ document.getElementById("view-results").addEventListener("click", () => {
   renderWTPChart();
 });
 
-/** Draw Uptake Chart (in Uptake Tab) */
+/** Draw Uptake Chart */
 function drawUptakeChart(uptakeVal) {
   const ctx = document.getElementById("uptakeChart").getContext("2d");
   if (uptakeChart) uptakeChart.destroy();
@@ -243,9 +233,7 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: {
-        y: { beginAtZero: true }
-      },
+      scales: { y: { beginAtZero: true } },
       plugins: {
         title: {
           display: true,
@@ -257,9 +245,9 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
   });
 }
 
-/** Calculate WTP for Each Attribute Level (Exclude Reference Levels) */
+/** Calculate WTP for Each Attribute Level (non-reference only) */
 function calculateWTP(scenario) {
-  // Benchmark (reference) levels:
+  // Benchmarks (reference levels):
   const benchmarks = {
     TrainingLevel: "Advanced",
     DeliveryMethod: "Online",
@@ -277,7 +265,7 @@ function calculateWTP(scenario) {
   let results = [];
   for (let attr in diffs) {
     const diff = diffs[attr];
-    if (Math.abs(diff) < 1e-6) continue; // skip if same as reference
+    if (Math.abs(diff) < 1e-6) continue; // skip if equal to reference
     const wtpVal = diff / -coefficients.CostPerParticipant;
     results.push({
       attribute: attr,
@@ -386,7 +374,6 @@ function updateScenarioList() {
 
 function loadScenario(index) {
   const s = savedScenarios[index];
-  // For categorical attributes, set the radio buttons based on the stored scenario
   document.querySelector(`input[name="training-level"][value="${s.details.trainingLevel}"]`).checked = true;
   document.querySelector(`input[name="delivery-method"][value="${s.details.deliveryMethod}"]`).checked = true;
   document.querySelector(`input[name="accreditation"][value="${s.details.accreditation}"]`).checked = true;
