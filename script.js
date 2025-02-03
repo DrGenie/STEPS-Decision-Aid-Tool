@@ -1,8 +1,8 @@
 /****************************************************************************
  * SCRIPT.JS
- * Enhanced tabs, SVG level cards with tooltips, realistic uptake predictions,
+ * Enhanced tabs with SVG icons and tooltips, realistic uptake predictions,
  * detailed cost–benefit analysis with educational summaries,
- * comprehensive WTP calculation (non-reference levels only),
+ * comprehensive WTP calculation for non-reference levels,
  * scenario management with PDF export, and a modal popup for results.
  *
  * Author: Mesfin Genie, Newcastle Business School, University of Newcastle, Australia
@@ -81,7 +81,7 @@ let uptakeChart, cbaChart, wtpChart;
 let wtpData = [];
 let currentUptake = 0, currentTotalCost = 0, currentTotalBenefit = 0, currentNetBenefit = 0;
 
-/** Random Error */
+/** Random Error Function */
 function getRandomError(min, max) { return Math.random() * (max - min) + min; }
 
 /** Compute Uptake Fraction */
@@ -114,12 +114,11 @@ function showResultsModal(contentHTML) {
   document.getElementById("modal-results").innerHTML = contentHTML;
   modal.style.display = "block";
 }
-
 function closeModal() {
   document.getElementById("resultsModal").style.display = "none";
 }
 
-/** Predict Program Uptake & Render Modal Results */
+/** Predict Program Uptake & Render Modal Summary */
 document.getElementById("view-results").addEventListener("click", () => {
   const scenario = buildScenarioFromInputs();
   if (!scenario) return;
@@ -131,14 +130,13 @@ document.getElementById("view-results").addEventListener("click", () => {
     coefficients.Location[scenario.location] +
     coefficients.CohortSize * scenario.cohortSize +
     coefficients.CostPerParticipant * scenario.cost_per_participant;
-    
   const uptakeFraction = Math.exp(utility) / (Math.exp(utility) + Math.exp(coefficients.ASC_optout));
   let predictedUptake = uptakeFraction * 100;
   predictedUptake += getRandomError(-3, 3);
   predictedUptake = Math.min(Math.max(predictedUptake, 0), 100);
   currentUptake = predictedUptake;
   
-  // Build modal content (only textual summary)
+  // Build modal summary content
   const modalContent = `
     <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
     <p>${predictedUptake < 30 ? "Uptake is low. Consider reducing cost or increasing accessibility." :
@@ -147,7 +145,7 @@ document.getElementById("view-results").addEventListener("click", () => {
   `;
   showResultsModal(modalContent);
   
-  // Draw Uptake Chart in Uptake Tab
+  // Draw full Uptake Chart in Uptake Tab
   drawUptakeChart(predictedUptake);
   
   // Compute Cost–Benefit
@@ -158,7 +156,6 @@ document.getElementById("view-results").addEventListener("click", () => {
   currentTotalBenefit = totalBenefit;
   currentNetBenefit = netBenefit;
   
-  // Update Costs & Benefits Tab content
   const cbaDiv = document.getElementById("cba-content");
   cbaDiv.innerHTML = `
     <p>
@@ -310,7 +307,7 @@ function drawCBAChart(totalCost, totalBenefit, netBenefit) {
   });
 }
 
-/** Calculate WTP for Each Attribute Level (Excluding Reference) */
+/** Calculate WTP for Each Attribute Level (Exclude baseline if difference==0) */
 function calculateWTP(scenario) {
   const benchmarks = {
     TrainingLevel: "Advanced",
@@ -329,6 +326,7 @@ function calculateWTP(scenario) {
   let results = [];
   for (let attr in diffs) {
     const diff = diffs[attr];
+    if (Math.abs(diff) < 0.000001) continue; // skip if reference level
     const wtpVal = diff / -coefficients.CostPerParticipant;
     results.push({
       attribute: attr,
@@ -339,7 +337,7 @@ function calculateWTP(scenario) {
   wtpData = results;
 }
 
-/** Render WTP Chart */
+/** Render WTP Chart (narrow bars) */
 function renderWTPChart() {
   const ctx = document.getElementById("wtpChartMain").getContext("2d");
   if (wtpChart) wtpChart.destroy();
@@ -358,6 +356,7 @@ function renderWTPChart() {
         backgroundColor: values.map(v => v >= 0 ? "rgba(0,123,255,0.6)" : "rgba(220,53,69,0.6)"),
         borderColor: values.map(v => v >= 0 ? "rgba(0,123,255,1)" : "rgba(220,53,69,1)"),
         borderWidth: 1,
+        maxBarThickness: 40,
         error: errors
       }]
     },
