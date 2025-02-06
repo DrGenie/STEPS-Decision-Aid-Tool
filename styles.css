@@ -1,4 +1,4 @@
-/* RESETt & asBASE */
+/* RESET & BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -166,43 +166,6 @@ header p {
   color: #7f8c8d;
 }
 
-/* INFO BUTTONS & TOOLTIP */
-.info-container {
-  position: relative;
-  display: inline-block;
-}
-.info-button {
-  background: none;
-  border: none;
-  margin-left: 5px;
-  cursor: pointer;
-}
-.info-button i {
-  color: #2980b9;
-  font-size: 0.8em;
-}
-.tooltip {
-  visibility: hidden;
-  width: 220px;
-  background-color: #2c3e50;
-  color: #fff;
-  font-size: 0.8em;
-  padding: 6px;
-  border-radius: 4px;
-  position: absolute;
-  z-index: 10;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.attribute-card:hover .tooltip,
-.attribute-card:focus-within .tooltip {
-  visibility: visible;
-  opacity: 1;
-}
-
 /* ATTRIBUTE CARDS */
 .attributes-list {
   display: flex;
@@ -215,7 +178,7 @@ header p {
   border: 1px solid #bdc3c7;
   border-radius: 8px;
   padding: 15px;
-  width: calc(50% - 20px); /* Two per row on larger screens */
+  width: calc(50% - 20px); /* Two per row on wide screens */
   display: flex;
   align-items: center;
   gap: 15px;
@@ -230,6 +193,29 @@ header p {
 .attribute-icon {
   font-size: 2em;
   color: #2980b9;
+}
+
+/* TOOLTIP */
+.tooltip {
+  visibility: hidden;
+  width: 220px;
+  background-color: #2c3e50;
+  color: #fff;
+  font-size: 0.8em;
+  padding: 6px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%,10px);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.attribute-card:hover .tooltip,
+.attribute-card:focus-within .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 .attribute-content h4 {
   font-size: 1.1em;
@@ -256,7 +242,13 @@ header p {
   max-height: 280px;
 }
 
-/* SUMMARY TABLE */
+/* CALCULATION INFO AND TABLES */
+.calculation-info {
+  background-color: #f7f9fc;
+  border: 1px solid #bdc3c7;
+  border-radius: 8px;
+  padding: 15px;
+}
 .summary-table {
   margin-top: 20px;
 }
@@ -321,7 +313,7 @@ header p {
   gap: 10px;
 }
 
-/* CALCULATION FEEDBACK */
+/* CALC FEEDBACK */
 .calc-feedback {
   font-size: 0.95em;
   color: #2980b9;
