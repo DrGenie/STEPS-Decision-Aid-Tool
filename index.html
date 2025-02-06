@@ -19,7 +19,7 @@
       <p>
         This tool helps decision makers plan and scale Field Epidemiology Training Programs (FETP) in India by predicting programme uptake, performing cost–benefit analyses, and evaluating willingness‐to‐pay (WTP) for six key attributes (all in USD).
       </p>
-      <div class="vertical-line"></div>
+      <hr class="intro-hr" />
     </header>
 
     <nav class="tabs" role="tablist">
@@ -53,18 +53,14 @@
     <section id="introTab" class="tabcontent" tabindex="0" style="display: block;">
       <div class="card">
         <h2>Introduction</h2>
-        <p>
-          <strong>STEPS</strong> converts your inputs into clear, actionable insights. It predicts participant uptake, computes a cost–benefit summary, and evaluates extra value (WTP) for six attributes of an FETP.
-        </p>
-        <div class="vertical-line"></div>
-        <ul>
-          <li><strong>Instructions</strong>: Step-by-step guidance.</li>
-          <li><strong>Attributes</strong>: Overview of six attributes with reference levels.</li>
-          <li><strong>Inputs</strong>: Select non-reference levels (radio buttons) and adjust the two sliders for continuous attributes.</li>
-          <li><strong>WTP Results</strong>: A bar chart of extra value for each non-reference discrete level.</li>
-          <li><strong>Predicted Program Uptake</strong>: Estimated uptake chart with dynamic suggestions.</li>
-          <li><strong>Costs &amp; Benefits</strong>: QALY scenario selection, summary table, bar chart, and cost breakdown cards.</li>
-          <li><strong>Scenarios</strong>: Save, compare, or export your configurations to PDF.</li>
+        <ul class="intro-list">
+          <li><strong>Instructions</strong>: Step-by-step guidance on usage.</li>
+          <li><strong>Attributes</strong>: Overview of six attributes with reference baselines and helpful icons.</li>
+          <li><strong>Inputs</strong>: Select non-reference levels for the four discrete attributes; adjust two sliders for Cohort Size and Cost per Participant.</li>
+          <li><strong>WTP Results</strong>: A bar chart of extra value for each non-reference level (including continuous attributes now).</li>
+          <li><strong>Predicted Program Uptake</strong>: Estimated uptake chart with scenario-specific suggestions.</li>
+          <li><strong>Costs &amp; Benefits</strong>: Dynamic summary, QALY scenario selection, bar chart, cost breakdown cards.</li>
+          <li><strong>Scenarios</strong>: Save, compare, or export your configurations in PDF.</li>
         </ul>
       </div>
     </section>
@@ -73,14 +69,14 @@
     <section id="instructionsTab" class="tabcontent" tabindex="0">
       <div class="card calculation-info">
         <h4>How to Use This Tool</h4>
-        <div class="vertical-line"></div>
-        <ol>
-          <li>Check <strong>Attributes</strong> to learn about each attribute’s reference baseline. Hover over icons for tips.</li>
-          <li>In <strong>Inputs</strong>, select only non-reference options for the four discrete attributes. Adjust the two continuous sliders for <em>Cohort Size</em> and <em>Cost per Participant</em>.</li>
-          <li>Click <strong>"Calculate &amp; View Results"</strong> to see a modal with predicted uptake. A doughnut chart in <strong>Predicted Program Uptake</strong> also updates.</li>
-          <li><strong>WTP Results</strong> always shows a static chart for each non-reference discrete attribute level (independent of your scenario).</li>
-          <li>Check <strong>Costs &amp; Benefits</strong> for a dynamic summary, bar chart, and cost breakdown. Choose a QALY scenario: Low, Moderate, or High.</li>
-          <li>In <strong>Scenarios</strong>, save or export multiple configurations to PDF.</li>
+        <hr class="intro-hr" />
+        <ol class="instructions-list">
+          <li>Review the <strong>Attributes</strong> tab for reference baselines and info icons.</li>
+          <li>In the <strong>Inputs</strong> tab, select only non-reference levels for Training Level, Delivery Method, Accreditation, and Location. Adjust <em>Cohort Size</em> and <em>Cost per Participant</em> sliders from their baseline (1000 and 3000 USD).</li>
+          <li>Click <strong>"Calculate &amp; View Results"</strong> for a summary of predicted uptake. The <strong>Predicted Program Uptake</strong> tab displays a doughnut chart.</li>
+          <li><strong>WTP Results</strong> shows the bar chart for non-reference discrete levels, plus computed WTP for 1-unit changes in Cohort Size and Cost per Participant relative to their baselines.</li>
+          <li><strong>Costs &amp; Benefits</strong> integrates the user scenario with a QALY scenario selector, summary table, bar chart, and cost breakdown cards.</li>
+          <li><strong>Scenarios</strong> can be saved, loaded, or exported to PDF. Each scenario includes all chosen attributes, predicted uptake, and net benefit.</li>
         </ol>
       </div>
     </section>
@@ -93,82 +89,82 @@
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <i class="fa-solid fa-user-graduate" style="color:#2980b9;font-size:1.7em;"></i>
-            <div class="tooltip" role="tooltip">
+            <div class="tooltip" role="tooltip" style="font-size:0.85em;">
               <strong>Reference:</strong> Advanced<br/>
               Non-reference: Frontline, Intermediate
             </div>
           </div>
           <div class="attribute-content">
             <h4>Training Level</h4>
-            <p>Frontline, Intermediate, or Advanced</p>
+            <p>Frontline, Intermediate, Advanced</p>
           </div>
         </div>
         <!-- 2: Delivery Method -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <i class="fa-solid fa-laptop-house" style="color:#8e44ad;font-size:1.7em;"></i>
-            <div class="tooltip" role="tooltip">
+            <div class="tooltip" role="tooltip" style="font-size:0.85em;">
               <strong>Reference:</strong> Online<br/>
               Non-reference: In-Person, Hybrid
             </div>
           </div>
           <div class="attribute-content">
             <h4>Delivery Method</h4>
-            <p>In-Person, Online, or Hybrid</p>
+            <p>In-Person, Online, Hybrid</p>
           </div>
         </div>
         <!-- 3: Accreditation -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <i class="fa-solid fa-certificate" style="color:#27ae60;font-size:1.7em;"></i>
-            <div class="tooltip" role="tooltip">
+            <div class="tooltip" role="tooltip" style="font-size:0.85em;">
               <strong>Reference:</strong> None<br/>
               Non-reference: National, International
             </div>
           </div>
           <div class="attribute-content">
             <h4>Accreditation</h4>
-            <p>National, International, or None</p>
+            <p>National, International, None</p>
           </div>
         </div>
         <!-- 4: Location -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <i class="fa-solid fa-location-dot" style="color:#e67e22;font-size:1.7em;"></i>
-            <div class="tooltip" role="tooltip">
+            <div class="tooltip" role="tooltip" style="font-size:0.85em;">
               <strong>Reference:</strong> District-Level<br/>
               Non-reference: State-Level, Regional Centers
             </div>
           </div>
           <div class="attribute-content">
             <h4>Location</h4>
-            <p>District-Level, State-Level, or Regional Centers</p>
+            <p>District-Level, State-Level, Regional Centers</p>
           </div>
         </div>
-        <!-- 5: Cohort Size (continuous) -->
+        <!-- 5: Cohort Size (continuous, baseline 1000) -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <i class="fa-solid fa-users-line" style="color:#3498db;font-size:1.7em;"></i>
-            <div class="tooltip" role="tooltip">
-              No fixed reference. Configure via slider in Inputs tab.
+            <div class="tooltip" role="tooltip" style="font-size:0.85em;">
+              <strong>Baseline:</strong> 1000
             </div>
           </div>
           <div class="attribute-content">
             <h4>Cohort Size</h4>
-            <p>A continuous attribute (500–2000 range).</p>
+            <p>A continuous attribute (slider 500–2000). Baseline is 1000.</p>
           </div>
         </div>
         <!-- 6: Cost per Participant -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <i class="fa-solid fa-dollar-sign" style="color:#e74c3c;font-size:1.7em;"></i>
-            <div class="tooltip" role="tooltip">
-              No fixed reference. Configure via slider in Inputs tab.
+            <div class="tooltip" role="tooltip" style="font-size:0.85em;">
+              <strong>Baseline:</strong> 3000 USD
             </div>
           </div>
           <div class="attribute-content">
             <h4>Cost per Participant (USD)</h4>
-            <p>A continuous attribute (range 500–6000 USD).</p>
+            <p>A continuous attribute (slider 500–6000). Baseline is $3000.</p>
           </div>
         </div>
       </div>
@@ -179,7 +175,7 @@
       <h2>Configure Your Scenario</h2>
       <div class="input-card">
         <h3>Programme Inputs</h3>
-        <p>Select non-reference radio buttons for the four discrete attributes, then adjust the two sliders for Cohort Size and Cost per Participant.</p>
+        <p>Select only non-reference levels for the four discrete attributes. Adjust the two sliders from their baselines (1000 for Cohort Size, $3000 for Cost).</p>
         <div class="form-grid">
           <!-- 1: Training Level (Ref: Advanced) -->
           <div class="input-summary-card">
@@ -241,7 +237,7 @@
         <span class="close-button" onclick="closeModal()">&times;</span>
         <h3>Calculation Results</h3>
         <div id="modal-results">
-          <!-- Results injected by script -->
+          <!-- Results from script.js -->
         </div>
       </div>
     </div>
@@ -262,8 +258,9 @@
       <div class="calculation-info">
         <h4>Willingness to Pay (WTP) Results</h4>
         <p>
-          This chart shows extra value (in USD) for non-reference levels of the four discrete attributes. 
-          Continuous attributes (Cohort Size and Cost per Participant) do not appear in WTP calculations.
+          This chart shows extra value (in USD) for each non-reference attribute level compared to its reference. 
+          Continuous attributes (Cohort Size &amp; Cost/Participant) are included as +1 increments above baseline 
+          (1000 for Cohort Size, $3000 for Cost).
         </p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
@@ -276,19 +273,19 @@
       <div id="cba-content" class="calculation-info">
         <h4>Costs &amp; Benefits Analysis</h4>
         <p>
-          Total costs = (Cohort Size × Training Cost). Benefits are derived from QALY gains multiplied by $50,000. 
-          You can choose a QALY scenario here:
+          Total costs = (Cohort Size × Training Cost). Benefits are derived from QALY gains (Low=0.02, Moderate=0.05, High=0.1) 
+          multiplied by $50,000. Adjust the scenario in <strong>Inputs</strong>, then revisit here to see updated details.
         </p>
         <div class="qaly-selector">
           <label for="qalySelect">Select QALY Gain Scenario:</label>
-          <select id="qalySelect">
+          <select id="qalySelect" onchange="renderCostsBenefits()">
             <option value="low">Low (0.02 QALYs)</option>
             <option value="moderate" selected>Moderate (0.05 QALYs)</option>
             <option value="high">High (0.1 QALYs)</option>
           </select>
         </div>
         <div class="dynamic-summary" id="cba-summary">
-          <!-- Dynamic summary table injected by script -->
+          <!-- Summary table from script.js -->
         </div>
         <div class="chart-box">
           <canvas id="cbaChart"></canvas>
@@ -373,14 +370,14 @@
         <h4>Saved Scenarios</h4>
         <p>
           Below are your saved scenarios, each with chosen inputs, predicted uptake, and net benefit. 
-          You can load or delete them, or export all to PDF.
+          You can load or delete them, or export them all to PDF.
         </p>
         <div class="buttons-row">
           <button class="btn btn-info" id="save-scenario">Save Current Scenario</button>
           <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
         </div>
         <div class="scenario-list" id="saved-scenarios-list">
-          <!-- scenario items injected by script.js -->
+          <!-- scenario items from script.js -->
         </div>
       </div>
     </section>
@@ -399,9 +396,7 @@
     <div class="modal-content">
       <span class="close-button" onclick="closeModal()">&times;</span>
       <h3>Calculation Results</h3>
-      <div id="modal-results">
-        <!-- Results injected by script.js -->
-      </div>
+      <div id="modal-results"></div>
     </div>
   </div>
 
