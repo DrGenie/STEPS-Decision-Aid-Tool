@@ -1,7 +1,7 @@
 /****************************************************************************
  * SCRIPT.JS
  * Implementation details for STEPS tool with cost mapped from slider 0–250
- * to $60–$1500 internally. QALY scenarios: Low=0.01, Mod=0.05, High=0.08
+ * to $60–$1500 internally. QALY scenarioss: Low=0.01, Mod=0.05, High=0.08
  * for an India-specific placeholder. Tooltips are 0.8em, icons added.
  ****************************************************************************/
 
