@@ -1,4 +1,4 @@
-/* RESETt & BASE */
+/* RESET & BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -169,10 +169,6 @@ header p {
   margin-bottom: 5px;
   color: #2c3e50;
   font-size: 1em;
-}
-.input-summary-card .reference {
-  font-size: 0.85em;
-  color: #7f8c8d;
 }
 
 /* ATTRIBUTE CARDS */
