@@ -158,27 +158,22 @@ header p {
 .table-container {
   overflow-x: auto;
 }
-#scenarioTable,
 #FETPScenarioTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
 }
-#scenarioTable th,
-#scenarioTable td,
 #FETPScenarioTable th,
 #FETPScenarioTable td {
   border: 1px solid #bdc3c7;
   padding: 10px;
   text-align: center;
 }
-#scenarioTable th,
 #FETPScenarioTable th {
   background-color: #2980b9;
   color: #fff;
   font-weight: 600;
 }
-#scenarioTable tr:nth-child(even),
 #FETPScenarioTable tr:nth-child(even) {
   background-color: #f2f2f2;
 }
@@ -281,7 +276,7 @@ footer {
 
 /* RESPONSIVE */
 @media (max-width: 992px) {
-  .attribute-card, .cost-card {
+  .cost-card {
     width: calc(50% - 20px);
   }
 }
@@ -301,7 +296,7 @@ footer {
   .input-cards {
     flex-direction: column;
   }
-  .attributes-list, .cost-cards {
+  .cost-cards {
     flex-direction: column;
   }
 }
