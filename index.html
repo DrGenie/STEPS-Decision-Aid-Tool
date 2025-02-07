@@ -19,7 +19,7 @@
       <p>
         This tool helps decision makers in India plan and scale Field Epidemiology Training Programs (FETP) 
         by predicting programme uptake, performing cost–benefit analyses, 
-        and evaluating willingness‐to‐pay for key attributes.
+        and evaluating willingness‐to‐pay for six attributes in USD.
       </p>
       <hr class="intro-hr" />
     </header>
@@ -56,11 +56,10 @@
       <div class="card">
         <h2>Introduction</h2>
         <ul class="intro-list">
-          <li><strong>Instructions</strong>: Step-by-step usage guide.</li>
-          <li><strong>Attributes</strong>: Four discrete (with references) plus two continuous (Cohort Size; Cost mapped \$60–\$1500). 
-          Tooltips in smaller font, color #2e4053 background.</li>
-          <li><strong>WTP Results</strong>: Extra value for each non-reference discrete level plus a +1 increment for the continuous attributes.</li>
-          <li><strong>Costs &amp; Benefits</strong>: QALY scenario (Low=0.01, Mod=0.05, High=0.08) for India, cost breakdown cards.</li>
+          <li><strong>Instructions</strong>: Step-by-step usage details.</li>
+          <li><strong>Attributes</strong>: Four discrete (with references) plus two continuous attributes for FETP scaling.</li>
+          <li><strong>WTP Results</strong>: Extra value for each non-ref discrete level plus +1 increments in continuous attributes. Now includes corrected script for tab interactivity.</li>
+          <li><strong>Costs &amp; Benefits</strong>: QALY scenario (Low=0.01, Moderate=0.05, High=0.08), plus cost breakdown cards for educational context.</li>
         </ul>
       </div>
     </section>
@@ -71,24 +70,20 @@
         <h4>How to Use This Tool</h4>
         <hr class="intro-hr" />
         <ol class="instructions-list">
-          <li>Review each <strong>Attribute</strong> for discrete references or continuous ranges. Hover over icons for details (0.75em tooltips).</li>
-          <li>In <strong>Inputs</strong>, 
+          <li>Check the <strong>Attributes</strong> tab for reference levels or continuous ranges. Hover over icons for detailed descriptions (0.75em tooltip font).</li>
+          <li>In <strong>Inputs</strong>:
             <ul style="margin-left:1.5em; list-style-type:circle;">
-              <li>Select non-reference radio buttons for discrete attributes (Training, Delivery, Accreditation, Location). 
-                  Reference levels are not selectable.</li>
-              <li>Pick a Cohort Size slider value (range 500–2000). 
-                  The selected value is displayed in real-time.</li>
-              <li>Pick a Cost slider value from 0–250, linearly mapped to \$60–\$1500. E.g., 
-                  slider=125 => about \$780. 
-              </li>
+              <li>Select non-reference radio buttons for Training, Delivery, Accreditation, and Location attributes.</li>
+              <li>Adjust <em>Cohort Size</em> (slider 500–2000). The chosen value is displayed next to the slider.</li>
+              <li>Adjust the <em>Cost</em> slider 0–250, which we map to \$60–\$1500 internally. E.g., 125 => about \$780. 
+                  This addresses user preferences for cost from \$60 to \$1500 with 4 potential levels in the logit but a single slider for simplicity.</li>
             </ul>
           </li>
-          <li>Click <strong>“Calculate &amp; View Results”</strong> to see predicted uptake. 
-              The <strong>Predicted Program Uptake</strong> tab displays a doughnut chart with the new estimate.</li>
-          <li>Check <strong>WTP Results</strong> for a bar chart of each non-ref discrete level plus +1 increments in the continuous attributes, with ±10% error bars.</li>
-          <li>Under <strong>Costs &amp; Benefits</strong>, pick a QALY scenario (Low=0.01, Mod=0.05, High=0.08). A table and bar chart update showing total cost, net benefit, QALYs, and monetized benefits. 
-          Educational text explains cost components.</li>
-          <li><strong>Scenarios</strong> can be saved or reloaded. You can export them to PDF for easy reference in policy discussions.</li>
+          <li>Click <strong>"Calculate &amp; View Results"</strong> to see a modal with the predicted uptake. The <strong>Predicted Program Uptake</strong> tab shows a doughnut chart. No random noise is used for repeated calculations of the same scenario.</li>
+          <li>Check <strong>WTP Results</strong> to see each non-ref discrete level plus +1 increments in continuous attributes, with ±10% error bars. The script has been fixed, so tabs remain active.</li>
+          <li>Under <strong>Costs &amp; Benefits</strong>, pick a QALY scenario (Low=0.01, Mod=0.05, High=0.08). A summary table and bar chart appear showing total cost, net benefit, QALYs, etc. 
+              The cost breakdown is purely illustrative for educational context.</li>
+          <li><strong>Scenarios</strong> can be saved and exported to PDF. Each scenario includes your attribute choices plus the predicted uptake and net benefit.</li>
         </ol>
       </div>
     </section>
@@ -101,14 +96,15 @@
         <!-- 1: Training Level -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <!-- Replaced with an SVG icon for a more unique visual -->
+            <!-- Example SVG icon for demonstration -->
             <svg width="32" height="32" fill="#2980b9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
               <path d="M32 6L2 18l30 12 30-12L32 6zM2 28v4l28 11v10l-4 2v5l10 0v-5l-4-2v-10l28-11v-4l-28 11L2 28z"/>
             </svg>
             <div class="tooltip" role="tooltip" style="font-size:0.75em; background-color:#2e4053;">
               <strong>Reference: Advanced</strong> <br/>
-              Non-reference: Frontline, Intermediate. 
-              Training level affects leadership scope and complexity of epidemiologic tasks.
+              Non-reference levels are Frontline and Intermediate. 
+              <br/><br/>
+              <em>Training Level</em> determines the scope of applied epidemiologic skills, leadership tasks, and the typical seniority of participants in the FETP.
             </div>
           </div>
           <div class="attribute-content">
@@ -124,8 +120,10 @@
               <path d="M10 20h44v24H10V20zM8 16v32h48V16H8zM12 52h36v4H12v-4z"/>
             </svg>
             <div class="tooltip" role="tooltip" style="font-size:0.75em; background-color:#2e4053;">
-              <strong>Reference: Online</strong><br/>
-              Non-reference: In-Person, Hybrid. Delivery mode influences accessibility and hands-on practice.
+              <strong>Reference: Online</strong> <br/>
+              Non-reference: In-Person, Hybrid. 
+              <br/><br/>
+              <em>Delivery Method</em> can influence how participants engage and practice hands-on skills. In-person fosters direct mentorship, while hybrid blends online convenience with some physical sessions.
             </div>
           </div>
           <div class="attribute-content">
@@ -142,7 +140,9 @@
             </svg>
             <div class="tooltip" role="tooltip" style="font-size:0.75em; background-color:#2e4053;">
               <strong>Reference: None</strong><br/>
-              Non-ref: National, International. Accreditation can boost program recognition and global acceptance.
+              Non-ref: National, International. 
+              <br/><br/>
+              <em>Accreditation</em> can formalize the FETP certificate or diploma. National accreditation aids local acceptance, while international accreditation can expand global recognition.
             </div>
           </div>
           <div class="attribute-content">
@@ -159,7 +159,9 @@
             </svg>
             <div class="tooltip" role="tooltip" style="font-size:0.75em; background-color:#2e4053;">
               <strong>Reference: District-Level</strong><br/>
-              Non-ref: State-Level, Regional. Where training primarily occurs can affect scope and resource availability.
+              Non-ref: State-Level, Regional Centers.
+              <br/><br/>
+              <em>Location</em> addresses the primary base of FETP activities. District-level focuses local issues; state or regional expansions can tackle broader population health.
             </div>
           </div>
           <div class="attribute-content">
@@ -176,29 +178,32 @@
               <path d="M2 32h8m44 0h8m-30 30v-8m0-44V2m-8 6l-6 6m20-6l6 6"/>
             </svg>
             <div class="tooltip" role="tooltip" style="font-size:0.75em; background-color:#2e4053;">
-              Adjustable from 500–2000. Larger cohorts can expand workforce capacity but may require more resources.
+              Range: 500–2000. 
+              <br/><br/>
+              <em>Cohort Size</em> influences the total number of participants in each FETP intake. Larger cohorts can strengthen the public health workforce but may need increased resources.
             </div>
           </div>
           <div class="attribute-content">
             <h4>Cohort Size</h4>
-            <p>Continuous slider 500–2000. No reference displayed.</p>
+            <p>Continuous slider: 500–2000</p>
           </div>
         </div>
 
-        <!-- 6: Cost -->
+        <!-- 6: Cost (0..250 => $60..$1500) -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
             <svg width="32" height="32" fill="#e74c3c" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
               <path d="M32 2C16.54 2 4 14.54 4 30s12.54 28 28 28 28-12.54 28-28S47.46 2 32 2zm2 44h-4v-4h4v4zm-2-8c-3.31 0-6-2.69-6-6h4c0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2c-3.31 0-6-2.69-6-6s2.69-6 6-6c2.21 0 4.15 1.2 5.19 3H36v4h-2.81A5.99 5.99 0 0132 28c-1.1 0-2 .9-2 2s.9 2 2 2c3.31 0 6 2.69 6 6s-2.69 6-6 6z"/>
             </svg>
             <div class="tooltip" role="tooltip" style="font-size:0.75em; background-color:#2e4053;">
-              Internally 4 levels ($60, $570, $1060, $1500) for logit, mapped from slider 0–250.
-              End-user sees a single slider for simplicity.
+              Slider [0..250] internally mapped to \$60..\$1500. 
+              <br/><br/>
+              This cost per participant reflects direct FETP expense for each trainee, influencing uptake and feasibility.
             </div>
           </div>
           <div class="attribute-content">
             <h4>Cost per Participant</h4>
-            <p>Slider 0–250 => \$60–\$1500. E.g. 125 ~ \$780.</p>
+            <p>Slider [0..250] => \$60..\$1500 in the model</p>
           </div>
         </div>
       </div>
@@ -209,11 +214,13 @@
       <h2>Configure Your Scenario</h2>
       <div class="input-card">
         <h3>Programme Inputs</h3>
-        <p>Select non-reference levels, pick a Cohort Size, and map a cost slider [0..250] to \$60–\$1500. 
-           Press <strong>“Calculate &amp; View Results”</strong> to get your predicted uptake. 
+        <p>
+          Pick non-reference levels for the discrete attributes, set <em>Cohort Size</em> 
+          (500–2000), and adjust the <em>Cost</em> slider (0–250 => \$60–\$1500). 
+          Then click <strong>Calculate &amp; View Results</strong> to get your predicted uptake.
         </p>
         <div class="form-grid">
-          <!-- 1: Training Level -->
+          <!-- 1: Training Level (Ref=Advanced) -->
           <div class="input-summary-card">
             <h4>Training Level <span class="reference">[Ref: Advanced]</span></h4>
             <div class="radio-group">
@@ -221,7 +228,7 @@
               <label><input type="radio" name="training-level" value="Intermediate"> Intermediate</label>
             </div>
           </div>
-          <!-- 2: Delivery Method -->
+          <!-- 2: Delivery Method (Ref=Online) -->
           <div class="input-summary-card">
             <h4>Delivery Method <span class="reference">[Ref: Online]</span></h4>
             <div class="radio-group">
@@ -229,7 +236,7 @@
               <label><input type="radio" name="delivery-method" value="Hybrid"> Hybrid</label>
             </div>
           </div>
-          <!-- 3: Accreditation -->
+          <!-- 3: Accreditation (Ref=None) -->
           <div class="input-summary-card">
             <h4>Accreditation <span class="reference">[Ref: None]</span></h4>
             <div class="radio-group">
@@ -237,7 +244,7 @@
               <label><input type="radio" name="accreditation" value="International"> International</label>
             </div>
           </div>
-          <!-- 4: Location -->
+          <!-- 4: Location (Ref=District-Level) -->
           <div class="input-summary-card">
             <h4>Location <span class="reference">[Ref: District-Level]</span></h4>
             <div class="radio-group">
@@ -251,11 +258,11 @@
             <input type="range" class="form-control-range" id="cohort-size" min="500" max="2000" step="250" value="1000">
             <small id="cohort-size-value">1000</small>
           </div>
-          <!-- 6: Cost mapped to 0..250 => $60..$1500 -->
+          <!-- 6: Cost slider (0..250 => 60..1500) -->
           <div class="input-summary-card">
             <h4>Cost per Participant (USD)</h4>
             <input type="range" class="form-control-range" id="costSliderUI" min="0" max="250" step="1" value="125">
-            <small id="costValueUI">$780 (approx.)</small>
+            <small id="costValueUI">$60 (approx.)</small>
           </div>
         </div>
         <div class="buttons-row">
@@ -292,8 +299,8 @@
       <div class="calculation-info">
         <h4><i class="fa-solid fa-chart-bar"></i> Willingness to Pay (WTP) Results</h4>
         <p>
-          Each bar represents the extra value (USD) for a non-reference discrete level or +1 increment in 
-          the continuous attributes. Error bars ~ ±10% of WTP value.
+          Each bar indicates extra value (USD) for a non-reference discrete level or a +1 increment
+          in the continuous attributes. Error bars ~ ±10% of the displayed WTP.
         </p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
@@ -306,9 +313,7 @@
       <div id="cba-content" class="calculation-info">
         <h4><i class="fa-solid fa-calculator"></i> Costs &amp; Benefits Analysis</h4>
         <p>
-          <strong>QALY Gains</strong>: Low=0.01, Moderate=0.05, High=0.08 for Indian context. 
-          We multiply total QALYs by $50,000 to estimate monetized benefits. 
-          The summary table and bar chart update after you calculate results or change QALY scenario:
+          QALY Gains: Low=0.01, Moderate=0.05, High=0.08 for an India context. Gains × \$50,000 => monetized benefits.
         </p>
         <div class="qaly-selector">
           <label for="qalySelect">Select QALY Gain Scenario:</label>
@@ -327,8 +332,7 @@
         <div class="detailed-info">
           <h4>Detailed Cost Components</h4>
           <p>
-            The list below illustrates typical fixed/variable costs. 
-            Real‐world values can differ based on location, scale, etc.
+            Illustrative fixed/variable costs. Actual figures differ by location and scale.
           </p>
           <div class="cost-cards">
             <div class="cost-card">
@@ -407,15 +411,14 @@
       <div class="calculation-info">
         <h4>Saved Scenarios</h4>
         <p>
-          Your saved scenarios appear below. Each scenario records the discrete attribute choices, 
-          plus cohort size and cost values, as well as predicted uptake and net benefit.
+          Each scenario shows your chosen attribute levels, plus the predicted uptake and net benefit.
         </p>
         <div class="buttons-row">
           <button class="btn btn-info" id="save-scenario">Save Current Scenario</button>
           <button class="btn btn-secondary" id="export-pdf">Export Scenarios to PDF</button>
         </div>
         <div class="scenario-list" id="saved-scenarios-list">
-          <!-- scenario items from script.js -->
+          <!-- scenario items injected by script.js -->
         </div>
       </div>
     </section>
