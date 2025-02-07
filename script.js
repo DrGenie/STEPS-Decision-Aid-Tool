@@ -1,183 +1,147 @@
 /****************************************************************************
  * SCRIPT.JS
+ * Minimal tab switch approach so that tabs remain active:
+ *   function openTab(tabId, btn) {
+ *     // hide all tabcontents, remove .active
+ *     // show the one, add .active
+ *   }
+ * 
  * - Discrete attributes (4) each with references
  * - 2 continuous: CohortSize(500–2000) & Cost(0..250 => $60..$1500)
- * - Updated slopes: costSlope=-0.07, cohortSlope=0.08 
+ * - costSlope=-0.07, cohortSlope=+0.08
  * - QALY scenario: Low=0.01, Mod=0.05, High=0.08
- * - Hover tooltips at 0.75em, color #2e4053
- * - Fix: Missing parenthesis in WTP chart to keep tabs active
  ****************************************************************************/
 
-/** Default tab = Introduction */
-window.onload = function(){
-  openTab("introTab", document.querySelector(".tablink"));
-};
-
-/** Tab switching function */
-function openTab(tabId, btn){
-  const allTabs = document.getElementsByClassName("tabcontent");
-  for(let i=0; i<allTabs.length; i++){
-    allTabs[i].style.display= "none";
+/** Minimal tab function to ensure tabs remain clickable */
+function openTab(tabId, clickedBtn){
+  const tabContents= document.getElementsByClassName("tabcontent");
+  for(let i=0; i<tabContents.length; i++){
+    tabContents[i].style.display= "none";
   }
-  const allBtns = document.getElementsByClassName("tablink");
-  for(let j=0; j<allBtns.length; j++){
-    allBtns[j].classList.remove("active");
-    allBtns[j].setAttribute("aria-selected","false");
+  const tabButtons= document.getElementsByClassName("tablink");
+  for(let j=0; j<tabButtons.length; j++){
+    tabButtons[j].classList.remove("active");
   }
   document.getElementById(tabId).style.display="block";
-  btn.classList.add("active");
-  btn.setAttribute("aria-selected","true");
-
-  // Provide re-render calls if needed
-  if(tabId==="wtpTab") renderWTPChart();
-  if(tabId==="cbaTab") renderCostsBenefits();
+  clickedBtn.classList.add("active");
 }
 
-/** Cohort slider (500–2000) */
-const cohortSlider = document.getElementById("cohort-size");
-const cohortDisplay = document.getElementById("cohort-size-value");
-cohortDisplay.textContent = cohortSlider.value;
-cohortSlider.addEventListener("input",()=>{
-  cohortDisplay.textContent = cohortSlider.value;
-});
+/** Sliders for Cohort & Cost */
+const cohortSlider= document.getElementById("cohort-size");
+const cohortVal= document.getElementById("cohort-size-value");
+cohortVal.textContent= cohortSlider.value;
+cohortSlider.oninput= function(){
+  cohortVal.textContent= this.value;
+};
 
-/** Cost slider (0–250 => $60–$1500) */
-const costSliderUI = document.getElementById("costSliderUI");
-const costValueUI  = document.getElementById("costValueUI");
-function transformCost(val){
-  // val in [0..250]
-  // cost in [60..1500]
+const costSliderUI= document.getElementById("costSliderUI");
+const costValUI= document.getElementById("costValueUI");
+function mapCost(val){
   return 60 + ((1500-60)/250)* val;
 }
-function updateCostLabel(sliderVal){
-  const c = transformCost(sliderVal);
-  costValueUI.textContent = `$${c.toFixed(0)} (approx.)`;
+function updateCostUI(val){
+  costValUI.textContent= `$${mapCost(val).toFixed(0)} (approx.)`;
 }
-updateCostLabel(costSliderUI.value); // init label
-costSliderUI.addEventListener("input",()=>{
-  updateCostLabel(costSliderUI.value);
-});
+updateCostUI(costSliderUI.value);
+costSliderUI.oninput= function(){
+  updateCostUI(this.value);
+};
 
-/** Coeffs: costSlope=-0.07, cohortSlope=+0.08 */
-const coeffs = {
-  ASC: 1.0,
+/** Coeffs: -0.07 cost slope, +0.08 cohort slope */
+const coeffs={
+  ASC:1.0,
   ASC_optout: 0.3,
-  // Discrete references
-  TrainingLevel: {
-    Frontline: 0.6,
-    Intermediate: 0.3,
-    Advanced: 0.0
-  },
-  DeliveryMethod: {
-    "In-Person": 0.5,
-    "Online": 0.0,
-    "Hybrid": 0.4
-  },
-  Accreditation: {
-    National: 0.4,
-    International: 0.8,
-    None: 0.0
-  },
-  Location: {
-    "State-Level": 0.3,
-    "Regional Centers": 0.2,
-    "District-Level": 0.0
-  },
-  // Updated continuous slopes
-  CohortSizeSlope: 0.08,  // user request
-  CostSlope: -0.07        // user request
+  // discrete
+  TrainingLevel:{ Frontline:0.6, Intermediate:0.3, Advanced:0.0 },
+  DeliveryMethod:{ "In-Person":0.5, "Online":0.0, "Hybrid":0.4 },
+  Accreditation:{ National:0.4, International:0.8, None:0.0 },
+  Location:{ "State-Level":0.3, "Regional Centers":0.2, "District-Level":0.0 },
+  // continuous
+  CohortSizeSlope:0.08,
+  CostSlope:-0.07
 };
 
-/** cost/benefit placeholders by training level */
-const costBenefitEstimates = {
-  Frontline: { cost:250000, benefit:800000 },
-  Intermediate: { cost:450000, benefit:1400000 },
-  Advanced: { cost:650000, benefit:2000000 }
+/** costBenefit placeholders */
+const costBenefit={
+  Frontline:{ cost:250000, benefit:800000 },
+  Intermediate:{ cost:450000, benefit:1400000 },
+  Advanced:{ cost:650000, benefit:2000000 }
 };
 
-let currentUptake= 0, currentTotalCost= 0, currentTotalBenefit= 0, currentNetBenefit= 0;
-let uptakeChart= null, cbaChart= null, wtpChart= null;
-
-/** Build scenario from user inputs */
-function buildScenarioFromInputs(){
-  const trainingLevel= document.querySelector('input[name="training-level"]:checked').value;
-  const deliveryMethod= document.querySelector('input[name="delivery-method"]:checked').value;
+/** Build scenario */
+function buildScenario(){
+  const trainingL= document.querySelector('input[name="training-level"]:checked').value;
+  const deliveryM= document.querySelector('input[name="delivery-method"]:checked').value;
   const accreditation= document.querySelector('input[name="accreditation"]:checked').value;
   const location= document.querySelector('input[name="location"]:checked').value;
+
   const cSize= parseInt(cohortSlider.value,10);
-  const costVal= parseInt(costSliderUI.value,10);
-  const costMapped= transformCost(costVal);
+  const cVal= parseInt(costSliderUI.value,10);
+  const cMapped= mapCost(cVal);
 
   return {
-    trainingLevel,
-    deliveryMethod,
-    accreditation,
-    location,
-    cohortSize: cSize,
-    cost_participant: costMapped
+    trainingL, deliveryM, accreditation, location,
+    cohortSize:cSize, cost_participant:cMapped
   };
 }
 
-/** Compute logit fraction with updated slopes */
-function computeUptakeFraction(sc){
-  let U = coeffs.ASC
-    + coeffs.TrainingLevel[sc.trainingLevel]
-    + coeffs.DeliveryMethod[sc.deliveryMethod]
-    + coeffs.Accreditation[sc.accreditation]
-    + coeffs.Location[sc.location];
+/** Compute logit fraction */
+function computeUptake(sc){
+  let U= coeffs.ASC
+   + coeffs.TrainingLevel[sc.trainingL]
+   + coeffs.DeliveryMethod[sc.deliveryM]
+   + coeffs.Accreditation[sc.accreditation]
+   + coeffs.Location[sc.location];
 
   U += coeffs.CohortSizeSlope* sc.cohortSize;
-  U += coeffs.CostSlope* sc.cost_participant; 
+  U += coeffs.CostSlope* sc.cost_participant;
 
   const altExp= Math.exp(U);
   const optExp= Math.exp(coeffs.ASC_optout);
-  return altExp/(altExp+ optExp);
+  return altExp/(altExp+optExp);
 }
 
-/** "Calculate & View Results" */
-document.getElementById("view-results").addEventListener("click", ()=>{
-  const sc = buildScenarioFromInputs();
-  const fraction= computeUptakeFraction(sc);
-  let predictedUptake= fraction*100;
-  predictedUptake= Math.max(0, Math.min(100, predictedUptake));
+/** On button click => show results in modal + update global stats */
+const viewBtn= document.getElementById("view-results");
+viewBtn.addEventListener("click", ()=>{
+  const sc= buildScenario();
+  let fraction= computeUptake(sc);
+  let uptakePct= fraction*100;
+  uptakePct= Math.max(0, Math.min(100, uptakePct));
 
-  let recMsg= "";
-  if(predictedUptake<30){
-    recMsg= "Uptake is low. Adjust cost or expand accessibility.";
-  } else if(predictedUptake<70){
-    recMsg= "Moderate uptake. Fine-tune your scenario to improve acceptance.";
-  } else {
-    recMsg= "High uptake. This scenario is quite effective for FETP scale-up.";
-  }
-  showModal(`
-    <p><strong>Predicted Program Uptake:</strong> ${predictedUptake.toFixed(1)}%</p>
-    <p>${recMsg}</p>
-  `);
-  drawUptakeChart(predictedUptake);
+  let msg="";
+  if(uptakePct<30) msg="Uptake is low. Consider adjusting cost or expansions.";
+  else if(uptakePct<70) msg="Moderate uptake. Possibly refine scenario.";
+  else msg="High uptake. This scenario is effective.";
+
+  document.getElementById("modal-results").innerHTML= `
+    <p><strong>Predicted Program Uptake:</strong> ${uptakePct.toFixed(1)}%</p>
+    <p>${msg}</p>
+  `;
+  document.getElementById("resultsModal").style.display="block";
+
+  drawUptake(uptakePct);
 
   // cost & benefit
-  const baseCB= costBenefitEstimates[sc.trainingLevel] || costBenefitEstimates.Advanced;
-  const totalCost= sc.cohortSize* baseCB.cost;
-  const totalBenefit= sc.cohortSize* baseCB.benefit;
-  currentUptake= predictedUptake;
-  currentTotalCost= totalCost;
-  currentTotalBenefit= totalBenefit;
-  currentNetBenefit= totalBenefit - totalCost;
+  const base= costBenefit[sc.trainingL]|| costBenefit.Advanced;
+  const totalCost= sc.cohortSize* base.cost;
+  const totalBenefit= sc.cohortSize* base.benefit;
+  currentUptake= uptakePct;
+  currentCost= totalCost;
+  currentBenefit= totalBenefit;
+  currentNet= totalBenefit-totalCost;
 
-  renderCostsBenefits();
+  renderCosts();
 });
 
-/** Show/hide modal */
-function showModal(html){
-  document.getElementById("modal-results").innerHTML= html;
-  document.getElementById("resultsModal").style.display="block";
-}
+/** close modal */
 function closeModal(){
   document.getElementById("resultsModal").style.display="none";
 }
 
-/** Draw uptake chart */
-function drawUptakeChart(val){
+/** Doughnut for uptake */
+let uptakeChart=null;
+function drawUptake(val){
   const ctx= document.getElementById("uptakeChart").getContext("2d");
   if(uptakeChart) uptakeChart.destroy();
   uptakeChart= new Chart(ctx,{
@@ -195,49 +159,52 @@ function drawUptakeChart(val){
       plugins:{
         title:{
           display:true,
-          text:`Predicted Program Uptake: ${val.toFixed(1)}%`,
-          font:{ size:16 }
+          text:`Predicted Uptake: ${val.toFixed(1)}%`,
+          font:{size:16}
         }
       }
     }
   });
 }
 
-/** Costs & Benefits tab */
-function renderCostsBenefits(){
+/** cost & benefit tab => global stats */
+let currentUptake=0, currentCost=0, currentBenefit=0, currentNet=0;
+let cbaChart=null;
+function renderCosts(){
   const cbaDiv= document.getElementById("cba-summary");
   if(!cbaDiv)return;
-  const sc= buildScenarioFromInputs();
-  const frac= computeUptakeFraction(sc);
-  const predictedUptake= frac*100;
-  const participants= (predictedUptake/100)* 250;
+  const sc= buildScenario();
+  const fraction= computeUptake(sc);
+  const uptakePct= fraction*100;
+  const participants= (uptakePct/100)* 250;
 
-  const baseCB= costBenefitEstimates[sc.trainingLevel]|| costBenefitEstimates.Advanced;
-  const totalCost= sc.cohortSize* baseCB.cost;
-  const totalBenefit= sc.cohortSize* baseCB.benefit;
-  const netBenefit= totalBenefit- totalCost;
+  const base= costBenefit[sc.trainingL]|| costBenefit.Advanced;
+  const totalC= sc.cohortSize* base.cost;
+  const totalB= sc.cohortSize* base.benefit;
+  const netB= totalB-totalC;
 
-  let q=0.05; // moderate default
-  const sel= document.getElementById("qalySelect");
-  if(sel.value==="low") q=0.01;
-  else if(sel.value==="high") q=0.08;
-  const totalQALYs= participants* q;
-  const monetized= totalQALYs* 50000;
+  let qVal=0.05;
+  const qSel= document.getElementById("qalySelect");
+  if(qSel.value==="low") qVal=0.01;
+  else if(qSel.value==="high") qVal=0.08;
+  const totalQ= participants*qVal;
+  const monetized= totalQ*50000;
 
   cbaDiv.innerHTML= `
     <table>
-      <tr><td><strong>Uptake (%)</strong></td><td>${predictedUptake.toFixed(1)}%</td></tr>
+      <tr><td><strong>Uptake (%)</strong></td><td>${uptakePct.toFixed(1)}%</td></tr>
       <tr><td><strong>Participants</strong></td><td>${participants.toFixed(0)}</td></tr>
-      <tr><td><strong>Total Training Cost</strong></td><td>$${totalCost.toLocaleString()}</td></tr>
-      <tr><td><strong>Cost per Participant</strong></td><td>$${(totalCost/participants).toFixed(2)}</td></tr>
-      <tr><td><strong>Total QALYs</strong></td><td>${totalQALYs.toFixed(2)}</td></tr>
+      <tr><td><strong>Total Training Cost</strong></td><td>$${totalC.toLocaleString()}</td></tr>
+      <tr><td><strong>Cost per Participant</strong></td><td>$${(totalC/participants).toFixed(2)}</td></tr>
+      <tr><td><strong>Total QALYs</strong></td><td>${totalQ.toFixed(2)}</td></tr>
       <tr><td><strong>Monetized Benefits</strong></td><td>$${monetized.toLocaleString()}</td></tr>
-      <tr><td><strong>Net Benefit</strong></td><td>$${netBenefit.toLocaleString()}</td></tr>
+      <tr><td><strong>Net Benefit</strong></td><td>$${netB.toLocaleString()}</td></tr>
     </table>
   `;
-  drawCBAChart(totalCost,totalBenefit,netBenefit);
+  drawCBAChart(totalC,totalB, netB);
 }
-let cbaChart= null;
+
+/** cba bar */
 function drawCBAChart(c,b,n){
   const ctx= document.getElementById("cbaChart").getContext("2d");
   if(cbaChart) cbaChart.destroy();
@@ -259,58 +226,53 @@ function drawCBAChart(c,b,n){
         title:{
           display:true,
           text:"Cost-Benefit Analysis",
-          font:{ size:16 }
+          font:{size:16}
         }
       }
     }
   });
 }
 
-/** WTP for discrete diffs + +1 increments in continuous with cost slope= -0.07, cohort slope= +0.08 */
-const wtpDiffs = {
-  "TrainingLevel__Frontline": 0.6,
-  "TrainingLevel__Intermediate": 0.3,
-  "DeliveryMethod__In-Person": 0.5,
-  "DeliveryMethod__Hybrid": 0.4,
-  "Accreditation__National": 0.4,
-  "Accreditation__International": 0.8,
-  "Location__State-Level": 0.3,
-  "Location__Regional Centers": 0.2,
-  // continuous +1 increments
-  // cohort slope= +0.08 => difference in utility
-  "CohortSize__+1": 0.08,
-  // cost slope= -0.07 => difference in utility
-  "Cost__+1": -0.07
-};
+/** WTP => discrete + continuous increments with costSlope=-0.07, cohort=+0.08 */
+let wtpChart=null;
+function renderWTPChart(){
+  const ctx= document.getElementById("wtpChartMain").getContext("2d");
+  if(!ctx)return;
+  if(wtpChart) wtpChart.destroy();
 
-function computeStaticWTP(){
-  // ratio= diff / -(costSlope= -0.07) => diff/ 0.07 => diff*(1/0.07=14.2857)
-  // scale by 1000
-  const arr= [];
+  // define diffs
+  const wtpDiffs={
+    "TrainingLevel__Frontline":0.6,
+    "TrainingLevel__Intermediate":0.3,
+    "DeliveryMethod__In-Person":0.5,
+    "DeliveryMethod__Hybrid":0.4,
+    "Accreditation__National":0.4,
+    "Accreditation__International":0.8,
+    "Location__State-Level":0.3,
+    "Location__Regional Centers":0.2,
+    // continuous +1 => cohort= +0.08, cost= -0.07
+    "CohortSize__+1": 0.08,
+    "Cost__+1": -0.07
+  };
+
   const costSlope= -0.07;
+  const arr=[];
   for(let key in wtpDiffs){
     const diff= wtpDiffs[key];
-    const ratio= diff/ -costSlope; // = diff/ 0.07
+    // ratio= diff / -(costSlope)= diff/ 0.07 => diff*(1/0.07)
+    const ratio= diff/ -(costSlope);
+    // multiply by 1000 for display
     arr.push({
-      label: key,
+      label:key,
       wtp: ratio*1000,
       se: Math.abs(ratio*1000)*0.1
     });
   }
-  return arr;
-}
-
-function renderWTPChart(){
-  const ctx= document.getElementById("wtpChartMain").getContext("2d");
-  if(!ctx) return;
-  if(wtpChart) wtpChart.destroy();
-
-  const arr= computeStaticWTP();
   const labels= arr.map(d=> d.label);
   const vals= arr.map(d=> d.wtp);
   const errs= arr.map(d=> d.se);
 
-  wtpChart= new Chart(ctx, {
+  wtpChart= new Chart(ctx,{
     type:"bar",
     data:{
       labels,
@@ -326,23 +288,22 @@ function renderWTPChart(){
     options:{
       responsive:true,
       maintainAspectRatio:false,
-      scales:{
-        y:{ beginAtZero:true}
-      },
+      scales:{y:{beginAtZero:true}},
       plugins:{
-        legend:{ display:false},
+        legend:{display:false},
         title:{
           display:true,
-          text:"WTP (USD) - Non-Ref Levels & +1 increments",
+          text:"WTP (USD) - Non-Ref +1 increments",
           font:{ size:16}
         }
       }
     },
     plugins:[{
+      // vertical error bars
       id:"errorbars",
       afterDraw: chart=>{
         const { ctx, scales:{ y }}= chart;
-        chart.getDatasetMeta(0).data.forEach((bar, i)=>{
+        chart.getDatasetMeta(0).data.forEach((bar,i)=>{
           const xC= bar.x;
           const val= vals[i];
           const se= errs[i];
@@ -353,12 +314,12 @@ function renderWTPChart(){
             ctx.beginPath();
             ctx.strokeStyle="#000";
             ctx.lineWidth=1;
-            ctx.moveTo(xC, top);
-            ctx.lineTo(xC, bot);
-            ctx.moveTo(xC-5, top);
-            ctx.lineTo(xC+5, top);
-            ctx.moveTo(xC-5, bot);
-            ctx.lineTo(xC+5, bot);
+            ctx.moveTo(xC,top);
+            ctx.lineTo(xC,bot);
+            ctx.moveTo(xC-5,top);
+            ctx.lineTo(xC+5,top);
+            ctx.moveTo(xC-5,bot);
+            ctx.lineTo(xC+5,bot);
             ctx.stroke();
             ctx.restore();
           }
@@ -368,13 +329,13 @@ function renderWTPChart(){
   });
 }
 
-/** SCENARIOS mgmt */
-let savedScenarios= [];
+/** SCENARIOS */
+let savedScenarios=[];
 document.getElementById("save-scenario").addEventListener("click", ()=>{
-  const sc= buildScenarioFromInputs();
-  const fraction= computeUptakeFraction(sc)*100;
+  const sc= buildScenario();
+  const fraction= computeUptake(sc)*100;
   sc.predictedUptake= fraction.toFixed(1);
-  sc.netBenefit= currentNetBenefit.toFixed(2);
+  sc.netBenefit= currentNet.toFixed(2);
   sc.details= {...sc};
   sc.name= "Scenario "+ (savedScenarios.length+1);
   savedScenarios.push(sc);
@@ -387,11 +348,11 @@ function updateScenarioList(){
   list.innerHTML="";
   savedScenarios.forEach((s, idx)=>{
     const div= document.createElement("div");
-    div.className= "list-group-item";
+    div.className="list-group-item";
     div.innerHTML= `
       <strong>${s.name}</strong><br>
-      <span>Training: ${s.details.trainingLevel}</span><br>
-      <span>Delivery: ${s.details.deliveryMethod}</span><br>
+      <span>Training: ${s.details.trainingL}</span><br>
+      <span>Delivery: ${s.details.deliveryM}</span><br>
       <span>Accreditation: ${s.details.accreditation}</span><br>
       <span>Location: ${s.details.location}</span><br>
       <span>Cohort: ${s.details.cohortSize}, Cost: $${s.details.cost_participant.toFixed(0)}</span><br>
@@ -404,29 +365,31 @@ function updateScenarioList(){
     list.appendChild(div);
   });
 }
-function loadScenario(i){
-  const s= savedScenarios[i];
-  document.querySelector(`input[name="training-level"][value="${s.trainingLevel}"]`).checked= true;
-  document.querySelector(`input[name="delivery-method"][value="${s.deliveryMethod}"]`).checked= true;
-  document.querySelector(`input[name="accreditation"][value="${s.accreditation}"]`).checked= true;
-  document.querySelector(`input[name="location"][value="${s.location}"]`).checked= true;
-  // set cohort slider
+
+function loadScenario(index){
+  const s= savedScenarios[index];
+  document.querySelector(`input[name="training-level"][value="${s.trainingL}"]`).checked=true;
+  document.querySelector(`input[name="delivery-method"][value="${s.deliveryM}"]`).checked=true;
+  document.querySelector(`input[name="accreditation"][value="${s.accreditation}"]`).checked=true;
+  document.querySelector(`input[name="location"][value="${s.location}"]`).checked=true;
+
   document.getElementById("cohort-size").value= s.cohortSize;
   document.getElementById("cohort-size-value").textContent= s.cohortSize;
-  // set cost slider
-  // cost= 60 + (1440/250)* slider => slider= (cost-60)/(1440/250)
-  const cost2slider= (s.cost_participant- 60)/ ((1500-60)/250);
-  document.getElementById("costSliderUI").value= cost2slider;
-  updateCostLabel(cost2slider);
+
+  const costMapped= s.cost_participant;
+  const sliderVal= (costMapped-60)/((1500-60)/250);
+  document.getElementById("costSliderUI").value= sliderVal;
+  updateCostUI(sliderVal);
 }
-function deleteScenario(i){
-  if(confirm("Are you sure you want to delete this scenario?")){
-    savedScenarios.splice(i,1);
+
+function deleteScenario(index){
+  if(confirm("Delete this scenario?")){
+    savedScenarios.splice(index,1);
     updateScenarioList();
   }
 }
 
-/** Export to PDF */
+/** Export PDF */
 document.getElementById("export-pdf").addEventListener("click", ()=>{
   if(!savedScenarios.length){
     alert("No scenarios saved to export.");
@@ -435,29 +398,28 @@ document.getElementById("export-pdf").addEventListener("click", ()=>{
   const { jsPDF }= window.jspdf;
   const doc= new jsPDF({ unit:"mm", format:"a4"});
   const pageWidth= doc.internal.pageSize.getWidth();
-  let currentY=15;
-  doc.setFontSize(16);
-  doc.text("STEPS - Scenarios Comparison", pageWidth/2, currentY, { align:"center"});
-  currentY+=10;
+  let yPos=15;
 
-  savedScenarios.forEach((sc, idx)=>{
-    if(currentY+70> doc.internal.pageSize.getHeight()-15){
+  doc.setFontSize(16);
+  doc.text("STEPS - Scenarios Comparison", pageWidth/2, yPos, {align:"center"});
+  yPos+=10;
+
+  savedScenarios.forEach((s, idx)=>{
+    if(yPos+70> doc.internal.pageSize.getHeight()-15){
       doc.addPage();
-      currentY=15;
+      yPos=15;
     }
     doc.setFontSize(14);
-    doc.text(`Scenario ${idx+1}: ${sc.name}`,15,currentY); 
-    currentY+=7;
+    doc.text(`Scenario ${idx+1}: ${s.name}`, 15, yPos);
+    yPos+=7;
     doc.setFontSize(12);
-    doc.text(`Training: ${sc.trainingLevel}`,15,currentY); currentY+=5;
-    doc.text(`Delivery: ${sc.deliveryMethod}`,15,currentY); currentY+=5;
-    doc.text(`Accreditation: ${sc.accreditation}`,15,currentY); currentY+=5;
-    doc.text(`Location: ${sc.location}`,15,currentY); currentY+=5;
-    doc.text(`Cohort Size: ${sc.cohortSize}`,15,currentY); currentY+=5;
-    doc.text(`Cost: $${sc.cost_participant.toFixed(0)}`,15,currentY); currentY+=5;
-    doc.text(`Predicted Uptake: ${sc.predictedUptake}%`,15,currentY); currentY+=5;
-    doc.text(`Net Benefit: $${sc.netBenefit}`,15,currentY);
-    currentY+=10;
+    doc.text(`Training: ${s.trainingL}`, 15, yPos); yPos+=5;
+    doc.text(`Delivery: ${s.deliveryM}`, 15, yPos); yPos+=5;
+    doc.text(`Accreditation: ${s.accreditation}`, 15, yPos); yPos+=5;
+    doc.text(`Location: ${s.location}`, 15, yPos); yPos+=5;
+    doc.text(`Cohort: ${s.cohortSize}, Cost: $${s.cost_participant.toFixed(0)}`, 15, yPos); yPos+=5;
+    doc.text(`Predicted Uptake: ${s.predictedUptake}%`, 15, yPos); yPos+=5;
+    doc.text(`Net Benefit: $${s.netBenefit}`, 15, yPos); yPos+=10;
   });
   doc.save("Scenarios_Comparison.pdf");
 });
