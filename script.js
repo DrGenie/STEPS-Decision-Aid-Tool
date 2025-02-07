@@ -61,8 +61,8 @@ const coeffs={
   Accreditation:{ National:0.4, International:0.8, None:0.0 },
   Location:{ "State-Level":0.3, "Regional Centers":0.2, "District-Level":0.0 },
   // continuous slopes
-  CohortSizeSlope:-0.0008,
-  CostSlope:-0.0001
+  CohortSizeSlope:-0.008,
+  CostSlope:-0.07
 };
 
 /** cost/benefit placeholders by training level */
