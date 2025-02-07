@@ -251,17 +251,17 @@ const wtpDiffs={
   "Accreditation__International":0.8,
   "Location__State-Level":0.3,
   "Location__Regional Centers":0.2,
-  "CohortSize__+1": -0.0008,
-  "Cost__+1": -0.0001
+  "CohortSize__+1": -0.008,
+  "Cost__+1": -0.07
 };
 function computeStaticWTP(){
-  // ratio= diff / -(costSlope= -0.0001)= diff/ 0.0001 => diff*10000
+  // ratio= diff / -(costSlope= -0.07)= diff/ 0.07 => diff*10000
   // scaled further x1000 => total factor = diff* (10000*1000)= diff*1e7 => let's keep it simpler: ratio *1000
   const arr=[];
-  const costSlope= -0.0001;
+  const costSlope= -0.07;
   for(let key in wtpDiffs){
     const diff= wtpDiffs[key];
-    const ratio= diff/ -(costSlope); // = diff/ 0.0001
+    const ratio= diff/ -(costSlope); // = diff/ 0.07
     arr.push({
       label:key,
       wtp: ratio*1000,
