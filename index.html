@@ -17,7 +17,8 @@
     <header>
       <h1>STEPS Decision Aid Tool</h1>
       <p>
-        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) by predicting programme uptake, performing cost–benefit analyses, and evaluating willingness‐to‐pay (WTP) for key attributes.
+        This tool supports decision makers in planning and scaling Field Epidemiology Training Programs (FETP) by predicting programme uptake, 
+        performing cost–benefit analyses, and evaluating willingness‐to‐pay (WTP) for six key attributes (all in USD).
       </p>
       <hr class="intro-hr" />
     </header>
@@ -55,11 +56,12 @@
         <h2>Introduction</h2>
         <ul class="intro-list">
           <li><strong>Instructions</strong>: Step-by-step usage guide.</li>
-          <li><strong>Attributes</strong>: Overview of six FETP attributes with reference levels and icons.</li>
-          <li><strong>Inputs</strong>: Choose non-reference levels for discrete attributes; adjust two sliders (Cohort Size, Cost per Participant).</li>
-          <li><strong>WTP Results</strong>: Shows extra value (in USD) for each non-reference level (including the continuous ones per +1 increment).</li>
-          <li><strong>Predicted Program Uptake</strong>: A doughnut chart and summary reflect your chosen scenario.</li>
-          <li><strong>Costs &amp; Benefits</strong>: QALY scenario selection, summary table, bar chart, cost breakdown cards.</li>
+          <li><strong>Attributes</strong>: Shows four discrete (with references) plus two continuous (Cohort Size, Cost from $60–$1500). Icons & smaller tooltips.</li>
+          <li><strong>Inputs</strong>: Non-reference radio buttons for discrete; a 0–250 slider for cost, linearly mapped to $60–$1500.</li>
+          <li><strong>WTP Results</strong>: Extra value (USD) for each discrete non-ref level plus +1 increments in Cohort Size & Cost. Font-size is smaller for tooltips. 
+          </li>
+          <li><strong>Predicted Program Uptake</strong>: A logit-based model estimates uptake, displayed in a doughnut chart with recommendations.</li>
+          <li><strong>Costs &amp; Benefits</strong>: QALY scenario (Low=0.01, Mod=0.05, High=0.08), a summary table, bar chart, and cost breakdown cards.</li>
           <li><strong>Scenarios</strong>: Save, load, or export multiple configurations to PDF.</li>
         </ul>
       </div>
@@ -71,12 +73,14 @@
         <h4>How to Use This Tool</h4>
         <hr class="intro-hr" />
         <ol class="instructions-list">
-          <li>Visit <strong>Attributes</strong> to see each attribute, its reference level, and a tooltip with explanations.</li>
-          <li>Go to <strong>Inputs</strong> to pick only non-reference radio buttons for Training Level, Delivery Method, Accreditation, and Location. Adjust the two sliders for Cohort Size and Cost per Participant as desired.</li>
-          <li>Click <strong>"Calculate &amp; View Results"</strong> to see a modal with the predicted uptake percentage. The <strong>Predicted Program Uptake</strong> tab shows the resulting doughnut chart.</li>
-          <li>The <strong>WTP Results</strong> chart displays the extra value for each non-reference discrete level and +1 increments for continuous attributes (relative to an implied baseline in the model, but no baseline is shown here).</li>
-          <li>The <strong>Costs &amp; Benefits</strong> tab updates after each scenario calculation and upon changing the QALY scenario (Low=0.02, Moderate=0.05, High=0.1). A summary table and bar chart detail total cost, QALYs, and net benefit.</li>
-          <li><strong>Scenarios</strong> can be saved, loaded, or exported to PDF, allowing you to compare multiple configurations for policy decisions.</li>
+          <li>Visit <strong>Attributes</strong> to see each attribute’s reference level or continuous range, with icons and 0.8em font-size tooltips.</li>
+          <li>In <strong>Inputs</strong>, select only non-reference levels for discrete attributes. For Cost, we have a slider from <strong>0 to 250</strong>, mapped to $60–$1500 internally. For instance, a slider of 125 would be $60 + (125*(1440/250)) = ~\$780. 
+          Cohort Size is 500–2000 from that slider directly.</li>
+          <li>Click <strong>“Calculate &amp; View Results”</strong> to see predicted uptake. The <strong>Predicted Program Uptake</strong> tab shows a doughnut chart with no random noise if you recalculate the same scenario.</li>
+          <li>In <strong>WTP Results</strong>, each discrete non-ref level plus a +1 increment in Cohort Size & Cost are displayed with approximate standard errors (±10%).</li>
+          <li>Under <strong>Costs &amp; Benefits</strong>, pick a QALY scenario (Low=0.01, Mod=0.05, High=0.08 for India). The dynamic summary table and bar chart show total cost, net benefit, QALYs, and monetized benefits. 
+          Educational text clarifies cost components: local press ads, printing, trainer cost, etc.</li>
+          <li><strong>Scenarios</strong>: Save your configuration or export them all in PDF. Each scenario includes user inputs plus predicted uptake and net benefit for easy comparison.</li>
         </ol>
       </div>
     </section>
@@ -90,7 +94,7 @@
           <div class="attribute-icon">
             <i class="fa-solid fa-user-graduate" style="color:#2980b9;font-size:1.7em;"></i>
             <div class="tooltip" role="tooltip" style="font-size:0.8em;">
-              <strong>Ref:</strong> Advanced<br/>
+              <strong>Reference:</strong> Advanced<br/>
               Non-ref: Frontline, Intermediate
             </div>
           </div>
@@ -104,7 +108,7 @@
           <div class="attribute-icon">
             <i class="fa-solid fa-laptop-house" style="color:#8e44ad;font-size:1.7em;"></i>
             <div class="tooltip" role="tooltip" style="font-size:0.8em;">
-              <strong>Ref:</strong> Online<br/>
+              <strong>Reference:</strong> Online<br/>
               Non-ref: In-Person, Hybrid
             </div>
           </div>
@@ -118,7 +122,7 @@
           <div class="attribute-icon">
             <i class="fa-solid fa-certificate" style="color:#27ae60;font-size:1.7em;"></i>
             <div class="tooltip" role="tooltip" style="font-size:0.8em;">
-              <strong>Ref:</strong> None<br/>
+              <strong>Reference:</strong> None<br/>
               Non-ref: National, International
             </div>
           </div>
@@ -132,7 +136,7 @@
           <div class="attribute-icon">
             <i class="fa-solid fa-location-dot" style="color:#e67e22;font-size:1.7em;"></i>
             <div class="tooltip" role="tooltip" style="font-size:0.8em;">
-              <strong>Ref:</strong> District-Level<br/>
+              <strong>Reference:</strong> District-Level<br/>
               Non-ref: State-Level, Regional
             </div>
           </div>
@@ -146,25 +150,26 @@
           <div class="attribute-icon">
             <i class="fa-solid fa-users-line" style="color:#3498db;font-size:1.7em;"></i>
             <div class="tooltip" role="tooltip" style="font-size:0.8em;">
-              Continuous attribute, range 500–2000
+              Range: 500–2000
             </div>
           </div>
           <div class="attribute-content">
             <h4>Cohort Size</h4>
-            <p>Adjustable via slider (no fixed baseline shown here).</p>
+            <p>Continuous slider (Inputs tab), no baseline displayed.</p>
           </div>
         </div>
-        <!-- 6: Cost per Participant -->
+        <!-- 6: Cost (USD) from $60 to $1500 -->
         <div class="attribute-card" tabindex="0">
           <div class="attribute-icon">
-            <i class="fa-solid fa-dollar-sign" style="color:#e74c3c;font-size:1.7em;"></i>
+            <i class="fa-solid fa-money-bill-wave" style="color:#e74c3c;font-size:1.7em;"></i>
             <div class="tooltip" role="tooltip" style="font-size:0.8em;">
-              Continuous attribute, range $500–$6000
+              Internally $60–$1500 with 4 levels for logit. 
+              Mapped via slider 0–250 in the Inputs tab.
             </div>
           </div>
           <div class="attribute-content">
             <h4>Cost per Participant (USD)</h4>
-            <p>Set in the Inputs tab (slider 500–6000).</p>
+            <p>Slider in 0–250, linearly mapped to $60–$1500 for the model.</p>
           </div>
         </div>
       </div>
@@ -175,7 +180,8 @@
       <h2>Configure Your Scenario</h2>
       <div class="input-card">
         <h3>Programme Inputs</h3>
-        <p>Select only non-reference levels for the four discrete attributes and adjust the two continuous attribute sliders.</p>
+        <p>Select non-reference levels for discrete attributes. For cost, the slider 0–250 => $60–$1500 internally. 
+        For example, 125 => about $780. Cohort Size is from 500–2000 directly.</p>
         <div class="form-grid">
           <!-- 1: Training Level -->
           <div class="input-summary-card">
@@ -206,7 +212,7 @@
             <h4>Location <span class="reference">[Ref: District-Level]</span></h4>
             <div class="radio-group">
               <label><input type="radio" name="location" value="State-Level" checked> State-Level</label>
-              <label><input type="radio" name="location" value="Regional Centers"> Regional Centers</label>
+              <label><input type="radio" name="location" value="Regional Centers"> Regional</label>
             </div>
           </div>
           <!-- 5: Cohort Size slider -->
@@ -215,11 +221,11 @@
             <input type="range" class="form-control-range" id="cohort-size" min="500" max="2000" step="250" value="1000">
             <small id="cohort-size-value">1000</small>
           </div>
-          <!-- 6: Cost per Participant slider -->
+          <!-- 6: Cost slider (0->250 => $60->1500) -->
           <div class="input-summary-card">
             <h4>Cost per Participant (USD)</h4>
-            <input type="range" class="form-control-range" id="cost-per-participant" min="500" max="6000" step="100" value="3000">
-            <small id="cost-per-participant-value">$3,000</small>
+            <input type="range" class="form-control-range" id="costSliderUI" min="0" max="250" step="1" value="125">
+            <small id="costValueUI">$780 (approx.)</small>
           </div>
         </div>
         <div class="buttons-row">
@@ -256,9 +262,8 @@
       <div class="calculation-info">
         <h4>Willingness to Pay (WTP) Results</h4>
         <p>
-          This chart shows the extra value (in USD) for each non-reference discrete attribute level, 
-          plus a +1 increment for <strong>Cohort Size</strong> and <strong>Cost per Participant</strong> 
-          (no baseline displayed). 
+          The bar chart below shows how much more or less (in USD) stakeholders value each non-reference attribute level and a +1 increment in continuous attributes, compared to references.  
+          Error bars reflect ±10% standard error.
         </p>
         <div class="chart-box">
           <canvas id="wtpChartMain"></canvas>
@@ -271,15 +276,14 @@
       <div id="cba-content" class="calculation-info">
         <h4>Costs &amp; Benefits Analysis</h4>
         <p>
-          Total costs = (Cohort Size × Training Cost). Benefits are derived from QALY gains (Low=0.02, Moderate=0.05, High=0.1) 
-          multiplied by $50,000. Adjust scenario in <strong>Inputs</strong>, then revisit or change QALY below:
+          Total costs = (Cohort Size × Training Cost). Benefits are estimated from QALY gains (Low=0.01, Mod=0.05, High=0.08) × $50,000. Adjust the scenario in <strong>Inputs</strong> and revisit this tab or change QALY scenario below:
         </p>
         <div class="qaly-selector">
           <label for="qalySelect">Select QALY Gain Scenario:</label>
           <select id="qalySelect" onchange="renderCostsBenefits()">
-            <option value="low">Low (0.02 QALYs)</option>
+            <option value="low">Low (0.01 QALYs)</option>
             <option value="moderate" selected>Moderate (0.05 QALYs)</option>
-            <option value="high">High (0.1 QALYs)</option>
+            <option value="high">High (0.08 QALYs)</option>
           </select>
         </div>
         <div class="dynamic-summary" id="cba-summary">
@@ -289,7 +293,11 @@
           <canvas id="cbaChart"></canvas>
         </div>
         <div class="detailed-info">
-          <h4>Detailed Cost Components</h4>
+          <h4>Detailed Cost Components (Illustrative)</h4>
+          <p>
+            The table below shows typical fixed and variable costs for running an FETP. 
+            Actual figures may vary in different settings.
+          </p>
           <div class="cost-cards">
             <div class="cost-card">
               <h4><i class="fa-solid fa-newspaper"></i> Local Press Ads</h4>
@@ -386,6 +394,15 @@
         <strong>Support:</strong> <a href="mailto:mesfin.genie@newcastle.edu.au">mesfin.genie@newcastle.edu.au</a>
       </p>
     </footer>
+  </div>
+
+  <!-- Modal for Results -->
+  <div id="resultsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">&times;</span>
+      <h3>Calculation Results</h3>
+      <div id="modal-results"></div>
+    </div>
   </div>
 
   <script src="script.js"></script>
