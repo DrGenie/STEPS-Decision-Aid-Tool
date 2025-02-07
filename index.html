@@ -54,7 +54,7 @@
         </p>
         <ul>
           <li><strong>Instructions</strong> – Step-by-step guide to using the tool.</li>
-          <li><strong>Attributes</strong> – Learn about the six key features of FETP training (hover over icons for reference levels).</li>
+          <li><strong>Attributes</strong> – Learn about six key features of FETP training (hover over icons for reference levels).</li>
           <li><strong>Inputs</strong> – Configure your scenario’s cost, training level, accreditation, location, etc.</li>
           <li><strong>WTP Results</strong> – Inspect willingness-to-pay (USD) for each attribute from the DCE.</li>
           <li><strong>Predicted Programme Uptake</strong> – View the predicted probability of uptake based on your scenario.</li>
@@ -106,7 +106,7 @@
               <path d="M12 4a8 8 0 0 1 0 16 8 8 0 0 1 0-16z" fill="#e67e22"/>
             </svg>
             <div class="tooltip" role="tooltip">
-              <strong>Reference: Online-only</strong><br/>Non-reference includes In-person or Hybrid.
+              <strong>Reference: Online</strong><br/>Non-reference includes In-person or Hybrid.
             </div>
           </div>
           <div class="attribute-content">
@@ -138,7 +138,7 @@
               <path d="M8 12h8M12 8v8" stroke="#8e44ad" stroke-width="2" fill="none"/>
             </svg>
             <div class="tooltip" role="tooltip">
-              <strong>Reference: District-level</strong><br/>Non-reference: State-level or Regional centers.
+              <strong>Reference: District-level</strong><br/>Non-reference: State-level or Regional.
             </div>
           </div>
           <div class="attribute-content">
@@ -154,7 +154,7 @@
               <path d="M12 6v6l4 2" stroke="#3498db" stroke-width="2" fill="none"/>
             </svg>
             <div class="tooltip" role="tooltip">
-              <strong>Reference: Advanced</strong><br/>Non-reference: Frontline or Intermediate tiers.
+              <strong>Reference: Intermediate</strong><br/>Non-reference: Advanced or Frontline.
             </div>
           </div>
           <div class="attribute-content">
@@ -188,9 +188,9 @@
         <p>Set your scenario by selecting cost, location, training level, etc. Then click "Calculate &amp; View Results."</p>
         <form onsubmit="event.preventDefault();">
           <div class="input-cards">
-            <!-- Example: Training Level Card -->
+            <!-- Training Level -->
             <div class="input-level-card">
-              <h3>Training Level <span class="reference">(Reference: Advanced)</span></h3>
+              <h3>Training Level <span class="reference">(Reference: Intermediate)</span></h3>
               <div class="options">
                 <label>
                   <input type="radio" name="trainingLevel" id="frontlineCheck" value="frontline" />
@@ -200,9 +200,13 @@
                   <input type="radio" name="trainingLevel" id="intermediateCheck" value="intermediate" />
                   Intermediate FETP
                 </label>
+                <label>
+                  <input type="radio" name="trainingLevel" id="advancedCheck" value="advanced" />
+                  Advanced FETP
+                </label>
               </div>
             </div>
-            <!-- Example: Delivery Method -->
+            <!-- Delivery Method -->
             <div class="input-level-card">
               <h3>Delivery Method <span class="reference">(Reference: Online)</span></h3>
               <div class="options">
@@ -216,7 +220,7 @@
                 </label>
               </div>
             </div>
-            <!-- Example: Accreditation -->
+            <!-- Accreditation -->
             <div class="input-level-card">
               <h3>Accreditation <span class="reference">(Reference: None)</span></h3>
               <div class="options">
@@ -230,9 +234,9 @@
                 </label>
               </div>
             </div>
-            <!-- Example: Location -->
+            <!-- Location -->
             <div class="input-level-card">
-              <h3>Location <span class="reference">(Reference: District-Level)</span></h3>
+              <h3>Location <span class="reference">(Reference: District-level)</span></h3>
               <div class="options">
                 <label>
                   <input type="radio" name="locationFETP" id="stateCheck" value="state" />
@@ -244,7 +248,7 @@
                 </label>
               </div>
             </div>
-            <!-- Example: Cohort Size (Slider) -->
+            <!-- Cohort Size (Slider) -->
             <div class="input-level-card">
               <h3>Cohort Size (participants)</h3>
               <div class="options slider-option">
@@ -255,13 +259,13 @@
                 <input type="range" id="cohortSlider" min="0" max="200" step="10" value="100" oninput="updateCohortDisplay(this.value)" />
               </div>
             </div>
-            <!-- Example: Cost (Slider) -->
+            <!-- Cost (Slider) -->
             <div class="input-level-card">
               <h3>Cost per Participant (USD)</h3>
               <div class="options slider-option">
                 <label for="costSliderFETP">
                   <i class="fa-solid fa-dollar-sign"></i>
-                  <span id="costLabelFETP">750</span>
+                  <span id="costLabelFETP">50</span>
                 </label>
                 <input type="range" id="costSliderFETP" min="0" max="100" step="1" value="50" oninput="updateFETPCostDisplay(this.value)" />
               </div>
@@ -272,6 +276,13 @@
           </div>
         </form>
       </div>
+      <!-- Modal Popup for Results -->
+      <div id="resultModal" class="modal">
+        <div class="modal-content">
+          <span class="close-button" onclick="closeModal()">&times;</span>
+          <div id="modalResults"></div>
+        </div>
+      </div>
     </section>
 
     <!-- WTP Results Tab -->
@@ -279,7 +290,7 @@
       <div class="calculation-info">
         <h4>Willingness-to-Pay (WTP) Results</h4>
         <p>
-          The willingness-to-pay (WTP) for each FETP attribute is derived by taking the ratio of that attribute’s coefficient over the negative of the cost coefficient. Hover over bars to see standard errors and p-values.
+          The willingness-to-pay (WTP) for each FETP attribute is calculated by taking the ratio of the attribute’s coefficient to the negative of the cost coefficient. Hover over the bars in the chart to view standard errors and p-values.
         </p>
         <div class="buttons-row">
           <button onclick="renderWTPChart()">Show WTP Charts</button>
@@ -297,7 +308,7 @@
     <section id="probTab" class="tabcontent" tabindex="0">
       <div class="calculation-info">
         <h4>Predicted Programme Uptake</h4>
-        <p>Click “Show Probability Plot” to compute the predicted FETP uptake under your current scenario. If the predicted uptake is low, consider adjusting cost, location, or accreditation level.</p>
+        <p>Click “Show Probability Plot” to compute the predicted FETP uptake. If the predicted uptake is too low, consider changing cost, training level, or location to boost acceptance.</p>
         <div class="buttons-row">
           <button onclick="renderFETPProbChart()">Show Probability Plot</button>
         </div>
@@ -337,20 +348,20 @@
           <button class="buttons-row" onclick="toggleFETPCostBreakdown()">Cost Breakdown</button>
           <button class="buttons-row" onclick="toggleFETPBenefitsAnalysis()">Benefits Analysis</button>
         </div>
+        <!-- Example toggled sections -->
         <div id="detailedFETPCostBreakdown" class="cost-cards" style="display:none;">
-          <!-- Detailed cost items for FETP (similar approach as your existing cost breakdown) -->
           <div class="cost-card">
             <h4><i class="fa-solid fa-newspaper"></i> Local Press Ads</h4>
             <p><strong>Unit Cost:</strong> $1,500</p>
             <p><strong>Quantity:</strong> 2</p>
             <p><strong>Total:</strong> $3,000</p>
           </div>
-          <!-- etc. replicate your existing cost items, but for FETP context -->
+          <!-- More cost items as needed -->
         </div>
         <div id="detailedFETPBenefitsAnalysis" class="cost-cards" style="display:none;">
           <div class="cost-card">
             <h4><i class="fa-solid fa-hand-holding-dollar"></i> QALY Benefits (FETP Context)</h4>
-            <p>Calculated as: Participants × QALY per participant × $50,000. This approach quantifies potential economic gains from improved outbreak detection & response capacity.</p>
+            <p>Calculated as: Participants × QALY per participant × $50,000. This approach quantifies potential economic gains from improved outbreak detection & response.</p>
           </div>
         </div>
       </div>
