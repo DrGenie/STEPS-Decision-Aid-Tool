@@ -2,9 +2,10 @@
  * SCRIPT.JS
  * - Discrete attributes (4) each with references
  * - 2 continuous: CohortSize(500–2000) & Cost(0..250 => $60..$1500)
- * - Updated slopes: costSlope=-0.07, cohortSlope=0.08 (as requested)
+ * - Updated slopes: costSlope=-0.07, cohortSlope=0.08 
  * - QALY scenario: Low=0.01, Mod=0.05, High=0.08
  * - Hover tooltips at 0.75em, color #2e4053
+ * - Fix: Missing parenthesis in WTP chart to keep tabs active
  ****************************************************************************/
 
 /** Default tab = Introduction */
@@ -15,13 +16,13 @@ window.onload = function(){
 /** Tab switching function */
 function openTab(tabId, btn){
   const allTabs = document.getElementsByClassName("tabcontent");
-  for(let t of allTabs) {
-    t.style.display = "none";
+  for(let i=0; i<allTabs.length; i++){
+    allTabs[i].style.display= "none";
   }
   const allBtns = document.getElementsByClassName("tablink");
-  for(let b of allBtns) {
-    b.classList.remove("active");
-    b.setAttribute("aria-selected","false");
+  for(let j=0; j<allBtns.length; j++){
+    allBtns[j].classList.remove("active");
+    allBtns[j].setAttribute("aria-selected","false");
   }
   document.getElementById(tabId).style.display="block";
   btn.classList.add("active");
@@ -40,7 +41,7 @@ cohortSlider.addEventListener("input",()=>{
   cohortDisplay.textContent = cohortSlider.value;
 });
 
-/** Cost slider (0–250 => $60–$1500), but we store a function to transform */
+/** Cost slider (0–250 => $60–$1500) */
 const costSliderUI = document.getElementById("costSliderUI");
 const costValueUI  = document.getElementById("costValueUI");
 function transformCost(val){
@@ -57,7 +58,7 @@ costSliderUI.addEventListener("input",()=>{
   updateCostLabel(costSliderUI.value);
 });
 
-/** Coeffs: requested costSlope=-0.07, cohortSlope=0.08, plus discrete attributes */
+/** Coeffs: costSlope=-0.07, cohortSlope=+0.08 */
 const coeffs = {
   ASC: 1.0,
   ASC_optout: 0.3,
@@ -125,7 +126,6 @@ function computeUptakeFraction(sc){
     + coeffs.Accreditation[sc.accreditation]
     + coeffs.Location[sc.location];
 
-  // updated continuous slopes
   U += coeffs.CohortSizeSlope* sc.cohortSize;
   U += coeffs.CostSlope* sc.cost_participant; 
 
@@ -266,7 +266,7 @@ function drawCBAChart(c,b,n){
   });
 }
 
-/** WTP for discrete diffs + +1 increments in continuous with cost slope= -0.07 */
+/** WTP for discrete diffs + +1 increments in continuous with cost slope= -0.07, cohort slope= +0.08 */
 const wtpDiffs = {
   "TrainingLevel__Frontline": 0.6,
   "TrainingLevel__Intermediate": 0.3,
@@ -277,22 +277,20 @@ const wtpDiffs = {
   "Location__State-Level": 0.3,
   "Location__Regional Centers": 0.2,
   // continuous +1 increments
-  // note: cohort slope= +0.08 => difference in utility for +1 in "cohort"? 
+  // cohort slope= +0.08 => difference in utility
   "CohortSize__+1": 0.08,
-  // cost slope= -0.07 => difference in utility for +1 => -0.07
+  // cost slope= -0.07 => difference in utility
   "Cost__+1": -0.07
 };
 
 function computeStaticWTP(){
-  // We'll define costSlope = -0.07 => ratio= diff / -( -0.07 )= diff/ 0.07 => diff* (1/0.07=14.2857)
-  // Then multiply by e.g. 1000 if we want bigger scale
+  // ratio= diff / -(costSlope= -0.07) => diff/ 0.07 => diff*(1/0.07=14.2857)
+  // scale by 1000
   const arr= [];
   const costSlope= -0.07;
   for(let key in wtpDiffs){
     const diff= wtpDiffs[key];
-    // ratio= diff / -(costSlope)= diff / 0.07 => diff*(1/0.07)
-    const ratio= diff/ -costSlope;
-    // scale it up by 1000
+    const ratio= diff/ -costSlope; // = diff/ 0.07
     arr.push({
       label: key,
       wtp: ratio*1000,
@@ -353,7 +351,7 @@ function renderWTPChart(){
             const bot= y.getPixelForValue(val-se);
             ctx.save();
             ctx.beginPath();
-            ctx.strokeStyle= "#000";
+            ctx.strokeStyle="#000";
             ctx.lineWidth=1;
             ctx.moveTo(xC, top);
             ctx.lineTo(xC, bot);
