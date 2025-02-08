@@ -2,7 +2,7 @@
  * SCRIPT.JS
  * 1) Tab switching
  * 2) Range slider label updates
- * 3) DCE coefficients for FETP
+ * 3) DCE coefficiensts for FETP
  * 4) Mandate user inputs (no default scenario)
  * 5) WTP chart with dynamic scale
  * 6) Probability chart with fixed height
