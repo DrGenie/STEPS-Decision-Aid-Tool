@@ -1,4 +1,4 @@
-/* RESEeT & BASE */
+/* RESET & BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -83,7 +83,7 @@ header p {
   line-height: 1.5em;
 }
 
-/* CALC INFO BOX */
+/* CALCULATION INFO BOX */
 .calculation-info {
   background-color: #f9f9f9;
   border-left: 4px solid #2980b9;
@@ -92,15 +92,12 @@ header p {
   margin-top: 15px;
 }
 
-/* INPUT-CARDS */
+/* INPUT CARDS */
 .input-card {
   background-color: #f7f9fc;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
-}
-.input-card form {
-  margin-top: 10px;
 }
 .input-cards {
   display: flex;
@@ -128,10 +125,6 @@ header p {
   display: block;
   margin-bottom: 6px;
 }
-.slider-option {
-  display: flex;
-  flex-direction: column;
-}
 
 /* CHARTS */
 .chart-grid {
@@ -147,11 +140,18 @@ header p {
   border: 1px solid #ccc;
   border-radius: 6px;
   position: relative;
+  overflow: hidden;
 }
 .chart-box h3 {
   text-align: center;
   margin-bottom: 8px;
   color: #2c3e50;
+}
+/* Force a fixed or max height so we don't scroll "down without limit" */
+.chart-box canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* TABLE CONTAINER & SCENARIOS */
@@ -178,7 +178,7 @@ header p {
   background-color: #f2f2f2;
 }
 
-/* BUTTONS ROWS */
+/* BUTTONS ROW */
 .buttons-row {
   display: flex;
   flex-wrap: wrap;
@@ -201,7 +201,7 @@ header p {
   transform: translateY(-2px);
 }
 
-/* COST CARDS (expanded or hidden toggles) */
+/* COST CARDS & TOGGLE */
 .cost-cards {
   display: flex;
   flex-wrap: wrap;
@@ -292,6 +292,7 @@ footer {
   }
   .chart-box {
     flex: 1 1 100%;
+    height: 300px; /* to ensure no infinite scrolling */
   }
   .input-cards {
     flex-direction: column;
